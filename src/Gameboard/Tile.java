@@ -15,6 +15,10 @@ public class Tile {
 		this.currentState = currentState;
 	}
 	
+	public int getTileNumber() {
+		return tileNumber;
+	}
+	
 	public String toString()
 	{
 		return currentState.getState();

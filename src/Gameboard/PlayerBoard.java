@@ -22,6 +22,13 @@ public class PlayerBoard {
 		}		
 	}
 	
+	public void clearBoard() {
+		
+		for(int tileNum = 0; tileNum < 100; tileNum++) {
+			tileList.get(tileNum).clearThisTile();
+		}
+	}
+	
 	public String getTileStatus(int tileNumber) {
 		
 		return tileList.get(tileNumber).toString();
