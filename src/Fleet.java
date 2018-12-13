@@ -32,11 +32,13 @@ public class Fleet {
 	}
 	
 	public void buildFleet() {
-		System.out.println(" has been made");
-
+		int shipBuilt = 0;
 		for(int i = sizeOfFleet; i>0 ; i--) {
+			
 			myFleet.add(new Ship(i));
-			System.out.println(myFleet.get(0) +" has been made");
+			
+			System.out.println(myFleet.get(shipBuilt) +" has been made");
+			shipBuilt++;
 		}
 	}
 	
@@ -46,11 +48,24 @@ public class Fleet {
 		}
 	}
 	
+	/**
+	 * for testing only will be deleted
+	 * @param index
+	 * @return
+	 */
+	public Ship getShip(int index) {
+		return myFleet.get(index);
+	}
+	
 	
 	public static void main(String[] args) {
-		System.out.println("HI");
 		Fleet testFleet = new Fleet();
 		testFleet.printFleetStatus();
+		testFleet.getShip(0).hitRecived();
+		System.out.println();
+
+		testFleet.printFleetStatus();
+
 		
 	}
 }
