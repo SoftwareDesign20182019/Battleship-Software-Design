@@ -43,6 +43,10 @@ public class BoardGUI extends Application {
 	
 	private Label shotLabel;
 	
+	public BoardGUI() {
+		
+	}
+	
 	public BoardGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
 	}
@@ -71,16 +75,16 @@ public class BoardGUI extends Application {
 	private void setGridElement(String gridName, int index, String shotImage) {
 		ImageView gridImage = new ImageView();
 		switch(shotImage) {
-		case "hit":
+		case "Hit":
 			gridImage.setImage(hit);
 			break;
-		case "empty":
+		case "Empty":
 			gridImage.setImage(empty);
 			break;
-		case "miss":
+		case "Miss":
 			gridImage.setImage(miss);
 			break;
-		case "ship":
+		case "Ship":
 			gridImage.setImage(ship);
 			break;
 		}
@@ -88,12 +92,12 @@ public class BoardGUI extends Application {
 		int col = cords[0];
 		int row = cords[1];
 		
-		if(gridName.equals("playerGrid")) {
+		if(gridName.equals("playerBoard")) {
 			playerGrid.getChildren().remove(playerTiles.get(index));
 			playerTiles.remove(index);
 			playerGrid.add(gridImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
-		} else if(gridName.equals("opponentGrid")) {
+		} else if(gridName.equals("opponentBoard")) {
 			opponentGrid.getChildren().remove(opponentTiles.get(index));
 			playerTiles.remove(index);
 			opponentGrid.add(gridImage, col, row);
