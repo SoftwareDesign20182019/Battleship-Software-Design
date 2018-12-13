@@ -19,9 +19,17 @@ public class Tile {
 		return tileNumber;
 	}
 	
-	public String toString()
-	{
-		return currentState.getState();
+	
+	/**
+	 * Returns true if tile is empty.
+	 */
+	public boolean isFree() {
+		if(this.toString().equals("Empty")) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
 	/**
@@ -46,6 +54,7 @@ public class Tile {
 		
 	}
 	
+	
 	/**
 	 * Change current state according to occupyTile() method interaction with
 	 * current state.
@@ -53,7 +62,7 @@ public class Tile {
 	 */
 	public boolean occupyThisTile() {
 		
-		if(currentState.occupyTile() != null) {
+		if(isFree()) {
 			currentState = currentState.occupyTile();
 			return true;
 		}
@@ -63,9 +72,16 @@ public class Tile {
 		
 	}
 	
+	/**
+	 * Set tile to empty
+	 */
 	public void clearThisTile() {
 		
 		currentState = currentState.clearTile();
+	}
+	
+	public String toString() {
+		return currentState.getState();
 	}
 	
 	
