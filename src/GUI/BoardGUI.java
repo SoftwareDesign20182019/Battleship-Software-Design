@@ -25,6 +25,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class BoardGUI extends Application {
+	private MainMenuGUI mainMenu;
 	
 	private static final int boardWidth = 10;
 	private static final int boardHeight = 10;
@@ -42,6 +43,10 @@ public class BoardGUI extends Application {
 	
 	private Label shotLabel;
 	
+	public BoardGUI(MainMenuGUI mainMenu) {
+		this.mainMenu = mainMenu;
+	}
+	
 	@Override
     public void start(Stage stage) {
 		initBoard();
@@ -52,7 +57,7 @@ public class BoardGUI extends Application {
 		empty = new Image("File:empty.png", true);
 		hit = new Image("File:hit.png", true);
 		miss = new Image("File:miss.png", true);
-		miss = new Image("File:ship.png", true);
+		ship = new Image("File:ship.png", true);
 
 		playerTiles = new ArrayList<ImageView>();
 		opponentTiles = new ArrayList<ImageView>();
@@ -70,10 +75,12 @@ public class BoardGUI extends Application {
 		
 		if(gridName.equals("playerGrid")) {
 			playerGrid.getChildren().remove(playerTiles.get(index));
+			playerTiles.remove(index);
 			playerGrid.add(newImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
 		} else if(gridName.equals("opponentGrid")) {
 			opponentGrid.getChildren().remove(opponentTiles.get(index));
+			playerTiles.remove(index);
 			opponentGrid.add(newImage, col, row);
 			shotLabel.setText("Player shot: " + col + "," + row);
 		}
@@ -149,6 +156,9 @@ public class BoardGUI extends Application {
         opponentGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
+            	
+            	//TODO We need to check if it is player turn! Game Loop? Player? Where do we check
+            	
                 Object source = e.getTarget();
                 if(source instanceof ImageView) {
                 	int col = opponentGrid.getColumnIndex((ImageView)source);
@@ -186,9 +196,5 @@ public class BoardGUI extends Application {
     
     private int convertCordToIndex(int col, int row) {
       	return (row * 10) + col;
-    }
-    
-    public static void main(String[] args) {
-        launch(args);
     }
 }
