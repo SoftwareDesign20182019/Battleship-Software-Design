@@ -68,7 +68,22 @@ public class BoardGUI extends Application {
 	 * @param gridName the grid we would like to change
 	 * @param newImage the new image we wish to set
 	 */
-	private void setGridElement(String gridName, int index, ImageView newImage) {
+	private void setGridElement(String gridName, int index, String shotImage) {
+		ImageView gridImage = new ImageView();
+		switch(shotImage) {
+		case "hit":
+			gridImage.setImage(hit);
+			break;
+		case "empty":
+			gridImage.setImage(empty);
+			break;
+		case "miss":
+			gridImage.setImage(miss);
+			break;
+		case "ship":
+			gridImage.setImage(ship);
+			break;
+		}
 		int[] cords = convertIndexToCord(index);
 		int col = cords[0];
 		int row = cords[1];
@@ -76,12 +91,12 @@ public class BoardGUI extends Application {
 		if(gridName.equals("playerGrid")) {
 			playerGrid.getChildren().remove(playerTiles.get(index));
 			playerTiles.remove(index);
-			playerGrid.add(newImage, col, row);
+			playerGrid.add(gridImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
 		} else if(gridName.equals("opponentGrid")) {
 			opponentGrid.getChildren().remove(opponentTiles.get(index));
 			playerTiles.remove(index);
-			opponentGrid.add(newImage, col, row);
+			opponentGrid.add(gridImage, col, row);
 			shotLabel.setText("Player shot: " + col + "," + row);
 		}
 	}
@@ -163,7 +178,7 @@ public class BoardGUI extends Application {
                 if(source instanceof ImageView) {
                 	int col = opponentGrid.getColumnIndex((ImageView)source);
                 	int row = opponentGrid.getRowIndex((ImageView)source);
-                    setGridElement("opponentGrid", convertCordToIndex(col, row), new ImageView(hit));
+                    //setGridElement("opponentGrid", convertCordToIndex(col, row), new ImageView(hit));
                 }
             }
             });
@@ -180,7 +195,7 @@ public class BoardGUI extends Application {
         
         Scene scene = new Scene(root, 800, 500);
 
-        stage.setTitle("Battleship Board");
+        stage.setTitle("Board - Battleship");
         stage.setScene(scene);
         stage.show();
     }
