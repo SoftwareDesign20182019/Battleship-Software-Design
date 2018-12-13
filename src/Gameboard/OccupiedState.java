@@ -1,4 +1,8 @@
-
+/**
+ * Occupied TileState
+ * @author owenmiller
+ *
+ */
 public class OccupiedState implements TileState {
 
 	

@@ -1,4 +1,8 @@
-
+/**
+ * Hit-Shot TileState
+ * @author owenmiller
+ *
+ */
 public class HitState implements TileState {
 	
 	

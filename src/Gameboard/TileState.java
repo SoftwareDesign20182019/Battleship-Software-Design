@@ -1,5 +1,5 @@
 /**
- * 
+ * State changing methods for TileState
  * @author owenmiller
  *
  */

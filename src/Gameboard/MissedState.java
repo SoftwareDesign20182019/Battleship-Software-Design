@@ -1,4 +1,8 @@
-
+/**
+ * Missed-Shot TileState
+ * @author owenmiller
+ *
+ */
 public class MissedState implements TileState {
 	
 	

@@ -1,4 +1,8 @@
-
+/**
+ * Empty TileState
+ * @author owenmiller
+ *
+ */
 public class EmptyState implements TileState {
 	
 	

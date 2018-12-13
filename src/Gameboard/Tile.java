@@ -33,10 +33,15 @@ public class Tile {
 		
 		if(currentState.shootTile() != null) {
 			currentState = currentState.shootTile();
-			return true;
+			if(this.toString().equals("Hit")) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
-			return false;	
+			return false;
 		}
 		
 	}
