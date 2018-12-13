@@ -15,6 +15,11 @@ public class Tile {
 		this.currentState = currentState;
 	}
 	
+	public String toString()
+	{
+		return currentState.getState();
+	}
+	
 	/**
 	 * Change current state according to shootTile() method interaction
 	 * with current state.

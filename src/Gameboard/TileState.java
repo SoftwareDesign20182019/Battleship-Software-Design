@@ -11,5 +11,6 @@ public interface TileState {
 	
 	public TileState clearTile();
 	
+	public String getState();
 
 }

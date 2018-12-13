@@ -17,4 +17,8 @@ public class OccupiedState implements TileState {
 		return new EmptyState();
 	}
 	
+	public String getState() {
+		return "Occupied";
+	}
+	
 }

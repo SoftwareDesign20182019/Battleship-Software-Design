@@ -15,7 +15,10 @@ public class EmptyState implements TileState {
 	public TileState clearTile() {
 		
 		return new EmptyState();
-		
+	}
+	
+	public String getState() {
+		return "Empty";
 	}
 
 }
