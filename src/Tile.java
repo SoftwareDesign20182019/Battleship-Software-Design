@@ -45,21 +45,20 @@ public class Tile {
 	 */
 	public boolean shootThisTile() {
 		
-		if(currentState.shootTile() != null) {
+		boolean hit = null;
+		
+		if(this.toString().equals("Ship") || this.toString().equals("Empty")) {
 			currentState = currentState.shootTile();
 			currentState.setTileGUI(boardGUI, boardName, tileNumber);
-			if(this.toString().equals("Hit")) {
-				return true;
+			if(this.toString().equals("Ship")) {
+				hit = true;
 			}
 			else {
-				return false;
+				hit = false;
 			}
 		}
 		
-		else {
-			return false;
-		}
-		
+		return hit;
 	}
 	
 	
