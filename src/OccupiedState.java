@@ -1,14 +1,16 @@
+
+
 /**
- * Missed-Shot TileState
+ * Occupied TileState
  * @author owenmiller
  *
  */
-public class MissedState implements TileState {
-	
+public class OccupiedState implements TileState {
+
 	
 	public TileState shootTile() {
 		
-		return null;	
+		 return new HitState();
 	}
 	
 	public TileState occupyTile() {
@@ -22,7 +24,7 @@ public class MissedState implements TileState {
 	}
 	
 	public String getState() {
-		return "Missed";
+		return "Occupied";
 	}
 	
 }
