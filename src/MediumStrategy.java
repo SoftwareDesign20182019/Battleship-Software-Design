@@ -157,7 +157,9 @@ public class MediumStrategy implements OpponentStrategy {
 
                             }  //boundary
 
-                        }
+                        } else {
+                        return adj2Tile.getNum();
+                    }
 
                     }
 
