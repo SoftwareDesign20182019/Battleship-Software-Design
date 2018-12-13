@@ -1,0 +1,8 @@
+
+public class Tile {
+	
+	private Tile leftTile;
+	private Tile rightTile;
+	private Tile aboveTile;
+	private Tile belowTile;
+}

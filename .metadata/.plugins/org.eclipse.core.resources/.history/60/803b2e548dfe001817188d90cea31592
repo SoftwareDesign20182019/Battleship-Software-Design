@@ -1,0 +1,18 @@
+
+public class OccupiedState implements TileState {
+
+	public TileState shootTile() {
+		
+		return new TitleState HitState();
+		
+	}
+	
+	public TileState occupyTile() {
+		
+	}
+	
+	public TileState clearTile() {
+		
+	}
+	
+}

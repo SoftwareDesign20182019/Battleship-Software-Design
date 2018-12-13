@@ -1,0 +1,24 @@
+
+public class EmptyState implements TileState {
+	
+	private TileState newState;
+	
+	public TileState shootTile() {
+		
+		return new MissedState();
+		
+	}
+	
+	public TileState occupyTile() {
+		
+		return new OccupiedState();
+		
+	}
+	
+	public TileState clearTile() {
+		
+		return new EmptyState();
+		
+	}
+
+}

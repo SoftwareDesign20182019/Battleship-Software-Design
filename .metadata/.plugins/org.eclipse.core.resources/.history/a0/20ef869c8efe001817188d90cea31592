@@ -1,0 +1,16 @@
+
+public class HitState implements TileState {
+	
+	public TileState shootTile() {
+		
+	}
+	
+	public TileState occupyTile() {
+		
+	}
+	
+	public TileState clearTile() {
+		
+	}
+
+}

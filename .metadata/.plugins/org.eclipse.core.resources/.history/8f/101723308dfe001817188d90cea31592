@@ -1,0 +1,16 @@
+
+public class OccupiedState implements TileState {
+
+	public void shootTile() {
+		
+	}
+	
+	public void occupyTile() {
+		
+	}
+	
+	public void clearTile() {
+		
+	}
+	
+}

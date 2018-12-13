@@ -1,0 +1,24 @@
+import java.util.ArrayList;
+
+public class PlayerBoard {
+	
+	private ArrayList<Tile> tileList;
+	
+	public PlayerBoard() {
+		
+		for(int numTiles = 0; numTiles < 100; numTiles++) {
+			
+			Tile newTile = new Tile(numTiles, new EmptyState());
+			tileList.add(newTile);
+		}		
+	}
+	
+	public boolean shootTile(int tileNumber) {
+		return tileList.get(tileNumber).shootThisTile();
+	}
+	
+	public boolean addShip(int shipStartTileNum, int shipEndTileNum) {
+		
+	}
+
+}

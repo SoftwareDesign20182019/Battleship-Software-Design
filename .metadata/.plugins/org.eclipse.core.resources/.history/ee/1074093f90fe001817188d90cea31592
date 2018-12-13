@@ -1,0 +1,19 @@
+
+public class Tile {
+	
+	private TileState currentState;
+	private int tileNumber;
+	
+	public Tile(int tileNumber, TileState currentState) {
+		
+		this.tileNumber = tileNumber;
+		this.currentState = currentState;
+	}
+	
+	public boolean gotShot() {
+		currentState = currentState.shootTile();
+		
+	}
+	
+	
+}
