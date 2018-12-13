@@ -1,6 +1,11 @@
-
+/**
+ * 
+ * @author owenmiller
+ *
+ */
 public class Gameboard {
 
+	
 	Player playerOne;
 	Player playerTwo;
 	PlayerBoard playerOneBoard;
@@ -12,5 +17,14 @@ public class Gameboard {
 		this.playerTwo = playerTwo;
 		
 	}
+	
+	public boolean fireShot() {
+		
+	}
+	
+	public boolean deploy() {
+		
+	}
+	
 	
 }

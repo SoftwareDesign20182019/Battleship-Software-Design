@@ -5,10 +5,11 @@
  */
 public interface TileState {
 	
-	public void shootTile();
+	public TileState shootTile();
 	
-	public void occupyTile();
+	public TileState occupyTile();
 	
-	public void clearTile();
+	public TileState clearTile();
+	
 
 }
