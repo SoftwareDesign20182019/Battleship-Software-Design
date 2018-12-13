@@ -163,10 +163,10 @@ public class MediumStrategy implements OpponentStrategy {
 
 
                 } //keep going!
+            return rand.nextInt(adjTiles.size() - 1); //fired tile
 
             }
+        return rand.nextInt(adjTiles.size() - 1);
+
         } //no hits!
-        int firedTile = rand.nextInt(adjTiles.size() - 1);
-        return firedTile;
     }
-}
