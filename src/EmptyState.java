@@ -1,5 +1,4 @@
 
-
 /**
  * Empty TileState
  * @author owenmiller
@@ -30,6 +29,10 @@ public class EmptyState implements TileState {
 		
 		//Set GUI ??
 		return "Empty";
+	}
+	
+	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
+		
 	}
 
 }

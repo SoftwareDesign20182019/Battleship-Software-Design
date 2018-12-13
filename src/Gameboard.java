@@ -10,14 +10,14 @@
  */
 public class Gameboard {
 	
-	PlayerBoard playerOneBoard;
-	PlayerBoard playerTwoBoard;
+	private PlayerBoard playerBoard;
+	private PlayerBoard opponentBoard;
 	
-	public Gameboard() {
+	
+	public Gameboard(BoardGUI boardGUI) {
 		
-		playerOneBoard = new PlayerBoard();
-		playerTwoBoard = new PlayerBoard();
-		
+		playerBoard = new PlayerBoard(boardGUI, "playerBoard");
+		opponentBoard = new PlayerBoard(boardGUI, "opponentBoard" );	
 	}
 	
 	/**
@@ -32,10 +32,10 @@ public class Gameboard {
 		boolean tileHit = false;
 		switch(playerNumber) {
 			case 1:	
-				tileHit = playerTwoBoard.shootTile(tileNumber);
+				tileHit = opponentBoard.shootTile(tileNumber);
 				break;
 			case 2:
-				tileHit = playerOneBoard.shootTile(tileNumber);
+				tileHit = playerBoard.shootTile(tileNumber);
 				break;
 		}
 		
@@ -56,10 +56,10 @@ public class Gameboard {
 		boolean deployValid = false;
 		switch(playerNumber) {
 			case 1:	
-				deployValid = playerOneBoard.addShip(shipStartTileNum, shipEndTileNum);
+				deployValid = playerBoard.addShip(shipStartTileNum, shipEndTileNum);
 				break;
 			case 2:
-				deployValid = playerTwoBoard.addShip(shipStartTileNum, shipEndTileNum);
+				deployValid = opponentBoard.addShip(shipStartTileNum, shipEndTileNum);
 				break;
 		}
 		

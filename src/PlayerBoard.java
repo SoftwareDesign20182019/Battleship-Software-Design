@@ -12,16 +12,18 @@ import java.util.ArrayList;
 public class PlayerBoard {
 	
 	private ArrayList<Tile> tileList;
+	private String boardName;
 	
 	
-	
-	public PlayerBoard() {
+	public PlayerBoard(BoardGUI boardGUI, String boardName) {
+		
+		this.boardName = boardName;
 		
 		for(int numTiles = 0; numTiles < 100; numTiles++) {
 			
-			Tile newTile = new Tile(numTiles, new EmptyState());
+			Tile newTile = new Tile(numTiles, new EmptyState(), boardGUI, boardName);
 			tileList.add(newTile);
-		}		
+		}
 	}
 	
 	public void clearBoard() {

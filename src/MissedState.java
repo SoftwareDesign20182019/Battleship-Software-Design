@@ -24,7 +24,11 @@ public class MissedState implements TileState {
 	}
 	
 	public String getState() {
-		return "Missed";
+		return "Miss";
+	}
+	
+	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
+		
 	}
 	
 }
