@@ -95,9 +95,6 @@ public class BoardGUI extends Application {
 			playerGrid.add(gridImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
 		} else if(gridName.equals("opponentBoard")) {
-			playerGrid.add(gridImage, col, row);
-			shotLabel.setText("Opponent shot: " + col + "," + row);
-		} else if(gridName.equals("opponentBoard")) {
 			opponentGrid.add(gridImage, col, row);
 			shotLabel.setText("Player shot: " + col + "," + row);
 		}

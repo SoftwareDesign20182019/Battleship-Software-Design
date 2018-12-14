@@ -13,11 +13,14 @@ public class Gameboard {
 	private PlayerBoard playerBoard;
 	private PlayerBoard opponentBoard;
 	
+	public enum PlayerType {
+		HUMAN, OPPONENT;
+	}
 	
 	public Gameboard(BoardGUI boardGUI) {
 		
 		playerBoard = new PlayerBoard(boardGUI, "playerBoard");
-		opponentBoard = new PlayerBoard(boardGUI, "opponentBoard" );	
+		opponentBoard = new PlayerBoard(boardGUI, "opponentBoard");	
 	}
 	
 	/**
@@ -27,14 +30,14 @@ public class Gameboard {
 	 * @param tileNumber	which tile is being shot
 	 * @return	true if shot was a success
 	 */
-	public boolean fireShot(int playerNumber, int tileNumber) {
+	public boolean fireShot(PlayerType player, int tileNumber) {
 		
 		boolean tileHit = false;
-		switch(playerNumber) {
-			case 1:	
+		switch(player) {
+			case HUMAN:	
 				tileHit = opponentBoard.shootTile(tileNumber);
 				break;
-			case 2:
+			case OPPONENT:
 				tileHit = playerBoard.shootTile(tileNumber);
 				break;
 		}
@@ -50,14 +53,14 @@ public class Gameboard {
 	 * @param shipEndTileNum	tile at the end of the ship
 	 * @return	true if deploy is valid.
 	 */
-	public boolean deploy(int playerNumber, int shipStartTileNum,
+	public boolean deploy(PlayerType player, int shipStartTileNum,
 							int shipEndTileNum) {
 		boolean deployValid = false;
-		switch(playerNumber) {
-			case 1:	
+		switch(player) {
+			case HUMAN:	
 				deployValid = playerBoard.addShip(shipStartTileNum, shipEndTileNum);
 				break;
-			case 2:
+			case OPPONENT:
 				deployValid = opponentBoard.addShip(shipStartTileNum, shipEndTileNum);
 				break;
 		}
