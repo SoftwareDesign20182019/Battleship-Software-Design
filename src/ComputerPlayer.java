@@ -23,7 +23,7 @@ public class ComputerPlayer implements Player {
 	
 	
 	public int chooseTile(){
-		return 2;/// place strategy goes here
+		return strategy.chooseBlock();
 	
 	}
 	
@@ -35,7 +35,7 @@ public class ComputerPlayer implements Player {
 	//NEW Now takes in OpponentStrategy param to set strategy
 	public void setDifficulty(OpponentStrategy strategy) {
 		this.strategy = strategy;
-	}
+	} //where is this called
 	
 	public ArrayList<Ship> getComputerFleet() {
 		return computerFleet.getFleet();

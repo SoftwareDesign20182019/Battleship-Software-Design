@@ -19,7 +19,7 @@ public class MediumStrategy implements OpponentStrategy {
     public int chooseBlock() {
         Random rand = new Random();
         int firedTile;
-        for(int i = 0; i<BOARD_SIZE+1; i++) {
+        for (int i = 0; i < BOARD_SIZE + 1; i++) {
             if (tiles[i] == HIT) {
                 ArrayList<Integer> adjAL;
                 adjAL = getAdjacents(i);
@@ -147,31 +147,30 @@ public class MediumStrategy implements OpponentStrategy {
                 }
             }
         }
-                while(tiles[firedTile] != EMPTY){
-                    firedTile = rand.nextInt(BOARD_SIZE); //should be returned
-                }
-                tiles[firedTile] = HIT;
-                return firedTile;
-        }
+
+        firedTile = rand.nextInt(BOARD_SIZE); //should be returned
+        tiles[firedTile] = HIT;
+        return firedTile;
+    }
 
 
-    private ArrayList<Integer> getAdjacents(int centerTile){
+    private ArrayList<Integer> getAdjacents(int centerTile) {
         ArrayList<Integer> adjacents = new ArrayList<Integer>();
         int UP = centerTile - 10;
-        int DOWN = centerTile +10;
+        int DOWN = centerTile + 10;
         int RIGHT = centerTile + 1;
         int LEFT = centerTile - 1;
 
-        if(UP >= 0 && UP <= 99){
+        if (UP >= 0 && UP <= 99) {
             adjacents.add(UP);
         }
-        if(DOWN >= 0 && DOWN <= 99){
+        if (DOWN >= 0 && DOWN <= 99) {
             adjacents.add(DOWN);
         }
-        if(RIGHT <= 99 && RIGHT/10 == centerTile/10){
+        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10) {
             adjacents.add(RIGHT);
         }
-        if(LEFT >= 0 && LEFT/10 == centerTile/10){
+        if (LEFT >= 0 && LEFT / 10 == centerTile / 10) {
             adjacents.add(LEFT);
         }
         return adjacents;
