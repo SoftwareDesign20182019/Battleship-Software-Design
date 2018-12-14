@@ -107,9 +107,8 @@ public class PlayerBoard {
 				}
 			}
 			
-			//If ship is horizontal negative
+			//If ship is horizontal positive
 			else {
-				
 				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
 						tileNum = tileNum + 1) {
 						

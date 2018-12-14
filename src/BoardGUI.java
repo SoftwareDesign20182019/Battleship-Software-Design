@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 
 public class BoardGUI extends Application {
 	private MainMenuGUI mainMenu;
+	private GameLoop gameLoop;
 	
 	private static final int boardWidth = 10;
 	private static final int boardHeight = 10;
@@ -40,12 +41,9 @@ public class BoardGUI extends Application {
 	
 	private Label shotLabel;
 	
-	public BoardGUI() {
-		
-	}
-	
-	public BoardGUI(MainMenuGUI mainMenu) {
+	public BoardGUI(GameLoop gameLoop, MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
+		this.gameLoop = gameLoop;
 	}
 	
 	@Override
@@ -173,7 +171,7 @@ public class BoardGUI extends Application {
                 if(source instanceof ImageView) {
                 	int col = opponentGrid.getColumnIndex((ImageView)source);
                 	int row = opponentGrid.getRowIndex((ImageView)source);
-                    setGridElement("opponentGrid", convertCordToIndex(col, row), "Miss");
+                	gameLoop.clickResponse(convertCordToIndex(col, row));
                 }
             }
             });
