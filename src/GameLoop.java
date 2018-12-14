@@ -25,9 +25,9 @@ public class GameLoop {
 		playerTurn = true;
 
 		boardGUI.start(guiStage);
-		gameBoard.deploy(playerType.HUMAN, 0, 20);
-		gameBoard.deploy(playerType.HUMAN, 9, 39);
-		gameBoard.deploy(playerType.HUMAN, 3, 7);
+		gameBoard.deploy(playerType.HUMAN, 23, 53);
+		gameBoard.deploy(playerType.HUMAN, 27, 57);
+		gameBoard.deploy(playerType.HUMAN, 72, 78);
 		gameBoard.deploy(playerType.OPPONENT, 1, 21);
 		gameBoard.deploy(playerType.OPPONENT, 4, 24);
 		gameBoard.deploy(playerType.OPPONENT, 9, 6);
