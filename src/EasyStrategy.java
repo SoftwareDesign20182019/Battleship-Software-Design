@@ -17,5 +17,9 @@ public class EasyStrategy implements OpponentStrategy {
         hitTiles.add(firedTile);
         return firedTile; //figure out if int or something else should be returned
     }
+<<<<<<< HEAD
 }
+=======
+    
+>>>>>>> ComputerAi
 
