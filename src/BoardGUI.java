@@ -41,6 +41,10 @@ public class BoardGUI extends Application {
 	
 	private Label shotLabel;
 	
+	public BoardGUI() {
+		//Empty constructor, used for tests
+	}
+	
 	public BoardGUI(GameLoop gameLoop, MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
 		this.gameLoop = gameLoop;
@@ -48,11 +52,11 @@ public class BoardGUI extends Application {
 	
 	@Override
     public void start(Stage stage) {
-		initBoard();
+		initResources();
 		setupUI(stage);
     }
 
-	private void initBoard() {
+	private void initResources() {
 		empty = new Image("File:empty.png", true);
 		hit = new Image("File:hit.png", true);
 		miss = new Image("File:miss.png", true);
@@ -64,7 +68,7 @@ public class BoardGUI extends Application {
 	 * @param gridName the grid we would like to change
 	 * @param newImage the new image we wish to set
 	 */
-	public void setGridElement(String gridName, int index, String shotImage) {
+	public boolean setGridElement(String gridName, int index, String shotImage) {
 		ImageView gridImage = new ImageView();
 		switch(shotImage) {
 		case "Hit":
@@ -92,13 +96,16 @@ public class BoardGUI extends Application {
 		if(gridName.equals("playerBoard")) {
 			playerGrid.add(gridImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
+			return true;
 		} else if(gridName.equals("opponentBoard")) {
 			opponentGrid.add(gridImage, col, row);
 			shotLabel.setText("Player shot: " + col + "," + row);
+			return true;
 		}
+		return false;
 	}
 	
-    private void setupUI(Stage stage) {
+    private boolean setupUI(Stage stage) {
     	VBox root = new VBox();
     	root.setAlignment(Pos.BASELINE_CENTER);  	
     	
@@ -191,6 +198,7 @@ public class BoardGUI extends Application {
         stage.setTitle("Board - Battleship");
         stage.setScene(scene);
         stage.show();
+        return true;
     }
     
     private int[] convertIndexToCord(int index) {
