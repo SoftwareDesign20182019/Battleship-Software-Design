@@ -4,12 +4,13 @@ import java.util.Random;
 public class ComputerPlayer implements Player {
 	
 	private Fleet computerFleet;
-	int[][] shipLocations;
+	private int[][] shipLocations;
 	private String name;
+	//NEW PlayerType
+	private Gameboard.PlayerType playerType;
 	
 	ComputerPlayer(){
 		computerFleet = new Fleet();
-		
 		setName();// set difficulty idk
 		this.shipLocations = deployShips();		
 	}

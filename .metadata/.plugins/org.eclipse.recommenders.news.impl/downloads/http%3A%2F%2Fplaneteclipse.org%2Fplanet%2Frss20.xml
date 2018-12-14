@@ -199,7 +199,7 @@ registeredConsumers.add(
 &lt;p&gt;In our spec example we added an extension &lt;code&gt;x-vertx-event-bus&lt;/code&gt; to each operation that specifies the address of the service. Using this extension, you only need to call &lt;code&gt;OpenAPI3RouterFactory.mountServicesFromExtensions()&lt;/code&gt; to trigger a scan of all operations and mount all found service addresses. For each operation that contains &lt;code&gt;x-vertx-event-bus&lt;/code&gt;, the Router Factory instantiates an handler that routes the incoming requests to the address you specified.&lt;/p&gt;
 &lt;p&gt;This is one of the methods you can use to match services with router operation handlers. Check the documentation for all details.&lt;/p&gt;
 &lt;h2 id=&quot;more-examples&quot;&gt;More examples&lt;/h2&gt;
-&lt;p&gt;Check out the complete example in &lt;a href=&quot;https://github.com/vert-x3/vertx-examples/tree/master/vertx-web-api-service-example&quot;&gt;vertx-examples repo&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Check out the complete example in &lt;a href=&quot;https://github.com/vert-x3/vertx-examples/tree/master/web-api-service-example&quot;&gt;vertx-examples repo&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Thanks you for your time, stay tuned for more updates! And please provide feedback about this new package!&lt;/p&gt;
 &lt;/article&gt;</description>
 	<pubDate>Thu, 13 Dec 2018 00:00:00 +0000</pubDate>
