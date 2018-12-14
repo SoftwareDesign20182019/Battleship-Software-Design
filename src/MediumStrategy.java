@@ -136,7 +136,7 @@ public class MediumStrategy implements OpponentStrategy {
                                 }
                             }
                         }
-                        break
+                        break;
 
 
                     } else {
