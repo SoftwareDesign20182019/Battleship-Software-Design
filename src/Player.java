@@ -5,7 +5,8 @@ public interface Player {
 	
 	public boolean destroyedFleet();
 	
-	public String getName();
+	//NEW changed return type to PlayerType
+	public Gameboard.PlayerType getType();
 	
 	//public boolean hitTarget(Tile target);
 	

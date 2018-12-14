@@ -1,6 +1,6 @@
 
 public class Ship {
-	private int length, numberOfHitsTaken, StartTile, endTile;
+	private int length, numberOfHitsTaken, startTile, endTile;
 	private int[] positions;
 	private String name;
 	
@@ -59,7 +59,7 @@ public class Ship {
 	}
 	
 	public void setStartIndex(int start) {
-		this.StartTile = start;
+		this.startTile = start;
 	}
 	
 	public void setEndIndex(int end) {
@@ -67,12 +67,22 @@ public class Ship {
 		
 	}
 	
+	//NEW kinda, just making everything a little more streamlined for implementation later
+	// 	  in the game loop. these just return the start and end tiles individually
+	public int getStartTile() {
+		return startTile;
+	}
+	
+	public int getEndTile() {
+		return endTile;
+	}
+	
 	
 	public void setPositions() {
-		int counter = StartTile;
+		int counter = startTile;
 		int increment;
 		this.positions = new int[length];
-		if(StartTile - endTile >=10) {
+		if(startTile - endTile >=10) {
 			increment = 10;
 		}
 		else {

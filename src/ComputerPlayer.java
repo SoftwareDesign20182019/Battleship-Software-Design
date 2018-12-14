@@ -5,13 +5,19 @@ public class ComputerPlayer implements Player {
 	
 	private Fleet computerFleet;
 	private int[][] shipLocations;
-	private String name;
+	//NEW local OpponentStrategy
+	private OpponentStrategy strategy;
+
 	//NEW PlayerType
 	private Gameboard.PlayerType playerType;
 	
-	ComputerPlayer(){
+	//NEW param playerTyper sets local playerType variable
+	ComputerPlayer(Gameboard.PlayerType playertype){
+		
+		//NEW Renamed setName() to setPlayerType()
+		this.playerType = playerType;
+		
 		computerFleet = new Fleet();
-		setName();// set difficulty idk
 		this.shipLocations = deployShips();		
 	}
 	
@@ -21,17 +27,14 @@ public class ComputerPlayer implements Player {
 	
 	}
 	
-	public String getName() {
-		return name;
+	//NEW changed getName to getType
+	public Gameboard.PlayerType getType() {
+		return playerType;
 	}
 	
-	public void setDifficulty() {
-		// call Strategy constructor
-	}
-	
-	public void setName() {
-		// will return difficulty instead of name
-		name = "Easy ComputerPlayer";
+	//NEW Now takes in OpponentStrategy param to set strategy
+	public void setDifficulty(OpponentStrategy strategy) {
+		this.strategy = strategy;
 	}
 	
 	public ArrayList<Ship> getComputerFleet() {
@@ -159,7 +162,7 @@ public class ComputerPlayer implements Player {
 	}
 	
 	public static void main(String[] args) {
-		ComputerPlayer test = new ComputerPlayer();
+		ComputerPlayer test = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
 		test.printShipLocations();
 	}
 }
