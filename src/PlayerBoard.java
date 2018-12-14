@@ -12,16 +12,19 @@ import java.util.ArrayList;
 public class PlayerBoard {
 	
 	private ArrayList<Tile> tileList;
+	private String boardName;
 	
 	
-	
-	public PlayerBoard() {
+	public PlayerBoard(BoardGUI boardGUI, String boardName) {
+		
+		tileList = new ArrayList<Tile>();
+		this.boardName = boardName;
 		
 		for(int numTiles = 0; numTiles < 100; numTiles++) {
 			
-			Tile newTile = new Tile(numTiles, new EmptyState());
+			Tile newTile = new Tile(numTiles, new EmptyState(), boardGUI, boardName);
 			tileList.add(newTile);
-		}		
+		}
 	}
 	
 	public void clearBoard() {
@@ -56,17 +59,16 @@ public class PlayerBoard {
 	 * 			occupied return null).
 	 */
 	public boolean addShip(int shipStartTileNum, int shipEndTileNum) {
-		
 		boolean valid = true;
 		
 		//If ship is vertical
 		if(Math.abs(shipEndTileNum - shipStartTileNum) >= 10) {
 			
-			//If ship is vertical positively 
+			//If ship is vertical negatively
 			if(shipStartTileNum > shipEndTileNum) {
 				
-				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
-					tileNum = tileNum + 10) {
+				for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
+					tileNum = tileNum - 10) {
 					
 					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
 					if(tileValidity == false) {
@@ -76,10 +78,10 @@ public class PlayerBoard {
 				}
 			}
 			
-			//If ship is vertical negatively
+			//If ship is vertical positively
 			else {
-				for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
-						tileNum = tileNum - 10) {
+				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
+						tileNum = tileNum + 10) {
 					
 					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
 					if(tileValidity == false) {

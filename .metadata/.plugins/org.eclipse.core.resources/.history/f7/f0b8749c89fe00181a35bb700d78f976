@@ -1,0 +1,5 @@
+package Gameboard;
+
+public interface TileState {
+
+}

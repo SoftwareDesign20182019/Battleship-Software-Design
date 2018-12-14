@@ -1,0 +1,25 @@
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class TestTile {
+
+	@Test
+	public void shootThisTileOccupiedTest() {
+		Tile tile = new Tile(1, new OccupiedState());
+		assertTrue(tile.shootThisTile());
+	}
+	
+	@Test
+	public void shootThisTileEmptyTest() {
+		Tile tile = new Tile(1, new EmptyState());
+		assertTrue(!tile.shootThisTile());
+	}
+	
+	@Test
+	public void shootThisTileHitTest() {
+		Tile tile = new Tile(1, new HitState());
+		assertTrue(!tile.shootThisTile());
+	}
+
+}

@@ -26,5 +26,11 @@ public class HitState implements TileState {
 	public String getState() {
 		return "Hit";
 	}
+	
+	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
+		
+		boardGUI.setGridElement(boardName, tileNumber, this.getState());
+		
+	}
 
 }

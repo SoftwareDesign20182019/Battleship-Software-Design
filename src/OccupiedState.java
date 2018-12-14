@@ -7,7 +7,6 @@
  */
 public class OccupiedState implements TileState {
 
-	
 	public TileState shootTile() {
 		
 		 return new HitState();
@@ -24,7 +23,11 @@ public class OccupiedState implements TileState {
 	}
 	
 	public String getState() {
-		return "Occupied";
+		return "Ship";
+	}
+	
+	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
+		boardGUI.setGridElement(boardName, tileNumber, this.getState());
 	}
 	
 }

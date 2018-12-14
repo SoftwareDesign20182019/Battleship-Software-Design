@@ -1,0 +1,27 @@
+/**
+ * 
+ * @author owenmiller
+ *
+ */
+public class Gameboard {
+	
+	PlayerBoard playerOneBoard;
+	PlayerBoard playerTwoBoard;
+	
+	public Gameboard() {
+		
+		playerOneBoard = new PlayerBoard();
+		playerTwoBoard = new PlayerBoard();
+		
+	}
+	
+	public boolean fireShot() {
+		
+	}
+	
+	public boolean deploy() {
+		
+	}
+	
+	
+}
