@@ -1,174 +1,181 @@
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.lang.reflect.Array;
 import java.util.Random;
+import java.util.ArrayList;
 
+/**
+ * @author Wyatt Newhall
+ */
 public class MediumStrategy implements OpponentStrategy {
+    private int[] tiles = new int[100];
+    private int EMPTY = 0;
+    private int HIT = 1;
+    private int MISS = 2;
+    private int BOARD_SIZE = 99;
 
     /**
-     *  analyzes the gameboard and selects the next best tile
-     * @param availableTile gives the whole gameboard
-     * @return the selected tile
+     * method to return a random empty coordinate
+     * @return the position of the fired shot
      */
-    public int chooseBlock(ArrayList < Tile > availableTile) { //OR do we want to take in gameBoard
+    public int chooseBlock() {
         Random rand = new Random();
-        Iterator < Tile > itr = availableTile.iterator();
-        while (itr.hasNext()) { //goes over everyblock and looks for hits. This could be done elsewhere.
-            Tile currentTile = itr.next();
-            if (currentTile.isHit()) { //isHit should be true probably
-                ArrayList < Tile > adjTiles = currentTile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                Iterator < Tile > itr2 = adjTiles.iterator();
-                while (itr2.hasNext()) { //might want to put this part in the hard strat and make this random
-                    Tile adj2Tile = itr.next();
-                    if (adj2Tile.isHit()) { //it would be nice to recursively iterate through here. But alas
-                        int nextTile = adj2Tile.getNum() - currentTile.getNum();
+        int firedTile;
+        for(int i = 0; i<BOARD_SIZE+1; i++) {
+            if (tiles[i] == HIT) {
+                ArrayList<Integer> adjAL;
+                adjAL = getAdjacents(i);
+                for (Integer adj1 : adjAL) {
+                    if (tiles[adj1] == HIT) {
+                        int nextTile = adj1 - i;
+                        int ONEUP = adj1 + nextTile;
+                        int TWOUP = adj1 + nextTile * 2;
+                        int THREEUP = adj1 + nextTile * 3;
+                        int FOURUP = adj1 + nextTile * 4;
 
-                        //check if the tile next to the next hit tile even exists, maximum 6 tiles
-                        int ONEUP = adj2Tile.getNum() + nextTile;
-                        int TWOUP = adj2Tile.getNum() + nextTile * 2;
-                        int THREEUP = adj2Tile.getNum() + nextTile * 3;
-                        int FOURUP = adj2Tile.getNum() + nextTile * 4;
+                        int ONEDOWN = i - nextTile;
+                        int TWODOWN = i - nextTile * 2;
+                        int THREEDOWN = i - nextTile * 3;
+                        int FOURDOWN = i - nextTile * 4;
 
-                        int ONEDOWN = currentTile.getNum() - nextTile;
-                        int TWODOWN = currentTile.getNum() - nextTile * 2;
-                        int THREEDOWN = currentTile.getNum() - nextTile * 3;
-                        int FOURDOWN = currentTile.getNum() - nextTile * 4;
-
-                        ArrayList < Tile > adj3Tiles = adj2Tile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                        Iterator < Tile > itr3 = adj3Tiles.iterator();
                         boolean up = true;
                         while (up) {
-                            while (itr3.hasNext()) {
-                               Tile adj3Tile = itr3.next();
-                                if (adj3Tile.getNum() == ONEUP) {
-                                    if (adj3Tile.isHit()) {
-                                        ArrayList < Tile > adj4Tiles = adj3Tile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                                        Iterator < Tile > itr4 = adj4Tiles.iterator();
-                                        while (itr4.hasNext()) {
-                                            Tile adj4Tile = itr4.next();
-                                            if (adj4Tile.getNum() == TWOUP) {
-                                                if (adj4Tile.isHit()) {
-                                                    ArrayList < Tile > adj5Tiles = adj4Tile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                                                    Iterator < Tile > itr5 = adj5Tiles.iterator();
-                                                    while (itr5.hasNext()) {
-                                                        Tile adj5Tile = itr5.next();
-                                                        if (adj5Tile.getNum() == THREEUP) {
-                                                            if (adj5Tile.isHit()) {
-                                                                ArrayList < Tile > adj6Tiles = adj5Tile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                                                                Iterator < Tile > itr6 = adj6Tiles.iterator();
-                                                                while (itr6.hasNext()) {
-                                                                    Tile adj6Tile = itr6.next();
-                                                                    if (adj6Tile.getNum() == FOURUP) {
-                                                                        if (adj6Tile.isHit()) {
-                                                                            up = false;
-                                                                            break;
+                            adjAL = getAdjacents(adj1);
+                            for (Integer adj2 : adjAL) {
+                                if (adj2 == ONEUP) {
+                                    if (tiles[ONEUP] == HIT) {
+                                        adjAL = getAdjacents(adj2);
+                                        for (Integer adj3 : adjAL) {
+                                            if (adj3 == TWOUP) {
+                                                if (tiles[TWOUP] == HIT) {
+                                                    adjAL = getAdjacents(adj3);
+                                                    for (Integer adj4 : adjAL) {
+                                                        if (adj4 == THREEUP) {
+                                                            if (tiles[THREEUP] == HIT) {
+                                                                adjAL = getAdjacents(adj4);
+                                                                for (Integer adj5 : adjAL) {
+                                                                    if (adj5 == FOURUP) {
+                                                                        if (tiles[FOURUP] != HIT) {
+                                                                            tiles[adj5] = HIT;
+                                                                            return adj5;
+
                                                                         } else {
-                                                                            return adj6Tile.getNum();
+                                                                            up = false;
                                                                         }
-
                                                                     }
-                                                                    up = false;
-                                                                    break;
                                                                 }
-
+                                                                up = false;
 
                                                             } else {
-                                                                return adj5Tile.getNum();
+                                                                tiles[adj4] = HIT;
+                                                                return adj4;
                                                             }
                                                         }
-
-                                                        up = false;
-                                                        break;
                                                     }
+                                                    up = false;
+
                                                 } else {
-                                                    return adj4Tile.getNum();
+                                                    tiles[adj3] = HIT;
+                                                    return adj3;
                                                 }
                                             }
-                                            up = false;
-                                            break;
                                         }
-
+                                        up = false;
 
                                     } else {
-                                        return adj3Tile.getNum();
+                                        tiles[adj2] = HIT;
+                                        return adj2;
                                     }
-                                }
-                                up = false;
-                                break;
-                            } //boundary
-
-                        } //Start down path
-                        ArrayList < Tile > dj3Tiles = currentTile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                        Iterator < Tile > tr3 = dj3Tiles.iterator();
-                        while (tr3.hasNext()) {
-                            Tile dj3Tile = tr3.next();
-                            if (dj3Tile.getNum() == ONEDOWN) {
-                                if (dj3Tile.isHit()) {
-                                    ArrayList < Tile > dj4Tiles = dj3Tile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                                    Iterator < Tile > tr4 = dj4Tiles.iterator();
-                                    while (tr4.hasNext()) {
-                                        Tile dj4Tile = tr4.next();
-                                        if (dj4Tile.getNum() == TWODOWN) {
-                                            if (dj4Tile.isHit()) {
-                                                ArrayList < Tile > dj5Tiles = dj4Tile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                                                Iterator < Tile > itr5 = dj5Tiles.iterator();
-                                                while (itr5.hasNext()) {
-                                                    Tile dj5Tile = itr5.next();
-                                                    if (dj5Tile.getNum() == THREEDOWN) {
-                                                        if (dj5Tile.isHit()) {
-                                                            ArrayList < Tile > dj6Tiles = dj5Tile.getAdjacents(); //getAdjacents returns an ArrayList<Tile>,
-                                                            Iterator < Tile > tr6 = dj6Tiles.iterator();
-                                                            while (tr6.hasNext()) {
-                                                                Tile dj6Tile = tr6.next();
-                                                                if (dj6Tile.getNum() == FOURDOWN) {
-                                                                    if (dj6Tile.isHit()) {
-
-                                                                        break;
-                                                                    } else {
-                                                                        return dj6Tile.getNum();
-                                                                    }
-
-                                                                }
-
-                                                                break;
-                                                            }
-
-
-                                                        } else {
-                                                            return dj5Tile.getNum();
-                                                        }
-                                                    }
-
-
-                                                    break;
-                                                }
-                                            } else {
-                                                return dj4Tile.getNum();
-                                            }
-                                        }
-
-                                        break;
-                                    }
-
-
-                                } else {
-                                    return dj3Tile.getNum();
                                 }
                             }
+                            up = false;
+                        } //Time to descend
+                        adjAL = getAdjacents(i);
+                        for (Integer dj2 : adjAL) {
+                            if (dj2 == ONEDOWN) {
+                                if (tiles[ONEDOWN] == HIT) {
+                                    adjAL = getAdjacents(dj2);
+                                    for (Integer dj3 : adjAL) {
+                                        if (dj3 == TWODOWN) {
+                                            if (tiles[TWODOWN] == HIT) {
+                                                adjAL = getAdjacents(dj3);
+                                                for (Integer dj4 : adjAL) {
+                                                    if (dj4 == THREEDOWN) {
+                                                        if (tiles[THREEDOWN] == HIT) {
+                                                            adjAL = getAdjacents(dj4);
+                                                            for (Integer dj5 : adjAL) {
+                                                                if (dj5 == FOURDOWN) {
+                                                                    if (tiles[FOURDOWN] != HIT) {
+                                                                        tiles[dj5] = HIT;
+                                                                        return dj5;
 
-                        } //boundary
+                                                                    } else {
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                            break;
+
+                                                        } else {
+                                                            tiles[dj4] = HIT;
+                                                            return dj4;
+                                                        }
+                                                    }
+                                                }
+                                                break;
+
+                                            } else {
+                                                tiles[dj3] = HIT;
+                                                return dj3;
+                                            }
+                                        }
+                                    }
+                                    break;
+
+                                } else {
+                                    tiles[dj2] = HIT;
+                                    return dj2;
+                                }
+                            }
+                        }
+                        break
+
 
                     } else {
-                        return adj2Tile.getNum();
+                        tiles[adj1] = HIT;
+                        return adj1;
                     }
 
                 }
-
-
-            } //keep going!
-            return rand.nextInt(availableTile.size() - 1); //fired tile
-
+            }
         }
-        return rand.nextInt(availableTile.size() - 1);
+                while(tiles[firedTile] != EMPTY){
+                    firedTile = rand.nextInt(BOARD_SIZE); //should be returned
+                }
+                tiles[firedTile] = HIT;
+                return firedTile;
+        }
 
-    } //no hits!
+
+    private ArrayList<Integer> getAdjacents(int centerTile){
+        ArrayList<Integer> adjacents = new ArrayList<Integer>();
+        int UP = centerTile - 10;
+        int DOWN = centerTile +10;
+        int RIGHT = centerTile + 1;
+        int LEFT = centerTile - 1;
+
+        if(UP >= 0 && UP <= 99){
+            adjacents.add(UP);
+        }
+        if(DOWN >= 0 && DOWN <= 99){
+            adjacents.add(DOWN);
+        }
+        if(RIGHT <= 99 && RIGHT/10 == centerTile/10){
+            adjacents.add(RIGHT);
+        }
+        if(LEFT >= 0 && LEFT/10 == centerTile/10){
+            adjacents.add(LEFT);
+        }
+        return adjacents;
+    }
+
 }
+
