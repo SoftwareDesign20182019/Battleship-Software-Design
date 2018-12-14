@@ -2,7 +2,7 @@ import java.util.Random;
 import java.util.ArrayList;
 
 public class EasyStrategy implements OpponentStrategy {
-    private ArrayList<int> hitTiles;
+    private ArrayList<int> hitTiles = new ArrayList<int>();
 
     //trying to return a chosen tile. Should we select tiles with a constructor (eg. Tile(0-99)  ) or with the gameboard? For now, int
 
@@ -14,6 +14,7 @@ public class EasyStrategy implements OpponentStrategy {
         while(hitTiles.contains(firedTile)){
             firedTile = rand.nextInt(availableTiles.size() - 1);
         }
+        hitTiles.add(firedTile);
         return firedTile; //figure out if int or something else should be returned
     }
 }
