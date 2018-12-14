@@ -39,7 +39,8 @@ public class BoardGUI extends Application {
 	private Image miss;
 	private Image ship;
 	
-	private Label shotLabel;
+	private Label playerShotLabel;
+	private Label opponentShotLabel;
 	
 	public BoardGUI() {
 		//Empty constructor, used for tests
@@ -68,38 +69,35 @@ public class BoardGUI extends Application {
 	 * @param gridName the grid we would like to change
 	 * @param newImage the new image we wish to set
 	 */
-	public boolean setGridElement(String gridName, int index, String shotImage) {
-		ImageView gridImage = new ImageView();
-		switch(shotImage) {
-		case "Hit":
-			gridImage.setImage(hit);
-			System.out.println("Hit");
-			break;
-		case "Empty":
-			gridImage.setImage(empty);
-			System.out.println("Empty");
-			break;
-		case "Miss":
-			gridImage.setImage(miss);
-			System.out.println("Miss");
-			break;
-		case "Ship":
-			gridImage.setImage(ship);
-			System.out.println("Ship");
-			break;
-		}
-		
+	public boolean setGridElement(String gridName, int index, String shotType) {
 		int[] cords = convertIndexToCord(index);
 		int col = cords[0];
 		int row = cords[1];
 		
+		ImageView gridImage = new ImageView();
+		
+		switch(shotType) {
+		case "Hit":
+			gridImage.setImage(hit);
+			break;
+		case "Empty":
+			gridImage.setImage(empty);
+			break;
+		case "Miss":
+			gridImage.setImage(miss);
+			break;
+		case "Ship":
+			gridImage.setImage(ship);
+			break;
+		}
+		
 		if(gridName.equals("playerBoard")) {
+			playerShotLabel.setText("Player " + shotType + ": " + col + "," + row);
 			playerGrid.add(gridImage, col, row);
-			shotLabel.setText("Opponent shot: " + col + "," + row);
 			return true;
 		} else if(gridName.equals("opponentBoard")) {
+			opponentShotLabel.setText("Opponent " + shotType + ": " + col + "," + row);
 			opponentGrid.add(gridImage, col, row);
-			shotLabel.setText("Player shot: " + col + "," + row);
 			return true;
 		}
 		return false;
@@ -140,19 +138,23 @@ public class BoardGUI extends Application {
         
         Label playerFleet = new Label("Player Fleet");
         Label opponentFleet = new Label("Opponent Fleet");
-        shotLabel = new Label("");
+        playerShotLabel = new Label("");
+        opponentShotLabel = new Label("");
         
         playerFleet.setAlignment(Pos.BASELINE_CENTER);
         opponentFleet.setAlignment(Pos.BASELINE_CENTER);
-        shotLabel.setAlignment(Pos.BASELINE_CENTER);
+        playerShotLabel.setAlignment(Pos.BASELINE_CENTER);
+        opponentShotLabel.setAlignment(Pos.BASELINE_CENTER);
         
         playerFleet.setPadding(new Insets(10));
         opponentFleet.setPadding(new Insets(10));
-        shotLabel.setPadding(new Insets(10));
+        playerShotLabel.setPadding(new Insets(10));
+        opponentShotLabel.setPadding(new Insets(10));
         
         playerFleet.setFont(new Font("Arial", 24));
         opponentFleet.setFont(new Font("Arial", 24));
-        shotLabel.setFont(new Font("Arial", 24));
+        playerShotLabel.setFont(new Font("Arial", 24));
+        opponentShotLabel.setFont(new Font("Arial", 24));
                 
         //Setup player grid with empties
         for(int row = 0; row < boardHeight; row++) {
@@ -191,7 +193,7 @@ public class BoardGUI extends Application {
         playerBoard.getChildren().addAll(playerFleet, playerGrid);
         opponentBoard.getChildren().addAll(opponentFleet, opponentGrid);
         //Add all relevant elements to infoPanel
-        infoPanel.getChildren().addAll(shotLabel);
+        infoPanel.getChildren().addAll(playerShotLabel, opponentShotLabel);
         
         Scene scene = new Scene(root, 800, 500);
 
