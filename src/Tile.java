@@ -17,7 +17,7 @@ public class Tile {
 		this.currentState = currentState;
 	}
 	
-	public int getTileNumber() {
+	public int getNum() {
 		return tileNumber;
 	}
 	
@@ -33,6 +33,19 @@ public class Tile {
 			return false;
 		}
 	}
+
+	/**
+	 * Returns true if tile is empty.
+	 */
+	public boolean isHit() {
+		if(this.toString().equals("hit")) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 	
 	/**
 	 * Change current state according to shootTile() method interaction
