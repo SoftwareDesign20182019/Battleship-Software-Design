@@ -27,17 +27,17 @@ import javafx.stage.Stage;
 public class MainMenuGUI extends Application {
 	private LoginGUI loginGUI;
 	private GameLoop gameLoop;
-	private BoardGUI newGame;
+	private MainMenuGUI mainMenu;
 	private LoadGUI loadGame;
 	private RankingsGUI rankings;
 	private SettingsGUI settings;
 
 	public MainMenuGUI(LoginGUI loginGUI) {
 		this.loginGUI = loginGUI;
-		newGame = new BoardGUI(this);
 		loadGame = new LoadGUI(this);
 		rankings = new RankingsGUI(this);
     	settings = new SettingsGUI(this);
+    	mainMenu = this;
 	}
 	
 	@Override
@@ -70,7 +70,7 @@ public class MainMenuGUI extends Application {
     	newGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-            	gameLoop = new GameLoop(stage);
+            	gameLoop = new GameLoop(stage, mainMenu);
             	gameLoop.newGame();
             }
         	});

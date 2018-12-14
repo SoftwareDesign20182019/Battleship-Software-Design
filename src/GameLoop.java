@@ -2,30 +2,43 @@ import javafx.stage.Stage;
 
 public class GameLoop {
 	private BoardGUI boardGUI;
+	private MainMenuGUI mainMenu;
 	private Gameboard gameBoard;
 	private Stage guiStage;
 	private Gameboard.PlayerType playerType;
 	
-	public GameLoop(Stage stage) {
+	private boolean gameOver;
+	private boolean playerTurn;
+	
+	public GameLoop(Stage stage, MainMenuGUI mainMenu) {
 		this.guiStage = stage;
+		this.mainMenu = mainMenu;
+		gameOver = false;
+		playerTurn = true;
 	}
 	
 	public void newGame() {
-		boardGUI = new BoardGUI();
+		boardGUI = new BoardGUI(this, mainMenu);
 		gameBoard = new Gameboard(boardGUI);
+		
+		gameOver = false;
+		playerTurn = true;
+
 		boardGUI.start(guiStage);
 		gameBoard.deploy(playerType.HUMAN, 0, 20);
 		gameBoard.deploy(playerType.HUMAN, 9, 39);
-		//gameBoard.deploy(playerType.HUMAN, 3, 7);
+		gameBoard.deploy(playerType.HUMAN, 3, 7);
 		gameBoard.deploy(playerType.OPPONENT, 1, 21);
 		gameBoard.deploy(playerType.OPPONENT, 4, 24);
-		//gameBoard.deploy(playerType.OPPONENT, 9, 6);
-		
-		gameBoard.fireShot(playerType.HUMAN, 1);
-		gameBoard.fireShot(playerType.OPPONENT, 4);
-		gameBoard.fireShot(playerType.HUMAN, 69);
-		gameBoard.fireShot(playerType.OPPONENT, 45);
-		
-		
+		gameBoard.deploy(playerType.OPPONENT, 9, 6);
+	}
+	
+	public void computerTurn() {
+		gameBoard.fireShot(playerType.OPPONENT, (int)(Math.random() * 100));
+	}
+	
+	public void clickResponse(int index) {
+		gameBoard.fireShot(playerType.HUMAN, index);
+		computerTurn();
 	}
 }
