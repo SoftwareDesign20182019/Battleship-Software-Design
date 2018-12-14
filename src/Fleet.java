@@ -20,6 +20,10 @@ public class Fleet {
 		
 	}
 	
+	public ArrayList<Ship> getFleet(){
+		return myFleet;
+	}
+	
 	
 	public boolean isFleetDestroyed() {
 		

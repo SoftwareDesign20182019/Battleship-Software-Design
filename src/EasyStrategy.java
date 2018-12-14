@@ -11,4 +11,5 @@ public class EasyStrategy implements OpponentStrategy {
         int firedTile = rand.nextInt(availableTiles.size() - 1);
         return firedTile; //figure out if int or something else should be returned
     }
+    
 

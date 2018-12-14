@@ -1,6 +1,7 @@
 
 public class Ship {
-	private int length, numberOfHitsTaken;
+	private int length, numberOfHitsTaken, StartTile, endTile;
+	private int[] positions;
 	private String name;
 	
 	public Ship(int length_) {
@@ -12,6 +13,10 @@ public class Ship {
 	public boolean isDestroyed() {
 		
 		return numberOfHitsTaken == length;
+	}
+	
+	public int getLength() {
+		return length;
 	}
 	
 	public void hitRecived() {
@@ -51,6 +56,40 @@ public class Ship {
 	
 	public String toString() {
 		return name;
+	}
+	
+	public void setStartIndex(int start) {
+		this.StartTile = start;
+	}
+	
+	public void setEndIndex(int end) {
+		this.endTile = end;
+		
+	}
+	
+	
+	public void setPositions() {
+		int counter = StartTile;
+		int increment;
+		this.positions = new int[length];
+		if(StartTile - endTile >=10) {
+			increment = 10;
+		}
+		else {
+			increment = 1;
+		}
+		
+		
+		for(int i = 0; i < positions.length; i++) {
+			positions[i] = counter;
+			counter += increment;
+		}
+		
+		
+	}
+	
+	public int[] getPositions() {
+		return positions;
 	}
 	
 }
