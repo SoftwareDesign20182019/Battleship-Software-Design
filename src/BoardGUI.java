@@ -92,19 +92,12 @@ public class BoardGUI extends Application {
 		int row = cords[1];
 		
 		if(gridName.equals("playerBoard")) {
-<<<<<<< HEAD
-			playerGrid.getChildren().remove(playerTiles.get(index));
-			playerTiles.remove(index);
 			playerGrid.add(gridImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
 		} else if(gridName.equals("opponentBoard")) {
-			opponentGrid.getChildren().remove(opponentTiles.get(index));
-			playerTiles.remove(index);
-=======
 			playerGrid.add(gridImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
 		} else if(gridName.equals("opponentBoard")) {
->>>>>>> UpdateTileGUI
 			opponentGrid.add(gridImage, col, row);
 			shotLabel.setText("Player shot: " + col + "," + row);
 		}
