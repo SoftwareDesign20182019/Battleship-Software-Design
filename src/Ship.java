@@ -89,7 +89,14 @@ public class Ship {
 	}
 	
 	public int[] getPositions() {
-		return positions;
+		try { 
+			setPositions();
+			return positions;
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
+
 }
