@@ -94,11 +94,11 @@ public class PlayerBoard {
 		//If ship is horizontal
 		else {
 			
-			//If ship is horizontal positive
+			//If ship is horizontal negative
 			if(shipStartTileNum > shipEndTileNum) {
 				
-				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
-					tileNum = tileNum + 1) {
+				for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
+					tileNum = tileNum - 1) {
 					
 					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
 					if(tileValidity == false) {
@@ -111,7 +111,7 @@ public class PlayerBoard {
 			else {
 				
 				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
-						tileNum = tileNum - 1) {
+						tileNum = tileNum + 1) {
 						
 					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
 					if(tileValidity == false) {
