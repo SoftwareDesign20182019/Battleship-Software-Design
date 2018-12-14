@@ -30,9 +30,6 @@ public class BoardGUI extends Application {
 	private static final int boardWidth = 10;
 	private static final int boardHeight = 10;
 	
-	private ArrayList<ImageView> playerTiles;
-	private ArrayList<ImageView> opponentTiles;
-	
 	private GridPane playerGrid;
 	private GridPane opponentGrid;
 	
@@ -42,6 +39,10 @@ public class BoardGUI extends Application {
 	private Image ship;
 	
 	private Label shotLabel;
+	
+	public BoardGUI() {
+		
+	}
 	
 	public BoardGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
@@ -58,9 +59,6 @@ public class BoardGUI extends Application {
 		hit = new Image("File:hit.png", true);
 		miss = new Image("File:miss.png", true);
 		ship = new Image("File:ship.png", true);
-
-		playerTiles = new ArrayList<ImageView>();
-		opponentTiles = new ArrayList<ImageView>();
 	}
 	
 	/**
@@ -68,34 +66,35 @@ public class BoardGUI extends Application {
 	 * @param gridName the grid we would like to change
 	 * @param newImage the new image we wish to set
 	 */
-	private void setGridElement(String gridName, int index, String shotImage) {
+	public void setGridElement(String gridName, int index, String shotImage) {
 		ImageView gridImage = new ImageView();
 		switch(shotImage) {
-		case "hit":
+		case "Hit":
 			gridImage.setImage(hit);
+			System.out.println("Hit");
 			break;
-		case "empty":
+		case "Empty":
 			gridImage.setImage(empty);
+			System.out.println("Empty");
 			break;
-		case "miss":
+		case "Miss":
 			gridImage.setImage(miss);
+			System.out.println("Miss");
 			break;
-		case "ship":
+		case "Ship":
 			gridImage.setImage(ship);
+			System.out.println("Ship");
 			break;
 		}
+		
 		int[] cords = convertIndexToCord(index);
 		int col = cords[0];
 		int row = cords[1];
 		
-		if(gridName.equals("playerGrid")) {
-			playerGrid.getChildren().remove(playerTiles.get(index));
-			playerTiles.remove(index);
+		if(gridName.equals("playerBoard")) {
 			playerGrid.add(gridImage, col, row);
 			shotLabel.setText("Opponent shot: " + col + "," + row);
-		} else if(gridName.equals("opponentGrid")) {
-			opponentGrid.getChildren().remove(opponentTiles.get(index));
-			playerTiles.remove(index);
+		} else if(gridName.equals("opponentBoard")) {
 			opponentGrid.add(gridImage, col, row);
 			shotLabel.setText("Player shot: " + col + "," + row);
 		}
@@ -153,18 +152,14 @@ public class BoardGUI extends Application {
         //Setup player grid with empties
         for(int row = 0; row < boardHeight; row++) {
         	for(int column = 0; column < boardWidth; column++) {
-        		ImageView emptyImage = new ImageView(empty);
-        		playerTiles.add(emptyImage);
-                playerGrid.add(emptyImage, column, row);
+                playerGrid.add(new ImageView(empty), column, row);
             }
     	}
         
         //Setup opponent grid with empties
         for(int row = 0; row < boardHeight; row++) {
         	for(int column = 0; column < boardWidth; column++) {
-        		ImageView emptyImage = new ImageView(empty);
-        		opponentTiles.add(emptyImage);
-                opponentGrid.add(emptyImage, column, row);
+                opponentGrid.add(new ImageView(empty), column, row);
             }
     	}
         
@@ -178,7 +173,7 @@ public class BoardGUI extends Application {
                 if(source instanceof ImageView) {
                 	int col = opponentGrid.getColumnIndex((ImageView)source);
                 	int row = opponentGrid.getRowIndex((ImageView)source);
-                    //setGridElement("opponentGrid", convertCordToIndex(col, row), new ImageView(hit));
+                    setGridElement("opponentGrid", convertCordToIndex(col, row), "Miss");
                 }
             }
             });

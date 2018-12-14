@@ -52,7 +52,6 @@ public class Gameboard {
 	 */
 	public boolean deploy(int playerNumber, int shipStartTileNum,
 							int shipEndTileNum) {
-		
 		boolean deployValid = false;
 		switch(playerNumber) {
 			case 1:	

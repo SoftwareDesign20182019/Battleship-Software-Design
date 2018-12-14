@@ -28,7 +28,7 @@ public class MissedState implements TileState {
 	}
 	
 	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
-		
+		boardGUI.setGridElement(boardName, tileNumber, this.getState());
 	}
 	
 }

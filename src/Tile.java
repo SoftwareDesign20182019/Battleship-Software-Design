@@ -47,7 +47,7 @@ public class Tile {
 		
 		if(currentState.shootTile() != null) {
 			currentState = currentState.shootTile();
-			currentState.setTileGUI(boardGUI, boardName, tileNumber);
+			currentState.setTileGUI(boardName, tileNumber, boardGUI);
 			if(this.toString().equals("Hit")) {
 				return true;
 			}
@@ -72,7 +72,7 @@ public class Tile {
 		
 		if(isFree()) {
 			currentState = currentState.occupyTile();
-			currentState.setTileGUI(boardGUI, boardName, tileNumber);
+			currentState.setTileGUI(boardName, tileNumber, boardGUI);
 			return true;
 		}
 		else {
@@ -87,7 +87,7 @@ public class Tile {
 	public void clearThisTile() {
 		
 		currentState = currentState.clearTile();
-		currentState.setTileGUI(boardGUI, boardName, tileNumber);
+		currentState.setTileGUI(boardName, tileNumber, boardGUI);
 	}
 	
 	public String toString() {
