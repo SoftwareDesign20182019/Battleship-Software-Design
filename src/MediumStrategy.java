@@ -30,7 +30,7 @@ public class MediumStrategy implements OpponentStrategy {
                 ArrayList<Integer> adjAL;
                 adjAL = getAdjacents(i);
                 for (Integer adj1 : adjAL) {
-                    if (tiles[adj1] == HIT) {
+                    if (tiles[adj1] == HIT) { //figure out misses. If
                         int nextTile = adj1 - i;
                         int ONEUP = adj1 + nextTile;
                         int TWOUP = adj1 + nextTile * 2;
@@ -89,7 +89,7 @@ public class MediumStrategy implements OpponentStrategy {
                                         }
                                         up = false;
 
-                                    } else {
+                                    }else {
                                         tiles[adj2] = HIT;
                                         lastShot = adj2;
                                         return adj2;
@@ -177,16 +177,17 @@ public class MediumStrategy implements OpponentStrategy {
         int RIGHT = centerTile + 1;
         int LEFT = centerTile - 1;
 
-        if (UP >= 0 && UP <= 99) {
+
+        if (UP >= 0 && UP <= 99 && tiles[UP] != MISS) {
             adjacents.add(UP);
         }
-        if (DOWN >= 0 && DOWN <= 99) {
+        if (DOWN >= 0 && DOWN <= 99 && tiles[DOWN] != MISS) {
             adjacents.add(DOWN);
         }
-        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10) {
+        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[DOWN] != MISS) {
             adjacents.add(RIGHT);
         }
-        if (LEFT >= 0 && LEFT / 10 == centerTile / 10) {
+        if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] != MISS) {
             adjacents.add(LEFT);
         }
         return adjacents;
