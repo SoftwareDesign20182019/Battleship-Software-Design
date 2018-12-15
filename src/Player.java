@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public interface Player {
 	
-	public int chooseTile();
+	public int chooseTile(boolean wasHit);
 	
 	public boolean destroyedFleet();
 	
@@ -11,7 +11,5 @@ public interface Player {
 	
 	public ArrayList<Ship> getComputerFleet();
 	
-	//public boolean hitTarget(Tile target);
-	
-	
+	public void setDifficulty(OpponentStrategy strategy);	
 }

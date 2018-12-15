@@ -12,7 +12,7 @@ public class HumanPlayer implements Player {
 		myFleet = new Fleet();
 	}
 
-	public int chooseTile() {
+	public int chooseTile(boolean wasHit) {
 		// gui will handle?
 		return 0;
 	}
@@ -27,6 +27,10 @@ public class HumanPlayer implements Player {
 	
 	public ArrayList<Ship> getComputerFleet() {
 		return null;
+	}
+
+	public void setDifficulty(OpponentStrategy strategy) {
+		// TODO Auto-generated method stub
 	}
 
 }
