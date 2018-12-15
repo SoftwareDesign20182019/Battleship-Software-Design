@@ -23,44 +23,67 @@ public class SignUpGUI extends Application {
 	public void start(Stage stage) throws Exception {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
-    	root.setSpacing(10);
+    	root.setSpacing(30);
     	
-    	HBox usernameHBox = new HBox();
-    	HBox passwordHBox = new HBox();
-    	HBox rePasswordHBox = new HBox();
+    	HBox signUpHBox = new HBox();
+    	signUpHBox.setSpacing(20);
+    	signUpHBox.setAlignment(Pos.CENTER);
     	
-    	usernameHBox.setAlignment(Pos.CENTER);
-    	passwordHBox.setAlignment(Pos.CENTER); 
-    	rePasswordHBox.setAlignment(Pos.CENTER); 
+    	VBox labelVBox = new VBox();
+    	VBox fieldVBox = new VBox();
     	
-    	Label loginLabel = new Label("Battleship Sign Up");
+    	labelVBox.setSpacing(25);
+    	fieldVBox.setSpacing(5);
+    	
+    	Label signUpLabel = new Label("Battleship Sign Up");
     	Label usernameLabel = new Label("Username: ");
-    	TextField usernameField = new TextField();
     	Label passwordLabel = new Label("Password: ");
-    	TextField passwordField = new TextField();
     	Label rePasswordLabel = new Label("Re-enter Password: ");
+    	
+    	TextField usernameField = new TextField();
+    	TextField passwordField = new TextField();
     	TextField rePasswordField = new TextField();
+
     	Button signUpButton = new Button("Sign Up");
     	
-    	loginLabel.setFont(new Font("Arial", 60));
+    	signUpLabel.setFont(new Font("Arial", 60));
+    	usernameLabel.setFont(new Font("Arial", 20));
+    	passwordLabel.setFont(new Font("Arial", 20));
+    	rePasswordLabel.setFont(new Font("Arial", 20));
     	usernameField.setFont(new Font("Arial", 20));
     	passwordField.setFont(new Font("Arial", 20));
     	rePasswordField.setFont(new Font("Arial", 20));
     	signUpButton.setFont(new Font("Arial", 20));
     	
-    	usernameHBox.getChildren().addAll(usernameLabel, usernameField);
-    	passwordHBox.getChildren().addAll(passwordLabel, passwordField);
-    	rePasswordHBox.getChildren().addAll(rePasswordLabel, rePasswordField);
+    	labelVBox.getChildren().addAll(usernameLabel, passwordLabel, rePasswordLabel);
+    	fieldVBox.getChildren().addAll(usernameField, passwordField, rePasswordField);
+
+    	signUpHBox.getChildren().addAll(labelVBox, fieldVBox);
     	
     	signUpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-            	//ALL SIGN UP SQL STUFF HERE
+            	String usernameFieldString = usernameField.getCharacters().toString();
+            	String passwordFieldString = passwordField.getCharacters().toString();
+            	String rePasswordFieldString = rePasswordField.getCharacters().toString();
+            	
+            	//if none of the fields are blank
+            	if(!usernameFieldString.equals("") && !passwordFieldString.equals("") && !rePasswordFieldString.equals("") && passwordFieldString.equals(rePasswordFieldString)) {
+            		//ALL SIGN UP SQL STUFF HERE
+            		
+            		try {
+    					mainMenu.start(stage);
+    				} catch (Exception e1) {
+    					e1.printStackTrace();
+    				}
+            	}
+            	
+            	
             }
         	});
     	
     	
-    	root.getChildren().addAll(loginLabel, usernameHBox, passwordHBox, rePasswordHBox, signUpButton);
+    	root.getChildren().addAll(signUpLabel, signUpHBox, signUpButton);
     	
     	Scene scene = new Scene(root, 800, 500);
 
