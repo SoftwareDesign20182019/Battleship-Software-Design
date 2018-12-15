@@ -22,8 +22,8 @@ public class ComputerPlayer implements Player {
 	}
 	
 	
-	public int chooseTile(){
-		return strategy.chooseBlock();
+	public int chooseTile(boolean wasHit){
+		return strategy.chooseBlock(wasHit);
 	
 	}
 	

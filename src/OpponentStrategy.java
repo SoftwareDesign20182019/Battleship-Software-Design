@@ -5,5 +5,5 @@ import java.util.ArrayList;
  * @TODO: Hard Strategy Trainer
  */
 public interface OpponentStrategy {
-    public int chooseBlock();
+    public int chooseBlock(boolean wasHit);
 }

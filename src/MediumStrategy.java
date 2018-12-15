@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 /**
  * @author Wyatt Newhall
+ * @TODO: Communicate with gameboard (through player?) to see if a fired shot was hit or miss, then update Tiles array. Need 1. Tile index and 2. Tile status
+ *
  */
 public class MediumStrategy implements OpponentStrategy {
     private int[] tiles = new int[100];
@@ -11,12 +13,16 @@ public class MediumStrategy implements OpponentStrategy {
     private int HIT = 1;
     private int MISS = 2;
     private int BOARD_SIZE = 99;
+    private int lastShot = -1;
+    private boolean lastShotHit;
 
     /**
      * method to return a random empty coordinate
      * @return the position of the fired shot
      */
-    public int chooseBlock() {
+    public int chooseBlock(boolean wasHit) {
+        lastShotHit = wasHit;
+        updateTiles();
         Random rand = new Random();
         int firedTile;
         for (int i = 0; i < BOARD_SIZE + 1; i++) {
@@ -55,6 +61,7 @@ public class MediumStrategy implements OpponentStrategy {
                                                                     if (adj5 == FOURUP) {
                                                                         if (tiles[FOURUP] != HIT) {
                                                                             tiles[adj5] = HIT;
+                                                                            lastShot = adj5;
                                                                             return adj5;
 
                                                                         } else {
@@ -66,6 +73,7 @@ public class MediumStrategy implements OpponentStrategy {
 
                                                             } else {
                                                                 tiles[adj4] = HIT;
+                                                                lastShot = adj4;
                                                                 return adj4;
                                                             }
                                                         }
@@ -74,6 +82,7 @@ public class MediumStrategy implements OpponentStrategy {
 
                                                 } else {
                                                     tiles[adj3] = HIT;
+                                                    lastShot = adj3;
                                                     return adj3;
                                                 }
                                             }
@@ -82,6 +91,7 @@ public class MediumStrategy implements OpponentStrategy {
 
                                     } else {
                                         tiles[adj2] = HIT;
+                                        lastShot = adj2;
                                         return adj2;
                                     }
                                 }
@@ -105,6 +115,7 @@ public class MediumStrategy implements OpponentStrategy {
                                                                 if (dj5 == FOURDOWN) {
                                                                     if (tiles[FOURDOWN] != HIT) {
                                                                         tiles[dj5] = HIT;
+                                                                        lastShot = dj5;
                                                                         return dj5;
 
                                                                     } else {
@@ -116,6 +127,7 @@ public class MediumStrategy implements OpponentStrategy {
 
                                                         } else {
                                                             tiles[dj4] = HIT;
+                                                            lastShot = dj4;
                                                             return dj4;
                                                         }
                                                     }
@@ -124,6 +136,7 @@ public class MediumStrategy implements OpponentStrategy {
 
                                             } else {
                                                 tiles[dj3] = HIT;
+                                                lastShot = dj3;
                                                 return dj3;
                                             }
                                         }
@@ -132,6 +145,7 @@ public class MediumStrategy implements OpponentStrategy {
 
                                 } else {
                                     tiles[dj2] = HIT;
+                                    lastShot = dj2;
                                     return dj2;
                                 }
                             }
@@ -141,6 +155,7 @@ public class MediumStrategy implements OpponentStrategy {
 
                     } else {
                         tiles[adj1] = HIT;
+                        lastShot = adj1;
                         return adj1;
                     }
 
@@ -150,6 +165,7 @@ public class MediumStrategy implements OpponentStrategy {
 
         firedTile = rand.nextInt(BOARD_SIZE); //should be returned
         tiles[firedTile] = HIT;
+        lastShot = firedTile;
         return firedTile;
     }
 
@@ -175,6 +191,19 @@ public class MediumStrategy implements OpponentStrategy {
         }
         return adjacents;
     }
+
+    private void updateTiles(){
+        if (lastShot = -1){
+            lastShot = -1;
+        } else {
+            if(lastShotHit){
+                tiles[lastShot] = HIT;
+            } else { //if the last shot was a miss
+                tiles[lastShot] = MISS;
+            }
+        }
+    }
+
 
 }
 
