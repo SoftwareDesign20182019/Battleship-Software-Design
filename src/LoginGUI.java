@@ -57,6 +57,18 @@ public class LoginGUI extends Application {
     	usernameHBox.getChildren().addAll(usernameLabel, usernameField);
     	passwordHBox.getChildren().addAll(passwordLabel, passwordField);
     	
+    	signUpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+            	try {
+            		SignUpGUI signUp = new SignUpGUI(mainMenu);
+            		signUp.start(stage);
+            	} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+            }
+        	});
+    	
     	guestButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
