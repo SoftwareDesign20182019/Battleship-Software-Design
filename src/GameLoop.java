@@ -8,10 +8,12 @@ public class GameLoop {
 	private Gameboard gameBoard;
 	private Stage guiStage;
 
-	Player opponentPlayer;
-	Player humanPlayer;
-	ArrayList<Ship> opponentShips;
+	private Player opponentPlayer;
+	private Player humanPlayer;
 	
+	private ArrayList<Ship> opponentShips;
+	private boolean wasHit;
+
 	private boolean gameOver;
 	private boolean playerTurn;
 	
@@ -27,6 +29,7 @@ public class GameLoop {
 		boardGUI = new BoardGUI(this, mainMenu);
 		gameBoard = new Gameboard(boardGUI);
 		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
+		opponentPlayer.setDifficulty(new MediumStrategy());
 		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		
 		gameOver = false;
@@ -39,10 +42,14 @@ public class GameLoop {
 			int endTileNumber = opponentShips.get(i).getEndTile();
 			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber);
 		}
+		
+		gameBoard.deploy(humanPlayer.getType(), 10, 40);
+		gameBoard.deploy(humanPlayer.getType(), 75, 95);
+		gameBoard.deploy(humanPlayer.getType(), 42, 46);	
 	}
 	
 	public void computerTurn() {
-		gameBoard.fireShot(opponentPlayer.getType(), (int)(Math.random() * 100));
+		wasHit = gameBoard.fireShot(opponentPlayer.getType(), opponentPlayer.chooseTile(wasHit));
 	}
 	
 	public void clickResponse(int index) {
