@@ -12,7 +12,7 @@ public class ComputerPlayer implements Player {
 	private Gameboard.PlayerType playerType;
 	
 	//NEW param playerTyper sets local playerType variable
-	ComputerPlayer(Gameboard.PlayerType playertype){
+	ComputerPlayer(Gameboard.PlayerType playerType){
 		
 		//NEW Renamed setName() to setPlayerType()
 		this.playerType = playerType;

@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class HumanPlayer implements Player {
 	private Fleet myFleet;
@@ -22,6 +23,10 @@ public class HumanPlayer implements Player {
 
 	public Gameboard.PlayerType getType() {
 		return playerType;
+	}
+	
+	public ArrayList<Ship> getComputerFleet() {
+		return null;
 	}
 
 }
