@@ -34,12 +34,11 @@ public class GameLoop {
 
 		boardGUI.start(guiStage);
 		opponentShips = opponentPlayer.getComputerFleet();
-//		for(int i = 0; i < opponentShips.size(); i++) {
-//			int startTileNumber = opponentShips.get(i).getStartTile();
-//			int endTileNumber = opponentShips.get(i).getEndTile();
-//			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber);
-//		}
-		
+		for(int i = 0; i < opponentShips.size(); i++) {
+			int startTileNumber = opponentShips.get(i).getStartTile();
+			int endTileNumber = opponentShips.get(i).getEndTile();
+			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber);
+		}
 	}
 	
 	public void computerTurn() {
