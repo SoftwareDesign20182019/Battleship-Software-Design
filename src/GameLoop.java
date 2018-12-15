@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import javafx.stage.Stage;
 
 public class GameLoop {
@@ -5,7 +7,10 @@ public class GameLoop {
 	private MainMenuGUI mainMenu;
 	private Gameboard gameBoard;
 	private Stage guiStage;
-	private Gameboard.PlayerType playerType;
+
+	Player opponentPlayer;
+	Player humanPlayer;
+	ArrayList<Ship> opponentShips;
 	
 	private boolean gameOver;
 	private boolean playerTurn;
@@ -17,28 +22,32 @@ public class GameLoop {
 		playerTurn = true;
 	}
 	
+	
 	public void newGame() {
 		boardGUI = new BoardGUI(this, mainMenu);
 		gameBoard = new Gameboard(boardGUI);
+		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
+		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		
 		gameOver = false;
 		playerTurn = true;
 
 		boardGUI.start(guiStage);
-		gameBoard.deploy(playerType.HUMAN, 23, 53);
-		gameBoard.deploy(playerType.HUMAN, 27, 57);
-		gameBoard.deploy(playerType.HUMAN, 72, 78);
-		gameBoard.deploy(playerType.OPPONENT, 1, 21);
-		gameBoard.deploy(playerType.OPPONENT, 4, 24);
-		gameBoard.deploy(playerType.OPPONENT, 9, 6);
+		opponentShips = opponentPlayer.getComputerFleet();
+//		for(int i = 0; i < opponentShips.size(); i++) {
+//			int startTileNumber = opponentShips.get(i).getStartTile();
+//			int endTileNumber = opponentShips.get(i).getEndTile();
+//			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber);
+//		}
+		
 	}
 	
 	public void computerTurn() {
-		gameBoard.fireShot(playerType.OPPONENT, (int)(Math.random() * 100));
+		gameBoard.fireShot(opponentPlayer.getType(), (int)(Math.random() * 100));
 	}
 	
 	public void clickResponse(int index) {
-		gameBoard.fireShot(playerType.HUMAN, index);
+		gameBoard.fireShot(humanPlayer.getType(), index);
 		computerTurn();
 	}
 }

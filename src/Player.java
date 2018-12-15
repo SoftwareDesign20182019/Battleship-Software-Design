@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public interface Player {
 	
@@ -7,6 +8,8 @@ public interface Player {
 	
 	//NEW changed return type to PlayerType
 	public Gameboard.PlayerType getType();
+	
+	public ArrayList<Ship> getComputerFleet();
 	
 	//public boolean hitTarget(Tile target);
 	
