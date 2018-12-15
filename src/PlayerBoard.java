@@ -59,68 +59,103 @@ public class PlayerBoard {
 	 * 			occupied return null).
 	 */
 	public boolean addShip(int shipStartTileNum, int shipEndTileNum) {
-		boolean valid = true;
 		
+		boolean valid = true;
 		//If ship is vertical
 		if(Math.abs(shipEndTileNum - shipStartTileNum) >= 10) {
-			
 			//If ship is vertical negatively
 			if(shipStartTileNum > shipEndTileNum) {
-				
-				for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
-					tileNum = tileNum - 10) {
-					
-					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
-					if(tileValidity == false) {
-						valid = false;
-					}
-					
-				}
+				valid = addShipVerticalNegative(shipStartTileNum, shipEndTileNum);
 			}
 			
-			//If ship is vertical positively
 			else {
-				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
-						tileNum = tileNum + 10) {
-					
-					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
-					if(tileValidity == false) {
-						valid = false;
-					}
-				}
+				valid = addShipVerticalPositive(shipStartTileNum, shipEndTileNum);
 			}
 		}
-		
 		//If ship is horizontal
 		else {
-			
-			//If ship is horizontal negative
+			//If ship is horizontal negatively
 			if(shipStartTileNum > shipEndTileNum) {
-				
-				for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
-					tileNum = tileNum - 1) {
-					
-					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
-					if(tileValidity == false) {
-						valid = false;
-					}
-				}
+				valid = addShipHorizontalNegative(shipStartTileNum, shipEndTileNum);
 			}
 			
-			//If ship is horizontal negative
 			else {
-				
-				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
-						tileNum = tileNum + 1) {
-						
-					boolean tileValidity = tileList.get(tileNum).occupyThisTile();
-					if(tileValidity == false) {
-						valid = false;
-					}
-				}
+				valid = addShipHorizontalPositive(shipStartTileNum, shipEndTileNum);
 			}
 		}
+		return valid;
+	}
+	
+	/**
+	 * Helper method for addShip, add ships based on orientation
+	 * @param shipStartTileNum
+	 * @param shipEndTileNum
+	 * @return	true if deploy is valid
+	 */
+	private boolean addShipVerticalNegative(int shipStartTileNum, int shipEndTileNum) {
+		boolean valid = true;
+		for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
+				tileNum = tileNum - 10) {
+				boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+				if(tileValidity == false) {
+					valid = false;
+				}
+			}
+		return valid;
+	}
+	
+	/**
+	 * Helper method for addShip, add ships based on orientation
+	 * @param shipStartTileNum
+	 * @param shipEndTileNum
+	 * @return	true if deploy is valid
+	 */
+	private boolean addShipVerticalPositive(int shipStartTileNum, int shipEndTileNum) {
+		boolean valid = true;
+		for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
+				tileNum = tileNum + 10) {
+			boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+			if(tileValidity == false) {
+				valid = false;
+			}
+		}
+		return valid;
 		
+	}
+	
+	/**
+	 * Helper method for addShip, add ships based on orientation
+	 * @param shipStartTileNum
+	 * @param shipEndTileNum
+	 * @return	true if deploy is valid
+	 */
+	private boolean addShipHorizontalNegative(int shipStartTileNum, int shipEndTileNum) {
+		boolean valid = true;
+		for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
+				tileNum = tileNum - 1) {
+				boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+				if(tileValidity == false) {
+					valid = false;
+				}
+			}
+		return valid;
+	}
+	
+	/**
+	 * Helper method for addShip, add ships based on orientation
+	 * @param shipStartTileNum
+	 * @param shipEndTileNum
+	 * @return	true if deploy is valid
+	 */
+	private boolean addShipHorizontalPositive(int shipStartTileNum, int shipEndTileNum) {
+		boolean valid = true;
+		for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
+				tileNum = tileNum + 1) {
+			boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+			if(tileValidity == false) {
+				valid = false; ;
+			}
+		}
 		return valid;
 	}
 }

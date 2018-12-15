@@ -1,21 +1,29 @@
 import java.util.Random;
-import java.util.ArrayList;
 
+/**
+ * @author Wyatt Newhall
+ */
 public class EasyStrategy implements OpponentStrategy {
-    private ArrayList<int> hitTiles = new ArrayList<int>();
+    private int[] tiles = new int[100];
+    private int EMPTY = 0;
+    private int HIT = 1;
+    private int MISS = 2;
+    private int BOARD_SIZE = 99;
 
-    //trying to return a chosen tile. Should we select tiles with a constructor (eg. Tile(0-99)  ) or with the gameboard? For now, int
-
-
-    public int chooseBlock(ArrayList<Tile> availableTiles) {
+    /**
+     * method to return a random empty coordinate
+     * @return the position of the fired shot
+     */
+    public int chooseBlock() {
         Random rand = new Random();
         int firedTile;
-        firedTile = rand.nextInt(availableTiles.size() - 1); //try not to hit yourself
-        while(hitTiles.contains(firedTile)){
-            firedTile = rand.nextInt(availableTiles.size() - 1);
+        firedTile = rand.nextInt(BOARD_SIZE); //try not to hit yourself
+        while(tiles[firedTile] != EMPTY){
+            firedTile = rand.nextInt(BOARD_SIZE);
         }
-        hitTiles.add(firedTile);
-        return firedTile; //figure out if int or something else should be returned
+        tiles[firedTile] = HIT;
+        return firedTile;
     }
+
 }
 

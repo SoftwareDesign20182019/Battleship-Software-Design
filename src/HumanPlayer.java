@@ -1,10 +1,13 @@
 
 public class HumanPlayer implements Player {
 	private Fleet myFleet;
-	private String name;
+	//NEW changed String name to local PlayerType
+	private Gameboard.PlayerType playerType;
 	
-	HumanPlayer(String name_){
-		this.name = name_;
+	HumanPlayer(Gameboard.PlayerType playerType){
+		
+		//NEW setting local playerType to param playerType on construction
+		this.playerType = playerType;
 		myFleet = new Fleet();
 	}
 
@@ -17,8 +20,8 @@ public class HumanPlayer implements Player {
 		return myFleet.isFleetDestroyed();
 	}
 
-	public String getName() {
-		return name;
+	public Gameboard.PlayerType getType() {
+		return playerType;
 	}
 
 }

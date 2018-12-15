@@ -39,7 +39,7 @@ public class Tile {
 	}
 
 	/**
-	 * Returns true if tile is empty.
+	 * Returns true if tile is a hit.
 	 */
 	public boolean isHit() {
 		if(this.toString().equals("hit")) {
