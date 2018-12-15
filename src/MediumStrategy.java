@@ -193,7 +193,7 @@ public class MediumStrategy implements OpponentStrategy {
     }
 
     private void updateTiles(){
-        if (lastShot = -1){
+        if (lastShot == -1){
             lastShot = -1;
         } else {
             if(lastShotHit){

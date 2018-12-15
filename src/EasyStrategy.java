@@ -14,7 +14,7 @@ public class EasyStrategy implements OpponentStrategy {
      * method to return a random empty coordinate
      * @return the position of the fired shot
      */
-    public int chooseBlock() {
+    public int chooseBlock(boolean wasHit) {
         Random rand = new Random();
         int firedTile;
         firedTile = rand.nextInt(BOARD_SIZE); //try not to hit yourself
