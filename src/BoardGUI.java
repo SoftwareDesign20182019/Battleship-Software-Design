@@ -170,17 +170,26 @@ public class BoardGUI extends Application {
             }
     	}
         
+        playerGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {          	
+                Object source = e.getTarget();
+                if(source instanceof ImageView) {
+                	int col = playerGrid.getColumnIndex((ImageView)source);
+                	int row = playerGrid.getRowIndex((ImageView)source);
+                	gameLoop.clickResponsePlayerBoard(convertCordToIndex(col, row));
+                }
+            }
+            });
+        
         opponentGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent e) {
-            	
-            	//TODO We need to check if it is player turn! Game Loop? Player? Where do we check
-            	
+            public void handle(MouseEvent e) {            	
                 Object source = e.getTarget();
                 if(source instanceof ImageView) {
                 	int col = opponentGrid.getColumnIndex((ImageView)source);
                 	int row = opponentGrid.getRowIndex((ImageView)source);
-                	gameLoop.clickResponse(convertCordToIndex(col, row));
+                	gameLoop.clickResponseOpponentBoard(convertCordToIndex(col, row));
                 }
             }
             });

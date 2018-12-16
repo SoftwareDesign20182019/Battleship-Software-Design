@@ -19,7 +19,7 @@ public class GameLoop {
 	private boolean gameOver;
 	private boolean playerTurn;
 	
-	ArrayList<Ship> humanFleet;
+	private ArrayList<Ship> humanFleet;
 	private boolean playerDeploy;
 	private boolean playerShipStart;
 	private boolean playerShipEnd;
@@ -32,6 +32,7 @@ public class GameLoop {
 		this.mainMenu = mainMenu;
 		gameOver = false;
 		playerTurn = true;
+		playerShipStart = true;
 	}
 	
 	/**
@@ -69,39 +70,39 @@ public class GameLoop {
 		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		humanFleet = humanPlayer.getFleet();
 		currentShip = 0;
-		while(currentShip <= humanFleet.size()) {
-			playerDeploy = true;
-			playerShipStart = true;
-		}
-		playerDeploy = false;
-		playerTurn = true;
-	
 	}
 	
 	public void computerTurn() {
 		wasHit = gameBoard.fireShot(opponentPlayer.getType(), opponentPlayer.chooseTile(wasHit));
 	}
 	
-	public void clickResponse(int index) {
-		if(playerDeploy) {
-			
-			if(playerShipStart) {
-				shipStartIndex = index;
-				playerShipStart = false;
-				playerShipEnd = true;
-			}
-			else if(playerShipEnd) {
-				shipEndIndex = index;
-				gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(currentShip));
-				currentShip++;
-				playerShipStart = true;
-				playerShipEnd = false;
-			}
-			
+	private void playerDeployShip(int index) {
+		if(playerShipStart) {
+			shipStartIndex = index;
+			playerShipStart = false;
+			playerShipEnd = true;
 		}
-		else if(playerTurn) {
+		else if(playerShipEnd) {
+			shipEndIndex = index;
+			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(currentShip));
+			currentShip++;
+			playerShipStart = true;
+			playerShipEnd = false;
+		}
+	}
+	
+	public void clickResponseOpponentBoard(int index) {
+		if(!playerDeploy) {
 			gameBoard.fireShot(humanPlayer.getType(), index);
+			computerTurn();
 		}
-		computerTurn();
+	}
+	
+	public void clickResponsePlayerBoard(int index) {
+		//if playerDeploy = true, deploy ship, otherwise playerTurn
+		playerDeploy = currentShip <= humanFleet.size();
+		if(playerDeploy) {
+			playerDeployShip(index);
+		}
 	}
 }
