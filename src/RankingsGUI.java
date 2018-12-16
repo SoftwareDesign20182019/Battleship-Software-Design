@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -20,6 +20,9 @@ import javafx.stage.Stage;
 
 public class RankingsGUI extends Application {
 	private MainMenuGUI mainMenu;
+	private SQLAccount highscoreGetter;
+	private ArrayList<ArrayList> initialList;
+	private static final int NUMBER_OF_HIGHSCORES= 10;
 	
 	public RankingsGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
@@ -81,13 +84,20 @@ public class RankingsGUI extends Application {
     	ObservableList<Integer> ranks = FXCollections.observableArrayList (
     			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 42);
     	rankList.setItems(ranks);
+    	System.out.println("Perfectly fine");
+    	highscoreGetter = new SQLAccount();
+    	initialList = highscoreGetter.getHighScores();
+    	ObservableList<String> usernames = FXCollections.observableArrayList ();
+    	ObservableList<Integer> scores = FXCollections.observableArrayList ();
     	
-    	ObservableList<String> usernames = FXCollections.observableArrayList (
-    			"Wyatt2167", "Drew5768", "Sam561", "OwenMiller67", "TheDude", "Vader", "Steve Jobs", "JBurge", "NalgeneUser", "Username123", "Me");
+    	for(int i = 0; i< NUMBER_OF_HIGHSCORES; i++) {
+    		
+    		scores.add((Integer) initialList.get(0).get(i));
+    		usernames.add((String) initialList.get(1).get(i));
+    		
+    	}
+    	
     	usernameList.setItems(usernames);
-    	
-    	ObservableList<Integer> scores = FXCollections.observableArrayList (
-    			422, 555, 647, 12, 144, 64, 99, 222, 553, 777, 109);
     	scoreList.setItems(scores);
     	
     	rankList.setPrefWidth(5);

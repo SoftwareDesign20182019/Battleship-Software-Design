@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class SQLAccount {
 
@@ -18,18 +19,16 @@ public class SQLAccount {
 	
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
+		//private static final String USER_NAME = "root"; 
+		//private static final String PASSWORD = "root"; 
+		//private static final String HOST ="localhost";
 		private static final String USER_NAME = "softwarebuds"; 
 		private static final String PASSWORD = "battleship"; 
 		private static final String HOST ="samdoggett.com";
 		private static final String INITIAL_CONNECT = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/";
 		private static final String CONNECTION_INFO = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/"+ DATABASENAME +"?user="+ USER_NAME +"&password="+PASSWORD;
 		
-		//DriverManager.getConnection(
-		//		"jdbc:mysql://localhost:" + PORT_NUMBER + "/"+ DATABASENAME +"?user=root&password=root"); // MySQL
 
-		
-
-		public static int startingIdNum = 1;
 		public SQLAccount() {
 			try (
 					// Step 1: Allocate a database "Connection" object
@@ -66,12 +65,11 @@ public class SQLAccount {
 				stmt.execute(sql);
 				sql = "create table if not exists HighScores("+
 					"ScoreHolder varchar(50) not null," +
-					"Score int"+
+					"Score int,"+
 					"ScoreID int AUTO_INCREMENT,"+
-					"GameAccount varchar(30) not null,"+
-					"primary key (GameId),"+ 
+					"primary key (ScoreID),"+ 
 					"foreign key (ScoreHolder) references Accounts(AccountName));";
-				//stmt.execute(sql);
+				stmt.execute(sql);
 
 			}catch(Exception e) {
 				e.printStackTrace();
@@ -89,7 +87,7 @@ public class SQLAccount {
 					Statement stmt = conn.createStatement();
 				) {
 			
-				sql = "INSERT INTO `Accounts`(`AccountName`, `Password`, `HighScore`) VALUES ('"+AccountName+"','"+password+"',12)";			
+				sql = "INSERT INTO `Accounts`(`AccountName`, `Password`) VALUES ('"+AccountName+"','"+password+"')";			
 				stmt.execute(sql);
 				return true;
 					
@@ -262,16 +260,89 @@ public class SQLAccount {
 			
 			
 		}
+		public ArrayList<ArrayList> getHighScores(){
+			ArrayList<Integer> scores = new ArrayList<Integer>();
+			ArrayList<String> names = new ArrayList<String>();
+			ArrayList<ArrayList> allData = new ArrayList<ArrayList>();
+
+			try (
+					Connection conn = DriverManager.getConnection(CONNECTION_INFO); 
+					Statement stmt = conn.createStatement();
+				) {
+				
+				ResultSet rs;
+				String query = "SELECT Score,ScoreHolder FROM HighScores ORDER BY Score DESC";
+				
+				
+				rs = stmt.executeQuery(query);
+				int count = 1;
+				while(rs.next() && count <= 10) {
+					System.out.println("it added me");
+					scores.add(rs.getInt(1));
+					names.add(rs.getString(2));
+					count ++;
+				}
+				
+				
+				for(int i = 0; i< scores.size(); i++) {
+					System.out.print(scores.get(i) + " ");
+					System.out.println(names.get(i));
+				}
+				allData.add(scores);
+				allData.add(names);
+				return allData;
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			
+			return allData;
+			
+		}
+		
+		public boolean addHighScore(String accountName, int highscore) {
+			int currentHighScore;
+			String sql, sql2;
+			try (
+					Connection conn = DriverManager.getConnection(CONNECTION_INFO); 
+					Statement stmt = conn.createStatement();
+				) {
+				ResultSet rs;
+				sql = "INSERT INTO `HighScores`(`ScoreHolder`, `Score`) VALUES ('"+accountName+"', "+highscore+")";
+				stmt.execute(sql);
+				
+				String query = "SELECT HighScore FROM Accounts WHERE AccountName = '"+accountName +"'";
+				rs = stmt.executeQuery(query);
+
+				if(rs.next()) {
+					currentHighScore = rs.getInt(1);
+					if(currentHighScore < highscore) {
+						sql2 = "UPDATE `Accounts` SET `HighScore`="+ highscore +" WHERE AccountName = '"+ accountName+"'";
+						stmt.execute(sql2);
+					}
+				}
+				else {
+					sql2 = "UPDATE `Accounts` SET `HighScore`="+ highscore +" WHERE AccountName = '"+ accountName+"'";
+					stmt.execute(sql2);
+				}
+				
+				
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return true;
+		}
 		public static void main(String[] args ) {
+			System.out.println("starting program");
+
 			File f = new File("AI23.bin");
 			SQLAccount test = new SQLAccount();
-			test.addAccount("Drew", "secret");
-		
-			test.logIn("Drew", "secret");
-
-			test.uploadGame(f, "Drew");
-			test.getGame("AI23", "Drew");
-			test.getGame("AI23", "Sam");
+			
+			test.addAccount("Sam", "Big secret");
+			test.addHighScore("Sam", 110);
+			test.getHighScores();
 		}
 }
 
