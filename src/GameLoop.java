@@ -29,7 +29,7 @@ public class GameLoop {
 		boardGUI = new BoardGUI(this, mainMenu);
 		gameBoard = new Gameboard(boardGUI);
 		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
-		opponentPlayer.setDifficulty(new MediumStrategy());
+		opponentPlayer.setDifficulty(new HardStrategy());
 		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		
 		gameOver = false;

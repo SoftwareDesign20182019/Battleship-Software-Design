@@ -20,14 +20,20 @@ public class HardStrategy implements OpponentStrategy {
     private int root = -1;
 
     private int SHIPHITS = 0;
-    private int FULLSHIP = 6;
+    private int MAX_SHIP = 6;
 
     private boolean up;
     private boolean right;
     private boolean left;
     private boolean down;
 
-    private int direction = 0;
+    private boolean battleShip;
+    private boolean carrier; //if sunk, these change to true
+    private boolean oneMid;
+    private boolean twoMid;
+
+    private int nextShot;
+
 
     private int[] gridTiles = new int[100];
 
@@ -38,41 +44,52 @@ public class HardStrategy implements OpponentStrategy {
      */
     public int chooseBlock(boolean wasHit) {
         lastShotHit = wasHit;
+        System.out.println("Root =" + root);
         System.out.println("Last Shot Hit = " + lastShotHit);
-        if (wasHit && root == -1) {
+        if (wasHit && root == -1){
             root = lastShot;
             SHIPHITS++;
+            attack();
         }
-        if (lastShot == -1){
+        if (lastShot == -1) {
             populateGrid();
         }
-        if (wasHit) {
-            SHIPHITS++;
-        }
         updateTiles();
-        if (SHIPHITS >= FULLSHIP) {
+        if (SHIPHITS >= MAX_SHIP) {
             shipSunk();
         }
 
 
         if (root != -1) {
             if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going up
-                direction = 0;
+                nextShot = root + 10;
                 up = true;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root - 1) || (lastShot == root - 2) || (lastShot == root - 3) || (lastShot == root - 4))) {//left
+                nextShot = root + 1;
                 left = true;
-                direction = 0;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //right
+                nextShot = root - 10;
                 down = true;
-                direction = 0;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //left
+                nextShot = root - 1;
                 right = true;
-                direction = 0;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
-            } else { //why does this happen! LastShotHit is false!
+            } else { //root is -1;
                 System.out.println("Commence Find");
                 return find();
             }
@@ -81,22 +98,106 @@ public class HardStrategy implements OpponentStrategy {
         }
     }
 
-    private int find() {
-        ArrayList<Integer> adj = getAdjacents(root);
-        for(Integer next: adj){
-            lastShot = next;
-            return lastShot;
+    private void updateShips(){
+        if (SHIPHITS == 5) {
+            carrier = true;
         }
-        System.out.println("In find, nothing in Adjacents");
-        shipSunk();
+        if(SHIPHITS == 4 && carrier){
+            battleShip = true;
+        }
+        if(SHIPHITS == 3 && carrier && battleShip){
+            oneMid = true;
+        }
+        if(SHIPHITS == 3 && carrier && battleShip && oneMid){
+            twoMid = true;
+        }
+    }
+
+    private void checkSunk(){
+        if (SHIPHITS >= MAX_SHIP) {
+            shipSunk();
+        }
+    }
+
+    private void attack(){
+        updateShips();
+        if(carrier && !battleShip){
+            MAX_SHIP = 4;
+            System.out.println("Carrier Sunk");
+        }
+        if(carrier && battleShip){
+            MAX_SHIP = 3;
+            System.out.println("Carrier and BattleShip Sunk");
+        }
+        if(carrier && battleShip && oneMid && twoMid){
+            MAX_SHIP = 2;
+            System.out.println("Carrier and BattleShip and Midsized Ships Sunk");
+        }
+    }
+
+    private int find() {
+        //if last shot is miss, and next shot is not in AL, then shipSunk
+        ArrayList<Integer> adj = getAdjacents(root);
+        if(lastShotHit) {
+            for (Integer next : adj) {
+                lastShot = next;
+                return lastShot;
+            }
+            System.out.println("In find, nothing in Adjacents");
+
+
+
+        }else { //Last Shot Missed
+                for (Integer linedUp : adj) {
+                    if (nextShot != 0) {
+                        if (nextShot == linedUp) {
+                            lastShot = linedUp;
+                            nextShot = 0;
+                            return lastShot;
+                        }
+                        else {
+                            System.out.println("Ship hits = " + SHIPHITS);
+                            if (SHIPHITS == 3 && !oneMid) {
+                                System.out.println("One Mid Sunk");
+                                oneMid = true;
+                                shipSunk();
+                            }
+                            if (SHIPHITS == 3 && oneMid) {
+                                System.out.println("Two Mids Sunk");
+                                twoMid = true;
+                                shipSunk();
+                            }
+                            if (SHIPHITS == 4) {
+                                System.out.println("BattleShip Sunk");
+                                battleShip = true;
+                                shipSunk();
+                            }
+                            System.out.println("BUG~?");
+                            lastShot = linedUp;
+                            return lastShot; //or return survey!
+                        }
+                    }
+                    System.out.println("BUG??");
+                    lastShot = linedUp;
+                    return lastShot;
+                }
+        }
+//            for (Integer next : adj) {
+//                lastShot = next;
+//                return lastShot;
+//            }
+        //shipsunk()
         return survey();
     }
+
+
 
     /**
      * Go into the array and select a random remaining 4
      * @return next number to hit
      */
     private int survey(){
+        System.out.println("Surveying");
         ArrayList<Integer> remainingGrid = new ArrayList<>();
         for(int i = 0; i < gridTiles.length; i ++ ){
             if(gridTiles[i] == TO_HIT){
@@ -134,6 +235,7 @@ public class HardStrategy implements OpponentStrategy {
 
 
     private int hunt(){
+        System.out.println("Hunting");
         ArrayList<Integer> adjAL;
         boolean done = false;
         int i = 0;
@@ -142,7 +244,6 @@ public class HardStrategy implements OpponentStrategy {
             if (i > 10){
                 return find(); //change back to random if sketchy
             }
-            System.out.printf("Loop = %d\n", i);
             if (up) {
                 up = false;
                 adjAL = getAdjacents(lastShot);
@@ -192,11 +293,16 @@ public class HardStrategy implements OpponentStrategy {
         int RIGHT = centerTile + 1;
         int LEFT = centerTile - 1;
 
+        System.out.println("UP = " + UP);
+        System.out.println("RIGHT " + RIGHT);
+        System.out.println("LEFT = " + LEFT);
+        System.out.println("DOWN = " + DOWN);
 
-        if (UP >= 0 && UP <= 99 && tiles[UP] != MISS && tiles[UP] != HIT_UNSUNK) {
+
+        if (UP >= 0 && tiles[UP] != MISS && tiles[UP] != HIT_UNSUNK) {
             adjacents.add(UP);
         }
-        if (DOWN >= 0 && DOWN <= 99 && tiles[DOWN] != MISS && tiles[DOWN] != HIT_UNSUNK) {
+        if (DOWN <= 99 && tiles[DOWN] != MISS && tiles[DOWN] != HIT_UNSUNK) {
             adjacents.add(DOWN);
         }
         if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] != MISS && tiles[RIGHT] != HIT_UNSUNK) {
@@ -205,6 +311,7 @@ public class HardStrategy implements OpponentStrategy {
         if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] != MISS && tiles[LEFT] != HIT_UNSUNK) {
             adjacents.add(LEFT);
         }
+        System.out.println("Adjacents = " + adjacents);
         return adjacents;
     }
 
