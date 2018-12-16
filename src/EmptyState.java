@@ -15,19 +15,21 @@ public class EmptyState implements TileState {
 	
 	public TileState occupyTile() {
 		
-		//Set GUI ??
 		return new OccupiedState();
 	}
 	
 	public TileState clearTile() {
 		
-		//Set GUI ??
 		return new EmptyState();
+	}
+	
+	public TileState destroyShip() {
+		
+		return new DestroyedState();
 	}
 	
 	public String getState() {
 		
-		//Set GUI ??
 		return "Empty";
 	}
 	

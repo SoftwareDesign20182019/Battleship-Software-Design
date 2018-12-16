@@ -25,8 +25,8 @@ public class HumanPlayer implements Player {
 		return playerType;
 	}
 	
-	public ArrayList<Ship> getComputerFleet() {
-		return null;
+	public ArrayList<Ship> getFleet() {
+		return myFleet.getFleet();
 	}
 
 	public void setDifficulty(OpponentStrategy strategy) {

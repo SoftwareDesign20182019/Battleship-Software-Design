@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 import javafx.stage.Stage;
 
@@ -17,43 +19,90 @@ public class GameLoop {
 	private boolean gameOver;
 	private boolean playerTurn;
 	
+	private ArrayList<Ship> humanFleet;
+	private boolean playerDeploy;
+	private boolean playerShipStart;
+	private boolean playerShipEnd;
+	private int shipStartIndex;
+	private int shipEndIndex;
+	private int currentShip;
+	
 	public GameLoop(Stage stage, MainMenuGUI mainMenu) {
 		this.guiStage = stage;
 		this.mainMenu = mainMenu;
 		gameOver = false;
 		playerTurn = true;
+		playerShipStart = true;
 	}
 	
+	/**
+	 * Helper method for newGame, sets opponent's difficulty
+	 * @param opponent	player whose difficulty (strategy) user will set
+	 */
+	public void setOpponentDifficulty(Player opponent) {
+		opponentPlayer.setDifficulty(new MediumStrategy());
+	}
+	
+	/**
+	 * Helper method for newGame, deploys computer player ships
+	 * @param opponent	computer player whose ships are being deployed
+	 */
+	public void deployOpponentShips(Player opponent) {
+		opponentShips = opponent.getFleet();
+		
+		for(int i = 0; i < opponentShips.size(); i++) {
+			int startTileNumber = opponentShips.get(i).getStartTile();
+			int endTileNumber = opponentShips.get(i).getEndTile();
+			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber, opponentShips.get(i));
+		}
+	}
 	
 	public void newGame() {
 		boardGUI = new BoardGUI(this, mainMenu);
 		gameBoard = new Gameboard(boardGUI);
-		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
-		opponentPlayer.setDifficulty(new MediumStrategy());
-		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
-		
-		gameOver = false;
-		playerTurn = true;
-
 		boardGUI.start(guiStage);
-		opponentShips = opponentPlayer.getComputerFleet();
-		for(int i = 0; i < opponentShips.size(); i++) {
-			int startTileNumber = opponentShips.get(i).getStartTile();
-			int endTileNumber = opponentShips.get(i).getEndTile();
-			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber);
-		}
-		
-		gameBoard.deploy(humanPlayer.getType(), 10, 40);
-		gameBoard.deploy(humanPlayer.getType(), 75, 95);
-		gameBoard.deploy(humanPlayer.getType(), 42, 46);	
+		gameOver = false;
+		//Deploy Computer
+		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
+		setOpponentDifficulty(opponentPlayer);
+		deployOpponentShips(opponentPlayer);
+		//Deploy Human
+		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
+		humanFleet = humanPlayer.getFleet();
+		currentShip = 0;
 	}
 	
 	public void computerTurn() {
 		wasHit = gameBoard.fireShot(opponentPlayer.getType(), opponentPlayer.chooseTile(wasHit));
 	}
 	
-	public void clickResponse(int index) {
-		gameBoard.fireShot(humanPlayer.getType(), index);
-		computerTurn();
+	private void playerDeployShip(int index) {
+		if(playerShipStart) {
+			shipStartIndex = index;
+			playerShipStart = false;
+			playerShipEnd = true;
+		}
+		else if(playerShipEnd) {
+			shipEndIndex = index;
+			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(currentShip));
+			currentShip++;
+			playerShipStart = true;
+			playerShipEnd = false;
+		}
+	}
+	
+	public void clickResponseOpponentBoard(int index) {
+		if(!playerDeploy) {
+			gameBoard.fireShot(humanPlayer.getType(), index);
+			computerTurn();
+		}
+	}
+	
+	public void clickResponsePlayerBoard(int index) {
+		//if playerDeploy = true, deploy ship, otherwise playerTurn
+		playerDeploy = currentShip <= humanFleet.size();
+		if(playerDeploy) {
+			playerDeployShip(index);
+		}
 	}
 }

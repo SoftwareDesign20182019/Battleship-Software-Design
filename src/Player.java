@@ -9,7 +9,7 @@ public interface Player {
 	//NEW changed return type to PlayerType
 	public Gameboard.PlayerType getType();
 	
-	public ArrayList<Ship> getComputerFleet();
+	public ArrayList<Ship> getFleet();
 	
 	public void setDifficulty(OpponentStrategy strategy);	
 }
