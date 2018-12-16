@@ -5,6 +5,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -257,8 +258,31 @@ public class SQLAccount {
 			    	e.printStackTrace();
 			    	return null;
 			    }
+		}
+		
+		public ArrayList<String> getLoadedGame(String accountName){
+			ArrayList<String> gameNames = new ArrayList<String>();
+			try (
+					Connection conn = DriverManager.getConnection(CONNECTION_INFO); 
+					Statement stmt = conn.createStatement();
+				) {
+				
+				ResultSet rs;
+				String query = "SELECT name FROM Games WHERE GameAccount = '"+ accountName +"'";
+				
+				
+				rs = stmt.executeQuery(query);
+				int count = 1;
+				while(rs.next() && count <= 10) {
+					gameNames.add(rs.getString(1));
+					count ++;
+				}
+			}catch(Exception e) {
+					e.printStackTrace();
+					return null;
+				}
 			
-			
+			return gameNames;
 		}
 		public ArrayList<ArrayList> getHighScores(){
 			ArrayList<Integer> scores = new ArrayList<Integer>();

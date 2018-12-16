@@ -1,4 +1,4 @@
-
+import java.io.Serializable;
 
 /**
  * Gameboard object, contains two PlayerBoard objects and operates on them
@@ -8,7 +8,7 @@
  * @author owenmiller
  *
  */
-public class Gameboard {
+public class Gameboard implements Serializable {
 	
 	private PlayerBoard playerBoard;
 	private PlayerBoard opponentBoard;

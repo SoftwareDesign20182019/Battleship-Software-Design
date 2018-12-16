@@ -84,7 +84,6 @@ public class RankingsGUI extends Application {
     	ObservableList<Integer> ranks = FXCollections.observableArrayList (
     			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 42);
     	rankList.setItems(ranks);
-    	System.out.println("Perfectly fine");
     	highscoreGetter = new SQLAccount();
     	initialList = highscoreGetter.getHighScores();
     	ObservableList<String> usernames = FXCollections.observableArrayList ();
