@@ -18,9 +18,9 @@ public class SQLAccount {
 	
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
-		private static final String USER_NAME = "root"; 
-		private static final String PASSWORD = "root"; 
-		private static final String HOST ="localhost";
+		private static final String USER_NAME = "softwarebuds"; 
+		private static final String PASSWORD = "battleship"; 
+		private static final String HOST ="samdoggett.com";
 		private static final String INITIAL_CONNECT = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/";
 		private static final String CONNECTION_INFO = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/"+ DATABASENAME +"?user="+ USER_NAME +"&password="+PASSWORD;
 		
@@ -89,7 +89,7 @@ public class SQLAccount {
 					Statement stmt = conn.createStatement();
 				) {
 			
-				sql = "INSERT INTO `accounts`(`AccountName`, `Password`, `HighScore`) VALUES ('"+AccountName+"','"+password+"',12)";			
+				sql = "INSERT INTO `Accounts`(`AccountName`, `Password`, `HighScore`) VALUES ('"+AccountName+"','"+password+"',12)";			
 				stmt.execute(sql);
 				return true;
 					
@@ -169,7 +169,7 @@ public class SQLAccount {
 				return false;
 			}
 			
-			String sql = "INSERT INTO `games`(`name`, `GameAccount`, `game`) VALUES ('"+ gameName +"','"+ accountName +"','"+ toBeUploaded+"')";
+			String sql = "INSERT INTO `Games`(`name`, `GameAccount`, `game`) VALUES ('"+ gameName +"','"+ accountName +"','"+ toBeUploaded+"')";
 			stmt.execute(sql);
 			
 			System.out.println(gameName+ " has been uploaded");
@@ -203,7 +203,7 @@ public class SQLAccount {
 				return false;
 			}
 			
-			String sql = "UPDATE `games` SET `game`= "+ game +" WHERE gameAccount = '"+accountName +"' and name = '"+ gameName+"'";
+			String sql = "UPDATE `Games` SET `game`= "+ game +" WHERE gameAccount = '"+accountName +"' and name = '"+ gameName+"'";
 			stmt.execute(sql);
 			
 			System.out.println(gameName+ " has been updated");
