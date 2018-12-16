@@ -29,6 +29,10 @@ public class ComputerPlayer implements Player {
 	
 	}
 	
+	public int getScore() {
+		return score;
+	}
+	
 	public void addToScore(int addPoints) {
 		score = score + addPoints;
 	}

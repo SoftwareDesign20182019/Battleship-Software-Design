@@ -13,5 +13,7 @@ public interface Player {
 	
 	public void setDifficulty(OpponentStrategy strategy);
 	
+	public int getScore();
+	
 	public void addToScore(int addPoints);
 }

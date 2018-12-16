@@ -36,6 +36,10 @@ public class HumanPlayer implements Player {
 		// TODO Auto-generated method stub
 	}
 	
+	public int getScore() {
+		return score;
+	}
+	
 	public void addToScore(int addPoints) {
 		score = score + addPoints;
 	}
