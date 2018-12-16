@@ -1,3 +1,4 @@
+import javax.print.attribute.IntegerSyntax;
 import java.lang.reflect.Array;
 import java.util.Random;
 import java.util.ArrayList;
@@ -10,11 +11,25 @@ import java.util.ArrayList;
 public class MediumStrategy implements OpponentStrategy {
     private int[] tiles = new int[100];
     private int EMPTY = 0;
-    private int HIT = 1;
+    private int HIT_UNSUNK = 1;
     private int MISS = 2;
+    private int HIT_SUNK = 3;
     private int BOARD_SIZE = 99;
     private int lastShot = -1;
     private boolean lastShotHit;
+
+    private int root = -1;
+
+    private int SHIPHITS = 0;
+    private int FULLSHIP = 5;
+
+    private boolean up;
+    private boolean right;
+    private boolean left;
+    private boolean down;
+
+    private int direction = 0;
+
 
     /**
      * method to return a random empty coordinate
@@ -22,155 +37,105 @@ public class MediumStrategy implements OpponentStrategy {
      */
     public int chooseBlock(boolean wasHit) {
         lastShotHit = wasHit;
+        if (wasHit && root == -1) {
+            root = lastShot;
+            SHIPHITS++;
+        }
+        if (wasHit) {
+            SHIPHITS++;
+        }
         System.out.println(wasHit);
         updateTiles();
+        if (SHIPHITS >= FULLSHIP) {
+            shipSunk();
+        }
         Random rand = new Random();
         int firedTile;
-        for (int i = 0; i < BOARD_SIZE + 1; i++) {
-            if (tiles[i] == HIT) {
-                ArrayList<Integer> adjAL;
-                adjAL = getAdjacents(i);
-                for (Integer adj1 : adjAL) {
-                    if (tiles[adj1] == HIT) {
-                        int nextTile = adj1 - i;
-                        int ONEUP = adj1 + nextTile;
-                        int TWOUP = adj1 + nextTile * 2;
-                        int THREEUP = adj1 + nextTile * 3;
-                        int FOURUP = adj1 + nextTile * 4;
 
-                        int ONEDOWN = i - nextTile;
-                        int TWODOWN = i - nextTile * 2;
-                        int THREEDOWN = i - nextTile * 3;
-                        int FOURDOWN = i - nextTile * 4;
-
-                        boolean up = true;
-                        while (up) {
-                            adjAL = getAdjacents(adj1);
-                            for (Integer adj2 : adjAL) {
-                                if (adj2 == ONEUP) {
-                                    if (tiles[ONEUP] == HIT) {
-                                        adjAL = getAdjacents(adj2);
-                                        for (Integer adj3 : adjAL) {
-                                            if (adj3 == TWOUP) {
-                                                if (tiles[TWOUP] == HIT) {
-                                                    adjAL = getAdjacents(adj3);
-                                                    for (Integer adj4 : adjAL) {
-                                                        if (adj4 == THREEUP) {
-                                                            if (tiles[THREEUP] == HIT) {
-                                                                adjAL = getAdjacents(adj4);
-                                                                for (Integer adj5 : adjAL) {
-                                                                    if (adj5 == FOURUP) {
-                                                                        if (tiles[FOURUP] != HIT && tiles[FOURUP] != MISS) {
-                                                                            tiles[adj5] = HIT;
-                                                                            lastShot = adj5;
-                                                                            return adj5;
-
-                                                                        } else {
-                                                                            up = false;
-                                                                        }
-                                                                    }
-                                                                }
-                                                                up = false;
-
-                                                            } else if (tiles[adj4] != MISS){
-                                                                tiles[adj4] = HIT;
-                                                                lastShot = adj4;
-                                                                return adj4;
-                                                            }
-                                                        }
-                                                    }
-                                                    up = false;
-
-                                                } else if (tiles[adj3] != MISS) {
-                                                    tiles[adj3] = HIT;
-                                                    lastShot = adj3;
-                                                    return adj3;
-                                                }
-                                            }
-                                        }
-                                        up = false;
-
-                                    }else if (tiles[adj2] != MISS){
-                                        tiles[adj2] = HIT;
-                                        lastShot = adj2;
-                                        return adj2;
-                                    }
-                                }
-                            }
-                            up = false;
-                        } //Time to descend
-                        adjAL = getAdjacents(i);
-                        for (Integer dj2 : adjAL) {
-                            if (dj2 == ONEDOWN) {
-                                if (tiles[ONEDOWN] == HIT) {
-                                    adjAL = getAdjacents(dj2); //We don't need get adjacents!
-                                    for (Integer dj3 : adjAL) {
-                                        if (dj3 == TWODOWN) {
-                                            if (tiles[TWODOWN] == HIT) {
-                                                adjAL = getAdjacents(dj3);
-                                                for (Integer dj4 : adjAL) {
-                                                    if (dj4 == THREEDOWN) {
-                                                        if (tiles[THREEDOWN] == HIT) {
-                                                            adjAL = getAdjacents(dj4);
-                                                            for (Integer dj5 : adjAL) {
-                                                                if (dj5 == FOURDOWN) {
-                                                                    if (tiles[FOURDOWN] != HIT && tiles[FOURDOWN] != MISS) {
-                                                                        tiles[dj5] = HIT;
-                                                                        lastShot = dj5;
-                                                                        return dj5;
-
-                                                                    } else { //fourdown is hit or miss
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                            break;
-
-                                                        } else if(tiles[dj4] != MISS){
-                                                            tiles[dj4] = HIT;
-                                                            lastShot = dj4;
-                                                            return dj4;
-                                                        }
-                                                    }
-                                                }
-                                                break;
-
-                                            } else if (tiles[dj3] != MISS){
-                                                tiles[dj3] = HIT;
-                                                lastShot = dj3;
-                                                return dj3;
-                                            }
-                                        }
-                                    }
-                                    break;
-
-                                } else if (tiles[dj2] != MISS){
-                                    tiles[dj2] = HIT;
-                                    lastShot = dj2;
-                                    return dj2;
-                                }
-                            }
-                        }
-                        break;
-
-
-                    } else if(tiles[adj1] == MISS) { //else if empty
-                    } else { //if MISS
-                        tiles[adj1] = HIT;
-                        lastShot = adj1;
-                        return adj1;
-                    }
-
-                }
+        if (root != -1) {
+            if (lastShotHit && (lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40)) { //going up
+                direction = 0;
+                up = true;
+                return hunt();
+            } else if (lastShotHit && (lastShot == root - 1) || (lastShot == root - 2) || (lastShot == root - 3) || (lastShot == root - 4)) {//left
+                left = true;
+                direction = 0;
+                return hunt();
+            } else if (lastShotHit && (lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40)) { //right
+                down = true;
+                direction = 0;
+                return hunt();
+            } else if (lastShotHit && (lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4)) { //left
+                right = true;
+                direction = 0;
+                return hunt();
+            } else {
+                return find();
             }
+        } else {
+            firedTile = rand.nextInt(BOARD_SIZE); //should be returned
+            while (tiles[firedTile] != EMPTY) {
+                firedTile = rand.nextInt(BOARD_SIZE);
+            }
+            tiles[firedTile] = HIT_UNSUNK;
+            lastShot = firedTile;
+            return firedTile;
         }
-
-        firedTile = rand.nextInt(BOARD_SIZE); //should be returned
-        tiles[firedTile] = HIT;
-        lastShot = firedTile;
-        return firedTile;
     }
 
+    private int find() {
+        if (direction == 0) {//up
+            direction = 1;
+            return root - 10;
+        } else if (direction == 2){
+            direction = 3;
+            return root - 1;
+        } else if (direction == 3) {
+            direction = 4;
+            return root + 10;
+        } else{
+            return root + 1;
+        }
+    }
+
+
+
+    private int hunt(){
+        ArrayList<Integer> adjAL = new ArrayList<>();
+        boolean done = false;
+        while(!done) {
+            if (up) {
+                up = false;
+                adjAL = getAdjacents(lastShot);
+                if (!adjAL.contains(lastShot - 10)) {
+                    down = true; //try going down
+                }
+                return lastShot - 10;
+            } else if (left) {
+                left = false;
+                adjAL = getAdjacents(lastShot);
+                if (!adjAL.contains(lastShot - 1)) {
+                    right = true; //try going down
+                }
+                return lastShot - 1;
+            } else if (down) {
+                down = false;
+                adjAL = getAdjacents(lastShot);
+                if (!adjAL.contains(lastShot + 10)) {
+                    down = true; //try going down
+                }
+                return lastShot + 10;
+            } else { //right
+                right = false;
+                adjAL = getAdjacents(lastShot);
+                if (!adjAL.contains(lastShot + 1)) {
+                    left = true;
+                }
+                return lastShot + 1;
+            }
+        }
+        return root = -1;
+    }
 
     private ArrayList<Integer> getAdjacents(int centerTile) {
         ArrayList<Integer> adjacents = new ArrayList<Integer>();
@@ -201,9 +166,19 @@ public class MediumStrategy implements OpponentStrategy {
             lastShot = -1;
         } else {
             if(lastShotHit){
-                tiles[lastShot] = HIT;
+                tiles[lastShot] = HIT_UNSUNK;
             } else { //if the last shot was a miss
                 tiles[lastShot] = MISS;
+            }
+        }
+    }
+
+    private void shipSunk(){
+        root = -1;
+        SHIPHITS = 0;
+        for(int i = 0; i < BOARD_SIZE + 1; i++) {
+            if (tiles[i] == HIT_UNSUNK){
+                tiles[i] = HIT_SUNK;
             }
         }
     }
