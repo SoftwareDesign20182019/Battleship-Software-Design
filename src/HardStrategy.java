@@ -1,5 +1,4 @@
-import javax.print.attribute.IntegerSyntax;
-import java.lang.reflect.Array;
+
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -7,7 +6,7 @@ import java.util.ArrayList;
  * @author Wyatt Newhall
  *
  */
-public class MediumStrategy implements OpponentStrategy {
+public class HardStrategy implements OpponentStrategy {
     private int[] tiles = new int[100];
     private int EMPTY = 0;
     private int HIT_UNSUNK = 1;
@@ -16,6 +15,7 @@ public class MediumStrategy implements OpponentStrategy {
     private int BOARD_SIZE = 99;
     private int lastShot = -1;
     private boolean lastShotHit;
+    private int TO_HIT = 4;
 
     private int root = -1;
 
@@ -29,6 +29,8 @@ public class MediumStrategy implements OpponentStrategy {
 
     private int direction = 0;
 
+    private int[] gridTiles = new int[100];
+
 
     /**
      * method to return a random empty coordinate
@@ -40,6 +42,9 @@ public class MediumStrategy implements OpponentStrategy {
         if (wasHit && root == -1) {
             root = lastShot;
             SHIPHITS++;
+        }
+        if (lastShot == -1){
+            populateGrid();
         }
         if (wasHit) {
             SHIPHITS++;
@@ -72,30 +77,58 @@ public class MediumStrategy implements OpponentStrategy {
                 return find();
             }
         } else {
-            return random();
+            return survey();
         }
     }
 
     private int find() {
-       ArrayList<Integer> adj = getAdjacents(root);
+        ArrayList<Integer> adj = getAdjacents(root);
         for(Integer next: adj){
             lastShot = next;
             return lastShot;
         }
         System.out.println("In find, nothing in Adjacents");
         shipSunk();
-        return random();
+        return survey();
     }
 
-    private int random(){
+    /**
+     * Go into the array and select a random remaining 4
+     * @return next number to hit
+     */
+    private int survey(){
+        ArrayList<Integer> remainingGrid = new ArrayList<>();
+        for(int i = 0; i < gridTiles.length; i ++ ){
+            if(gridTiles[i] == TO_HIT){
+                remainingGrid.add(i);
+            }
+        }
+
         Random rand = new Random();
         int firedTile;
-        firedTile = rand.nextInt(BOARD_SIZE); //should be returned
-        while (tiles[firedTile] != EMPTY) {
-            firedTile = rand.nextInt(BOARD_SIZE);
+        firedTile = rand.nextInt(remainingGrid.size()); //should be returned
+        //first randomly select a number from the arraylist
+        //then use that
+        lastShot = remainingGrid.get(firedTile);
+        gridTiles[lastShot] = EMPTY;
+        return lastShot;
+    }
+
+    public void populateGrid(){
+        int next = 0;
+        int count = 0;
+        while(next < 100){
+            gridTiles[next] = TO_HIT;
+            next +=2; //going over by two
+            count++;
+            if (count == 5){ //when count is at 5 add 2
+                next++;
+            }
+            if(count >= 10){ //when count is at 10
+                next --;
+                count = 0;
+            }
         }
-        lastShot = firedTile;
-        return firedTile;
     }
 
 
@@ -182,8 +215,10 @@ public class MediumStrategy implements OpponentStrategy {
         } else {
             if(lastShotHit){
                 tiles[lastShot] = HIT_UNSUNK;
+                gridTiles[lastShot] = EMPTY;
             } else { //if the last shot was a miss
                 tiles[lastShot] = MISS;
+                gridTiles[lastShot] = EMPTY;
             }
         }
     }
@@ -200,21 +235,22 @@ public class MediumStrategy implements OpponentStrategy {
     }
 
     public static void main(String[] args){
-        MediumStrategy play = new MediumStrategy();
-        int hit1 = play.chooseBlock(false);
-        System.out.println(hit1);
-        int hit2 = play.chooseBlock(false); //HITS
-        System.out.println(hit2);
-        int hit3 = play.chooseBlock(true); //miss, tries UP
-        System.out.println(hit3);
-        int hit4 = play.chooseBlock(true); //miss, tries LEFT
-        System.out.println(hit4);
-        int hit5 = play.chooseBlock(true); //Hits, should try RIGHT
-        System.out.println(hit5);
-        int hit6 = play.chooseBlock(false);
-        System.out.println(hit6);
-        int hit7 = play.chooseBlock(false);
-        System.out.println(hit7);
+        HardStrategy play = new HardStrategy();
+//        int hit1 = play.chooseBlock(false);
+//        System.out.println(hit1);
+//        int hit2 = play.chooseBlock(false); //HITS
+//        System.out.println(hit2);
+//        int hit3 = play.chooseBlock(true); //miss, tries UP
+//        System.out.println(hit3);
+//        int hit4 = play.chooseBlock(true); //miss, tries LEFT
+//        System.out.println(hit4);
+//        int hit5 = play.chooseBlock(true); //Hits, should try RIGHT
+//        System.out.println(hit5);
+//        int hit6 = play.chooseBlock(false);
+//        System.out.println(hit6);
+//        int hit7 = play.chooseBlock(false);
+//        System.out.println(hit7);
+
 
 
     }
