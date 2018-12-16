@@ -1,6 +1,7 @@
 
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -14,6 +15,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -43,9 +46,29 @@ public class BoardGUI extends Application {
 	private Image hit;
 	private Image miss;
 	private Image ship;
+	private Image deploy;
 	
 	private Label playerShotLabel;
 	private Label opponentShotLabel;
+	
+	private boolean deployPhase;
+	private int deploySize;
+	private BoardGUI.Rotation currentRotation;
+	private ArrayList<ImageView> tempDisplayShip;
+	
+	private enum Rotation {
+		NORTH, EAST, SOUTH, WEST;
+		
+		public Optional<Rotation> next() {
+		    switch (this) {
+		      case NORTH: return Optional.of(EAST);
+		      case EAST: return Optional.of(SOUTH);
+		      case SOUTH: return Optional.of(WEST);
+		      case WEST: return Optional.of(NORTH);
+		      default: return Optional.of(EAST);
+		  }
+		}
+	}
 	
 	public BoardGUI() {
 		//Empty constructor, used for tests
@@ -54,6 +77,10 @@ public class BoardGUI extends Application {
 	public BoardGUI(GameLoop gameLoop, MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
 		this.gameLoop = gameLoop;
+		deployPhase = true;
+		deploySize = -1;
+		tempDisplayShip = new ArrayList<ImageView>();
+		currentRotation = Rotation.EAST;
 	}
 	
 	@Override
@@ -67,6 +94,7 @@ public class BoardGUI extends Application {
 		hit = new Image("File:hit.png", true);
 		miss = new Image("File:miss.png", true);
 		ship = new Image("File:ship.png", true);
+		deploy = new Image("File:deploy.png", true);
 	}
 	
 	/**
@@ -74,7 +102,7 @@ public class BoardGUI extends Application {
 	 * @param gridName the grid we would like to change
 	 * @param newImage the new image we wish to set
 	 */
-	public boolean setGridElement(String gridName, int index, String shotType) {
+	public ImageView setGridElement(String gridName, int index, String shotType) {
 		int[] cords = convertIndexToCord(index);
 		int col = cords[0];
 		int row = cords[1];
@@ -94,18 +122,19 @@ public class BoardGUI extends Application {
 		case "Ship":
 			gridImage.setImage(ship);
 			break;
+		case "Deploy":
+			gridImage.setImage(deploy);
+			break;
 		}
 		
 		if(gridName.equals("playerBoard")) {
 			playerShotLabel.setText("Player " + shotType + ": " + col + "," + row);
 			playerGrid.add(gridImage, col, row);
-			return true;
 		} else if(gridName.equals("opponentBoard")) {
 			opponentShotLabel.setText("Opponent " + shotType + ": " + col + "," + row);
 			opponentGrid.add(gridImage, col, row);
-			return true;
 		}
-		return false;
+		return gridImage;
 	}
 	
     private boolean setupUI(Stage stage) {
@@ -127,8 +156,46 @@ public class BoardGUI extends Application {
     	playerBoard.setAlignment(Pos.CENTER);
     	opponentBoard.setAlignment(Pos.CENTER);
     	
-        StackPane infoStackPane = new StackPane();
+        StackPane bottomStackPane = new StackPane();
+        
+        Rectangle stackPaneFrame = new Rectangle(sceneWidth-25, 80);
+        stackPaneFrame.setFill(Color.TRANSPARENT);
+        stackPaneFrame.setStroke(Color.BLACK);
     	
+        VBox stackVBox = new VBox();
+        stackVBox.setSpacing(10);
+        stackVBox.setAlignment(Pos.CENTER);
+        
+        Label deployFleetLabel = new Label("Select Ship from Fleet to Deploy");
+        deployFleetLabel.setFont(new Font("Arial", 24));
+        
+        HBox playerFleetHBox = new HBox();
+        playerFleetHBox.setSpacing(20);
+        playerFleetHBox.setAlignment(Pos.CENTER);
+        
+        ArrayList<StackPane> playerFleetList = setupPlayerFleetHBox(playerFleetHBox);
+        
+        for(StackPane e : playerFleetList) {
+        	e.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent e) {            	
+                    Object source = e.getTarget();
+                    if(deployPhase && source instanceof Rectangle) {
+                    	deploySize = 3;
+                    }
+                }
+                });
+        }
+        
+        root.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode() == KeyCode.SPACE) {
+            		currentRotation.next();
+                }
+            }
+        });
+        
     	HBox infoPanel = new HBox();
     	infoPanel.setPadding(new Insets(10));
     	infoPanel.setAlignment(Pos.CENTER);
@@ -143,26 +210,22 @@ public class BoardGUI extends Application {
         opponentGrid.setHgap(5);
         opponentGrid.setVgap(5);
         
-        Label playerFleet = new Label("Player Fleet");
+        Label playerFleetLabel = new Label("Player Fleet");
         Label opponentFleet = new Label("Opponent Fleet");
         playerShotLabel = new Label("");
         opponentShotLabel = new Label("");
-        
-        Rectangle infoPanelBackground = new Rectangle(sceneWidth-25, 80);
-        infoPanelBackground.setFill(Color.TRANSPARENT);
-        infoPanelBackground.setStroke(Color.BLACK);
                
-        playerFleet.setAlignment(Pos.BASELINE_CENTER);
+        playerFleetLabel.setAlignment(Pos.BASELINE_CENTER);
         opponentFleet.setAlignment(Pos.BASELINE_CENTER);
         playerShotLabel.setAlignment(Pos.BASELINE_CENTER);
         opponentShotLabel.setAlignment(Pos.BASELINE_CENTER);
         
-        playerFleet.setPadding(new Insets(10));
+        playerFleetLabel.setPadding(new Insets(10));
         opponentFleet.setPadding(new Insets(10));
         playerShotLabel.setPadding(new Insets(10));
         opponentShotLabel.setPadding(new Insets(10));
         
-        playerFleet.setFont(new Font("Arial", 24));
+        playerFleetLabel.setFont(new Font("Arial", 24));
         opponentFleet.setFont(new Font("Arial", 24));
         playerShotLabel.setFont(new Font("Arial", 24));
         opponentShotLabel.setFont(new Font("Arial", 24));
@@ -181,23 +244,55 @@ public class BoardGUI extends Application {
             }
     	}
         
-        playerGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+        playerGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {       	
             @Override
             public void handle(MouseEvent e) {          	
                 Object source = e.getTarget();
-                if(source instanceof ImageView) {
+                if(deployPhase && source instanceof ImageView) {
                 	int col = playerGrid.getColumnIndex((ImageView)source);
                 	int row = playerGrid.getRowIndex((ImageView)source);
-                	gameLoop.clickResponsePlayerBoard(convertCordToIndex(col, row));
+                	deployPhase = gameLoop.clickResponsePlayerBoard(convertCordToIndex(col, row));
+                	if(!deployPhase) {
+                		bottomStackPane.getChildren().remove(playerFleetHBox);
+                		bottomStackPane.getChildren().add(infoPanel);
+                	}
                 }
             }
             });
+
+        playerGrid.getChildren().forEach(cell -> {
+            cell.addEventFilter(MouseEvent.MOUSE_ENTERED_TARGET, new EventHandler<MouseEvent>() {       	
+                @Override
+                public void handle(MouseEvent e) {          	
+                    if(deployPhase) {
+                    	int col = opponentGrid.getColumnIndex(cell);
+                     	int row = opponentGrid.getRowIndex(cell);
+                     	int index = convertCordToIndex(col, row);
+                     	tempDisplayShip = displayShip(index);
+                    }
+                }
+                });
+        });
+        
+        playerGrid.getChildren().forEach(cell -> {
+            cell.addEventFilter(MouseEvent.MOUSE_EXITED_TARGET, new EventHandler<MouseEvent>() {       	
+                @Override
+                public void handle(MouseEvent e) {          	
+                    if(deployPhase) {
+                    	for(ImageView image : tempDisplayShip) {
+                    		playerGrid.getChildren().remove(image);
+                    	}
+                    }
+                }
+                });
+        });
+        
         
         opponentGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {            	
                 Object source = e.getTarget();
-                if(source instanceof ImageView) {
+                if(!deployPhase && source instanceof ImageView) {
                 	int col = opponentGrid.getColumnIndex((ImageView)source);
                 	int row = opponentGrid.getRowIndex((ImageView)source);
                 	gameLoop.clickResponseOpponentBoard(convertCordToIndex(col, row));
@@ -206,15 +301,16 @@ public class BoardGUI extends Application {
             });
         
         //Our main VBox, root layout
-    	root.getChildren().addAll(boards, infoStackPane);
+    	root.getChildren().addAll(boards, bottomStackPane);
     	//First element in root, HBox. Inside this HBox contains two VBoxes opponentBoard and playerBoard
     	boards.getChildren().addAll(opponentBoard, playerBoard);
         //For both of the boards, we want to add in first the label of the board, followed by the grid
-        playerBoard.getChildren().addAll(playerFleet, playerGrid);
+        playerBoard.getChildren().addAll(playerFleetLabel, playerGrid);
         opponentBoard.getChildren().addAll(opponentFleet, opponentGrid);
-        //Add all relevant elements to infoPanel
+        //Add all relevant elements to infoPanel. infoPanel will not be added to the stackPane by default until the deployment phase is over
         infoPanel.getChildren().addAll(playerShotLabel, opponentShotLabel);
-        infoStackPane.getChildren().addAll(infoPanelBackground, infoPanel);
+        stackVBox.getChildren().addAll(deployFleetLabel, playerFleetHBox);
+        bottomStackPane.getChildren().addAll(stackPaneFrame, stackVBox);
         
         Scene scene = new Scene(root, sceneWidth, sceneHeight);
 
@@ -222,6 +318,78 @@ public class BoardGUI extends Application {
         stage.setScene(scene);
         stage.show();
         return true;
+    }
+    
+    private int displayShipNextIndex(int index) {
+    	switch(currentRotation) {
+    	case NORTH:
+    		return index - 10;
+    	case EAST:
+    		return index + 1;
+    	case SOUTH:
+    		return index + 10;
+    	case WEST:
+    		return index - 1;
+    	default:
+    		return index + 1;
+    	}
+    }
+    
+    private ArrayList<ImageView> displayShip(int index) {
+    	ArrayList<ImageView> tempShip = new ArrayList<ImageView>();
+    	
+    	tempShip.add(setGridElement("playerBoard", index, "Deploy"));
+		for(int i=1; i<deploySize; i++) {
+			tempShip.add(setGridElement("playerBoard", displayShipNextIndex(index + i), "Deploy"));
+		}
+		return tempShip;
+    }
+    
+    private int shipStrokeWidth(int numberOfSegments) {
+    	return (numberOfSegments * 25) + (numberOfSegments * 5) + 20;
+    }
+    
+    private StackPane createShipStack(int shipLength) {
+    	int shipStrokeHeight = 35;
+    	
+    	StackPane shipStack = new StackPane();
+    	
+    	HBox shipHBox = new HBox();
+    	shipHBox.setSpacing(5);
+    	shipHBox.setAlignment(Pos.CENTER);
+    	
+    	for(int i=0; i<shipLength; i++) {
+    		ImageView segment = new ImageView(ship);
+    		shipHBox.getChildren().add(segment);
+    	}
+    	
+    	Rectangle shipStroke = new Rectangle(shipStrokeWidth(shipLength), shipStrokeHeight);
+    	shipStroke.setFill(Color.TRANSPARENT);
+    	shipStroke.setStroke(Color.RED);
+    	
+    	shipStack.getChildren().addAll(shipStroke, shipHBox);
+    	
+    	return shipStack;
+    }
+    
+    private ArrayList<StackPane> setupPlayerFleetHBox(HBox playerFleetHBox) {
+    	ArrayList<StackPane> fleet = new ArrayList<StackPane>();
+
+    	StackPane patrol = createShipStack(2);
+    	StackPane sub = createShipStack(3);
+    	StackPane destroyer = createShipStack(3);
+    	StackPane battleship = createShipStack(4);
+    	StackPane carrier = createShipStack(5);
+    	
+    	fleet.add(patrol);
+    	fleet.add(sub);
+    	fleet.add(destroyer);
+    	fleet.add(battleship);
+    	fleet.add(carrier);
+    	
+    	playerFleetHBox.getChildren().addAll(patrol, sub, destroyer, battleship, carrier);
+    	
+    	return fleet;
     }
     
     private int[] convertIndexToCord(int index) {

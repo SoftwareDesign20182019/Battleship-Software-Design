@@ -98,11 +98,13 @@ public class GameLoop {
 		}
 	}
 	
-	public void clickResponsePlayerBoard(int index) {
+	public boolean clickResponsePlayerBoard(int index) {
 		//if playerDeploy = true, deploy ship, otherwise playerTurn
 		playerDeploy = currentShip <= humanFleet.size();
 		if(playerDeploy) {
 			playerDeployShip(index);
+			return true;
 		}
+		return false;
 	}
 }
