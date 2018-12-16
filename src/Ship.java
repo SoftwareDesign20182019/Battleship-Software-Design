@@ -67,8 +67,6 @@ public class Ship {
 		
 	}
 	
-	//NEW kinda, just making everything a little more streamlined for implementation later
-	// 	  in the game loop. these just return the start and end tiles individually
 	public int getStartTile() {
 		return startTile;
 	}
@@ -76,7 +74,6 @@ public class Ship {
 	public int getEndTile() {
 		return endTile;
 	}
-	
 	
 	public void setPositions() {
 		int counter = startTile;
@@ -107,6 +104,4 @@ public class Ship {
 			return null;
 		}
 	}
-	
-
 }

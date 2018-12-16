@@ -30,15 +30,15 @@ public class Gameboard {
 	 * @param tileNumber	which tile is being shot
 	 * @return	true if shot was a success
 	 */
-	public boolean fireShot(PlayerType player, int tileNumber) {
+	public boolean fireShot(Player player, int tileNumber) {
 		
 		boolean tileHit = false;
-		switch(player) {
+		switch(player.getType()) {
 			case HUMAN:	
-				tileHit = opponentBoard.shootTile(tileNumber);
+				tileHit = opponentBoard.shootTile(player, tileNumber);
 				break;
 			case OPPONENT:
-				tileHit = playerBoard.shootTile(tileNumber);
+				tileHit = playerBoard.shootTile(player, tileNumber);
 				break;
 		}
 		
