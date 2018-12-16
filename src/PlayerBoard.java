@@ -45,7 +45,58 @@ public class PlayerBoard {
 	 */
 	public boolean shootTile(int tileNumber) {
 		
-		return tileList.get(tileNumber).shootThisTile();
+		Tile tileShot = tileList.get(tileNumber);
+		boolean shotHit = tileShot.shootThisTile();
+		if(shotHit && tileShot.toString().equals("Destroyed")) {
+			destroyShip(tileShot);
+		}
+		return shotHit;
+		 
+	}
+	
+	/**
+	 * Helper method for shootTile(), sets all tiles associated with destroyed ship to destroyed
+	 * @param tile
+	 */
+	private void destroyShip(Tile tile) {
+		int shipStartTileNum = tile.getShipStart();
+		int shipEndTileNum = tile.getShipEnd();
+		//If ship is vertical
+		
+		if(Math.abs(shipEndTileNum - shipStartTileNum) >= 10) {
+			
+			//If ship is vertical negatively
+			if(shipStartTileNum > shipEndTileNum) {
+				for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
+						tileNum = tileNum - 10) {
+						tileList.get(tileNum).shipDestroyed();
+					}
+			}
+			//Vertical Positive
+			else {
+				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
+						tileNum = tileNum + 10) {
+					tileList.get(tileNum).shipDestroyed();
+				}
+			}
+		}
+		//If ship is horizontal
+		else {
+			//If ship is horizontal negatively
+			if(shipStartTileNum > shipEndTileNum) {
+				for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
+						tileNum = tileNum - 1) {
+						tileList.get(tileNum).shipDestroyed();
+				}
+			}
+			//Horizontal positive
+			else {
+				for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
+						tileNum = tileNum + 1) {
+					tileList.get(tileNum).shipDestroyed();
+				}
+			}
+		}
 	}
 	
 	/**

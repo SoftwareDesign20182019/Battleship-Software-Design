@@ -1,15 +1,9 @@
 
-
-/**
- * Occupied TileState
- * @author owenmiller
- *
- */
-public class OccupiedState implements TileState {
-
+public class DestroyedState implements TileState {
+	
 	public TileState shootTile() {
 		
-		 return new HitState();
+		return null;
 	}
 	
 	public TileState occupyTile() {
@@ -23,17 +17,16 @@ public class OccupiedState implements TileState {
 	}
 	
 	public TileState destroyShip() {
-		return new DestroyedState();
+		
+		return null;
 	}
 	
 	public String getState() {
-		return "Ship";
+		return "Destroyed";
 	}
 	
 	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
-		if(boardName.equals("playerBoard")) {
-			boardGUI.setGridElement(boardName, tileNumber, this.getState());
-		}
+		boardGUI.setGridElement(boardName, tileNumber, this.getState());
 	}
-	
+
 }

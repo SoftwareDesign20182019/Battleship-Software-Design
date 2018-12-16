@@ -21,6 +21,14 @@ public class Tile {
 		this.boardGUI = boardGUI;
 		this.boardName = boardName;
 	}
+	
+	public int getShipStart() {
+		return ship.getStartTile();
+	}
+	
+	public int getShipEnd() {
+		return ship.getEndTile();
+	}
 
 	public int getNum() {
 		return tileNumber;
@@ -43,7 +51,7 @@ public class Tile {
 	 * Returns true if tile is a hit.
 	 */
 	public boolean isHit() {
-		if(this.toString().equals("hit")) {
+		if(this.toString().equals("Hit")) {
 			ship.hitRecived();
 			return true;
 		}
@@ -67,10 +75,21 @@ public class Tile {
 			currentState.setTileGUI(boardName, tileNumber, boardGUI);
 			if(this.toString().equals("Hit")) {
 				hit = true;
+				ship.hitRecived();
 			}
 		}
 
 		return hit;
+	}
+	
+	/**
+	 * 
+	 * @return	true if ship is destroyed
+	 */
+	public void shipDestroyed() {
+		if(ship.isDestroyed()) {
+			currentState = currentState.destroyShip();
+		}
 	}
 
 

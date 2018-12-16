@@ -20,13 +20,16 @@ public class EmptyState implements TileState {
 	
 	public TileState clearTile() {
 		
-		//Set GUI ??
 		return new EmptyState();
+	}
+	
+	public TileState destroyShip() {
+		
+		return new DestroyedState();
 	}
 	
 	public String getState() {
 		
-		//Set GUI ??
 		return "Empty";
 	}
 	
