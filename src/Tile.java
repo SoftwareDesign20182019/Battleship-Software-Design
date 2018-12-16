@@ -12,6 +12,7 @@ public class Tile {
 	private int tileNumber;
 	private BoardGUI boardGUI;
 	private String boardName;
+	private Ship ship;
 
 	public Tile(int tileNumber, TileState currentState, BoardGUI boardGUI, String boardName) {
 
@@ -19,6 +20,18 @@ public class Tile {
 		this.currentState = currentState;
 		this.boardGUI = boardGUI;
 		this.boardName = boardName;
+	}
+	
+	public int getShipLength() {
+		return ship.getLength();
+	}
+	
+	public int getShipStart() {
+		return ship.getStartTile();
+	}
+	
+	public int getShipEnd() {
+		return ship.getEndTile();
 	}
 
 	public int getNum() {
@@ -42,7 +55,8 @@ public class Tile {
 	 * Returns true if tile is a hit.
 	 */
 	public boolean isHit() {
-		if(this.toString().equals("hit")) {
+		if(this.toString().equals("Hit")) {
+			ship.hitRecived();
 			return true;
 		}
 		else {
@@ -65,10 +79,21 @@ public class Tile {
 			currentState.setTileGUI(boardName, tileNumber, boardGUI);
 			if(this.toString().equals("Hit")) {
 				hit = true;
+				ship.hitRecived();
 			}
 		}
 
 		return hit;
+	}
+	
+	/**
+	 * 
+	 * @return	true if ship is destroyed
+	 */
+	public void shipDestroyed() {
+		if(ship.isDestroyed()) {
+			currentState = currentState.destroyShip();
+		}
 	}
 
 
@@ -77,9 +102,10 @@ public class Tile {
 	 * current state.
 	 * @return	true if occupy if valid.
 	 */
-	public boolean occupyThisTile() {
+	public boolean occupyThisTile(Ship ship) {
 
 		if(isFree()) {
+			this.ship = ship;
 			currentState = currentState.occupyTile();
 			currentState.setTileGUI(boardName, tileNumber, boardGUI);
 			return true;

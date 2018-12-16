@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 
 import javafx.stage.Stage;
 
@@ -17,43 +19,114 @@ public class GameLoop {
 	private boolean gameOver;
 	private boolean playerTurn;
 	
+	private ArrayList<Ship> humanFleet;
+	private boolean playerDeploy;
+	private boolean playerShipStart;
+	private boolean playerShipEnd;
+	private int shipStartIndex;
+	private int shipEndIndex;
+	private int currentShip;
+	
 	public GameLoop(Stage stage, MainMenuGUI mainMenu) {
 		this.guiStage = stage;
 		this.mainMenu = mainMenu;
 		gameOver = false;
 		playerTurn = true;
+		playerShipStart = true;
 	}
 	
-	
-	public void newGame() {
-		boardGUI = new BoardGUI(this, mainMenu);
-		gameBoard = new Gameboard(boardGUI);
-		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
+	/**
+	 * Helper method for newGame, sets opponent's difficulty
+	 * @param opponent	player whose difficulty (strategy) user will set
+	 */
+	public void setOpponentDifficulty(Player opponent) {
 		opponentPlayer.setDifficulty(new MediumStrategy());
-		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
+	}
+	
+	/**
+	 * Helper method for newGame, deploys computer player ships
+	 * @param opponent	computer player whose ships are being deployed
+	 */
+	public void deployOpponentShips(Player opponent) {
+		opponentShips = opponent.getFleet();
 		
-		gameOver = false;
-		playerTurn = true;
-
-		boardGUI.start(guiStage);
-		opponentShips = opponentPlayer.getComputerFleet();
 		for(int i = 0; i < opponentShips.size(); i++) {
 			int startTileNumber = opponentShips.get(i).getStartTile();
 			int endTileNumber = opponentShips.get(i).getEndTile();
-			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber);
+			gameBoard.deploy(opponentPlayer.getType(), startTileNumber, endTileNumber, opponentShips.get(i));
 		}
-		
-		gameBoard.deploy(humanPlayer.getType(), 10, 40);
-		gameBoard.deploy(humanPlayer.getType(), 75, 95);
-		gameBoard.deploy(humanPlayer.getType(), 42, 46);	
 	}
 	
+	
+	/**
+	 * Contains game loop
+	 */
+	public void newGame() {
+		boardGUI = new BoardGUI(this, mainMenu);
+		gameBoard = new Gameboard(boardGUI);
+		boardGUI.start(guiStage);
+		gameOver = false;
+		//Deploy Computer
+		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
+		setOpponentDifficulty(opponentPlayer);
+		deployOpponentShips(opponentPlayer);
+		//Deploy Human
+		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
+		humanFleet = humanPlayer.getFleet();
+		currentShip = 0;
+		//Check for destroyed fleets, end game
+		if(humanPlayer.destroyedFleet() || opponentPlayer.destroyedFleet()) {
+			gameOver = true;
+		}
+	}
+	
+	/**
+	 * Fire computer player shot
+	 */
 	public void computerTurn() {
-		wasHit = gameBoard.fireShot(opponentPlayer.getType(), opponentPlayer.chooseTile(wasHit));
+		wasHit = gameBoard.fireShot(opponentPlayer, opponentPlayer.chooseTile(wasHit));
 	}
 	
-	public void clickResponse(int index) {
-		gameBoard.fireShot(humanPlayer.getType(), index);
-		computerTurn();
+	/**
+	 * Deploy human player's ships. Helper method for clickResponsePlayerBoard(int index)
+	 * @param index	tile chosen for deployment
+	 */
+	private void playerDeployShip(int index) {
+		if(playerShipStart) {
+			shipStartIndex = index;
+			playerShipStart = false;
+			playerShipEnd = true;
+		}
+		else if(playerShipEnd) {
+			shipEndIndex = index;
+			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(currentShip));
+			currentShip++;
+			playerShipStart = true;
+			playerShipEnd = false;
+		}
+	}
+	
+	/**
+	 * clickResponse method for opponent board. Fires shot at opponent board and calls 
+	 * computerTurn() method
+	 * @param index	tile human player chooses to shoot
+	 */
+	public void clickResponseOpponentBoard(int index) {
+		if(!playerDeploy) {
+			gameBoard.fireShot(humanPlayer, index);
+			computerTurn();
+		}
+	}
+	
+	/**
+	 * clickResponse method for player board. Deploys player fleet if playerDeploy is true
+	 * @param index	tile chosen for deployment
+	 */
+	public void clickResponsePlayerBoard(int index) {
+		//if playerDeploy = true, deploy ship, otherwise playerTurn
+		playerDeploy = currentShip <= humanFleet.size();
+		if(playerDeploy) {
+			playerDeployShip(index);
+		}
 	}
 }

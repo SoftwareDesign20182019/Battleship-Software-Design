@@ -23,6 +23,11 @@ public class HitState implements TileState {
 		return new EmptyState();
 	}
 	
+	public TileState destroyShip() {
+		
+		return new DestroyedState();
+	}
+	
 	public String getState() {
 		return "Hit";
 	}
