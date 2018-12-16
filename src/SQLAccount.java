@@ -19,7 +19,7 @@ public class SQLAccount {
 	
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
-		public static String accountName;
+		public String accountName;
 		//private static final String USER_NAME = "root"; 
 		//private static final String PASSWORD = "root"; 
 		//private static final String HOST ="localhost";
@@ -105,10 +105,7 @@ public class SQLAccount {
 	
 		public boolean logIn(String password) {
 			try (
-					// Step 1: Allocate a database "Connection" object
 					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
-
-					// Step 2: Allocate a "Statement" object in the Connection
 					Statement stmt = conn.createStatement();
 				) {
 			
@@ -139,7 +136,7 @@ public class SQLAccount {
 			    }
 			    else {
 			    	System.err.println("Passwords dont match");
-			    	return true;
+			    	return false;
 			    }
 			      
 

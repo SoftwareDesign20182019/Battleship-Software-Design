@@ -82,13 +82,14 @@ public class SignUpGUI extends Application {
             			if (accountNameExists.getResult() == ButtonType.YES) {
             			    usernameField.clear();           			    
             			}
+            		} else {
+            			try {
+                			mainMenu.setSQLAccount(account);
+        					mainMenu.start(stage);
+        				} catch (Exception e1) {
+        					e1.printStackTrace();
+        				}	
             		}
-            		try {
-            			mainMenu.setSQLAccount(account);
-    					mainMenu.start(stage);
-    				} catch (Exception e1) {
-    					e1.printStackTrace();
-    				}
             	}
             	
             	
