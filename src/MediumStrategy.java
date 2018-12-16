@@ -21,7 +21,7 @@ public class MediumStrategy implements OpponentStrategy {
     private int root = -1;
 
     private int SHIPHITS = 0;
-    private int FULLSHIP = 5;
+    private int FULLSHIP = 6;
 
     private boolean up;
     private boolean right;
@@ -37,6 +37,7 @@ public class MediumStrategy implements OpponentStrategy {
      */
     public int chooseBlock(boolean wasHit) {
         lastShotHit = wasHit;
+        System.out.println("Last Shot Hit = " + lastShotHit);
         if (wasHit && root == -1) {
             root = lastShot;
             SHIPHITS++;
@@ -44,96 +45,111 @@ public class MediumStrategy implements OpponentStrategy {
         if (wasHit) {
             SHIPHITS++;
         }
-        System.out.println(wasHit);
         updateTiles();
         if (SHIPHITS >= FULLSHIP) {
             shipSunk();
         }
-        Random rand = new Random();
-        int firedTile;
+
 
         if (root != -1) {
-            if (lastShotHit && (lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40)) { //going up
+            if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going up
                 direction = 0;
                 up = true;
                 return hunt();
-            } else if (lastShotHit && (lastShot == root - 1) || (lastShot == root - 2) || (lastShot == root - 3) || (lastShot == root - 4)) {//left
+            } else if (lastShotHit && ((lastShot == root - 1) || (lastShot == root - 2) || (lastShot == root - 3) || (lastShot == root - 4))) {//left
                 left = true;
                 direction = 0;
                 return hunt();
-            } else if (lastShotHit && (lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40)) { //right
+            } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //right
                 down = true;
                 direction = 0;
                 return hunt();
-            } else if (lastShotHit && (lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4)) { //left
+            } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //left
                 right = true;
                 direction = 0;
                 return hunt();
-            } else {
+            } else { //why does this happen! LastShotHit is false!
+                System.out.println("Commence Find");
                 return find();
             }
         } else {
-            firedTile = rand.nextInt(BOARD_SIZE); //should be returned
-            while (tiles[firedTile] != EMPTY) {
-                firedTile = rand.nextInt(BOARD_SIZE);
-            }
-            tiles[firedTile] = HIT_UNSUNK;
-            lastShot = firedTile;
-            return firedTile;
+            return random();
         }
     }
 
     private int find() {
-        if (direction == 0) {//up
-            direction = 1;
-            return root - 10;
-        } else if (direction == 2){
-            direction = 3;
-            return root - 1;
-        } else if (direction == 3) {
-            direction = 4;
-            return root + 10;
-        } else{
-            return root + 1;
+       ArrayList<Integer> adj = getAdjacents(root);
+        for(Integer next: adj){
+            lastShot = next;
+            return lastShot;
         }
+        System.out.println("In find, nothing in Adjacents");
+        shipSunk();
+        return random();
+    }
+
+    private int random(){
+        Random rand = new Random();
+        int firedTile;
+        firedTile = rand.nextInt(BOARD_SIZE); //should be returned
+        while (tiles[firedTile] != EMPTY) {
+            firedTile = rand.nextInt(BOARD_SIZE);
+        }
+        lastShot = firedTile;
+        return firedTile;
     }
 
 
 
     private int hunt(){
-        ArrayList<Integer> adjAL = new ArrayList<>();
+        ArrayList<Integer> adjAL;
         boolean done = false;
+        int i = 0;
         while(!done) {
+            i++;
+            if (i > 10){
+                return find(); //change back to random if sketchy
+            }
+            System.out.printf("Loop = %d\n", i);
             if (up) {
                 up = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot - 10)) {
                     down = true; //try going down
+                } else {
+                    lastShot -= 10;
+                    return lastShot;
                 }
-                return lastShot - 10;
             } else if (left) {
                 left = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot - 1)) {
-                    right = true; //try going down
+                    right = true;
+                } else {
+                    lastShot -= 1;
+                    return lastShot;
                 }
-                return lastShot - 1;
             } else if (down) {
                 down = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot + 10)) {
-                    down = true; //try going down
+                    up = true;
+                } else {
+                    lastShot += 10;
+                    return lastShot;
                 }
-                return lastShot + 10;
-            } else { //right
+            } else {
                 right = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot + 1)) {
                     left = true;
+                } else {
+                    lastShot += 1;
+                    return lastShot;
                 }
-                return lastShot + 1;
             }
         }
+        System.out.println("if you're seeing this things went awry");
         return root = -1;
     }
 
@@ -145,23 +161,23 @@ public class MediumStrategy implements OpponentStrategy {
         int LEFT = centerTile - 1;
 
 
-        if (UP >= 0 && UP <= 99 && tiles[UP] != MISS) {
+        if (UP >= 0 && UP <= 99 && tiles[UP] != MISS && tiles[UP] != HIT_UNSUNK) {
             adjacents.add(UP);
         }
-        if (DOWN >= 0 && DOWN <= 99 && tiles[DOWN] != MISS) {
+        if (DOWN >= 0 && DOWN <= 99 && tiles[DOWN] != MISS && tiles[DOWN] != HIT_UNSUNK) {
             adjacents.add(DOWN);
         }
-        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] != MISS) {
+        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] != MISS && tiles[RIGHT] != HIT_UNSUNK) {
             adjacents.add(RIGHT);
         }
-        if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] != MISS) {
+        if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] != MISS && tiles[LEFT] != HIT_UNSUNK) {
             adjacents.add(LEFT);
         }
         return adjacents;
     }
 
     private void updateTiles(){
-        System.out.println(lastShot);
+        System.out.printf("Last Shot = %d \n", lastShot);
         if (lastShot == -1){
             lastShot = -1;
         } else {
@@ -191,9 +207,9 @@ public class MediumStrategy implements OpponentStrategy {
         System.out.println(hit2);
         int hit3 = play.chooseBlock(true); //miss, tries UP
         System.out.println(hit3);
-        int hit4 = play.chooseBlock(false); //miss, tries LEFT
+        int hit4 = play.chooseBlock(true); //miss, tries LEFT
         System.out.println(hit4);
-        int hit5 = play.chooseBlock(false); //Hits, should try RIGHT
+        int hit5 = play.chooseBlock(true); //Hits, should try RIGHT
         System.out.println(hit5);
         int hit6 = play.chooseBlock(false);
         System.out.println(hit6);
