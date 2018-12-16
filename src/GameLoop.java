@@ -57,6 +57,10 @@ public class GameLoop {
 		}
 	}
 	
+	
+	/**
+	 * Contains game loop
+	 */
 	public void newGame() {
 		boardGUI = new BoardGUI(this, mainMenu);
 		gameBoard = new Gameboard(boardGUI);
@@ -70,12 +74,23 @@ public class GameLoop {
 		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		humanFleet = humanPlayer.getFleet();
 		currentShip = 0;
+		//Check for destroyed fleets, end game
+		if(humanPlayer.destroyedFleet() || opponentPlayer.destroyedFleet()) {
+			gameOver = true;
+		}
 	}
 	
+	/**
+	 * Fire computer player shot
+	 */
 	public void computerTurn() {
 		wasHit = gameBoard.fireShot(opponentPlayer, opponentPlayer.chooseTile(wasHit));
 	}
 	
+	/**
+	 * Deploy human player's ships. Helper method for clickResponsePlayerBoard(int index)
+	 * @param index	tile chosen for deployment
+	 */
 	private void playerDeployShip(int index) {
 		if(playerShipStart) {
 			shipStartIndex = index;
@@ -91,6 +106,11 @@ public class GameLoop {
 		}
 	}
 	
+	/**
+	 * clickResponse method for opponent board. Fires shot at opponent board and calls 
+	 * computerTurn() method
+	 * @param index	tile human player chooses to shoot
+	 */
 	public void clickResponseOpponentBoard(int index) {
 		if(!playerDeploy) {
 			gameBoard.fireShot(humanPlayer, index);
@@ -98,6 +118,10 @@ public class GameLoop {
 		}
 	}
 	
+	/**
+	 * clickResponse method for player board. Deploys player fleet if playerDeploy is true
+	 * @param index	tile chosen for deployment
+	 */
 	public void clickResponsePlayerBoard(int index) {
 		//if playerDeploy = true, deploy ship, otherwise playerTurn
 		playerDeploy = currentShip <= humanFleet.size();

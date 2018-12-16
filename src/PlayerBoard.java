@@ -25,6 +25,9 @@ public class PlayerBoard {
 		}
 	}
 	
+	/**
+	 * Set all tiles to empty
+	 */
 	public void clearBoard() {
 		
 		for(int tileNum = 0; tileNum < 100; tileNum++) {

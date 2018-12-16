@@ -16,15 +16,15 @@ public class Fleet {
 		buildFleet();
 	}
 	
-	public void placeFleet() {
-		
-	}
 	
 	public ArrayList<Ship> getFleet(){
 		return myFleet;
 	}
 	
-	
+	/**
+	 * Checks to see if all ships in fleet are destroyed
+	 * @return	true if all ships destroyed
+	 */
 	public boolean isFleetDestroyed() {
 		
 		for(int i = 0 ; i<sizeOfFleet; i++) {
@@ -35,7 +35,10 @@ public class Fleet {
 		return true;
 	}
 	
-	public void buildFleet() {
+	/**
+	 * Initialize all ships in fleet
+	 */
+	private void buildFleet() {
 		int shipBuilt = 0;
 		for(int i = sizeOfFleet; i>0 ; i--) {
 			
@@ -53,7 +56,7 @@ public class Fleet {
 	}
 	
 	/**
-	 * for testing only will be deleted
+	 * For testing only will be deleted
 	 * @param index
 	 * @return
 	 */
@@ -61,7 +64,10 @@ public class Fleet {
 		return myFleet.get(index);
 	}
 	
-	
+	/**
+	 * For testing.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Fleet testFleet = new Fleet();
 		testFleet.printFleetStatus();

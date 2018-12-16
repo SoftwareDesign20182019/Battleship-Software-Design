@@ -42,10 +42,10 @@ public class ComputerPlayer implements Player {
 		return playerType;
 	}
 	
-	//NEW Now takes in OpponentStrategy param to set strategy
+	
 	public void setDifficulty(OpponentStrategy strategy) {
 		this.strategy = strategy;
-	} //where is this called
+	}
 	
 	public ArrayList<Ship> getFleet() {
 		return computerFleet.getFleet();
@@ -57,7 +57,11 @@ public class ComputerPlayer implements Player {
 		return computerFleet.isFleetDestroyed();
 	}
 	
-	public int[][] deployShips(){
+	/**
+	 * Set start and end tile index for each ship in fleet
+	 * @return	Array containing array of ship positions
+	 */
+	private int[][] deployShips(){
 		int[][] deployments = new int[5][2];
 		for(int i = 0; i < getFleet().size();i++) {
 			deployments[i] = getCoordiantes(getFleet().get(i));
@@ -77,7 +81,12 @@ public class ComputerPlayer implements Player {
 		return deployments;
 	}
 	
-	public int[] getCoordiantes(Ship currentShip) {
+	/**
+	 * Helper method for deployShips()
+	 * @param 	currentShip	ship whose coordinates are being returned
+	 * @return	coordinates of currentShip
+	 */
+	private int[] getCoordiantes(Ship currentShip) {
 		Random rand = new Random();
 		int startLocation, endLocation;
 		startLocation = 0; 
@@ -107,19 +116,24 @@ public class ComputerPlayer implements Player {
 		return coordinates;
 	}
 	
-	public boolean willBeVertical() {
+	/**
+	 * Helper method for getCoordinates()
+	 * @return	true if ship will be vertical
+	 */
+	private boolean willBeVertical() {
 		Random rand = new Random();
 		boolean[] bool = {true, false};
 		return bool[rand.nextInt(2)];
 		
 	}
 	
-	//public void hitTarget
-
-
-	
-	
-	public boolean checkOverlap(int index, int[][] deployments) {
+	/**
+	 * Helper method for deployShips()
+	 * @param index			tile chosen for deployment
+	 * @param deployments	currently occupied tiles	
+	 * @return	true if overlap exists
+	 */
+	private boolean checkOverlap(int index, int[][] deployments) {
 		final int startPos = deployments[index][0];
 		final int endPos = deployments[index][1];
 		
@@ -158,6 +172,9 @@ public class ComputerPlayer implements Player {
 		return true;
 	}
 	
+	/**
+	 * For testing. Print ship locations
+	 */
 	public void printShipLocations() {
 		int[] currentPositions;
 		for(int i = 0; i < computerFleet.getFleet().size(); i++ ) {
@@ -171,6 +188,10 @@ public class ComputerPlayer implements Player {
 		}
 	}
 	
+	/**
+	 * For testing.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		ComputerPlayer test = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
 		test.printShipLocations();
