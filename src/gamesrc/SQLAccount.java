@@ -19,6 +19,7 @@ public class SQLAccount {
 	
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
+		public String accountName;
 		//private static final String USER_NAME = "root"; 
 		//private static final String PASSWORD = "root"; 
 		//private static final String HOST ="localhost";
@@ -29,7 +30,8 @@ public class SQLAccount {
 		private static final String CONNECTION_INFO = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/"+ DATABASENAME +"?user="+ USER_NAME +"&password="+PASSWORD;
 		
 
-		public SQLAccount() {
+		public SQLAccount(String accountName_) {
+			this.accountName = accountName_;
 			try (
 					// Step 1: Allocate a database "Connection" object
 					Connection conn = DriverManager.getConnection(INITIAL_CONNECT,USER_NAME, PASSWORD); // MySQL
@@ -77,7 +79,7 @@ public class SQLAccount {
 				
 		}
 		
-		public boolean addAccount(String AccountName, String password) {
+		public boolean addAccount(String password) {
 			String sql = "";
 			try (
 					// Step 1: Allocate a database "Connection" object
@@ -87,7 +89,7 @@ public class SQLAccount {
 					Statement stmt = conn.createStatement();
 				) {
 			
-				sql = "INSERT INTO `Accounts`(`AccountName`, `Password`) VALUES ('"+AccountName+"','"+password+"')";			
+				sql = "INSERT INTO `Accounts`(`AccountName`, `Password`) VALUES ('"+accountName+"','"+password+"')";			
 				stmt.execute(sql);
 				return true;
 					
@@ -101,12 +103,9 @@ public class SQLAccount {
 			
 		}
 	
-		public boolean logIn(String accountName, String password) {
+		public boolean logIn(String password) {
 			try (
-					// Step 1: Allocate a database "Connection" object
 					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
-
-					// Step 2: Allocate a "Statement" object in the Connection
 					Statement stmt = conn.createStatement();
 				) {
 			
@@ -137,7 +136,7 @@ public class SQLAccount {
 			    }
 			    else {
 			    	System.err.println("Passwords dont match");
-			    	return true;
+			    	return false;
 			    }
 			      
 
@@ -149,7 +148,7 @@ public class SQLAccount {
 			
 		}
 		
-		public boolean uploadGame(File toBeUploaded, String accountName) {
+		public boolean uploadGame(File toBeUploaded) {
 			String fileName = toBeUploaded.getName();
 			String fileType = fileName.substring(fileName.indexOf('.'), fileName.length());
 			String gameName = fileName.substring(0,fileName.indexOf('.'));
@@ -178,7 +177,7 @@ public class SQLAccount {
 		} catch(SQLIntegrityConstraintViolationException e) {
 			//e.printStackTrace();
 			System.err.println(gameName+ " has been updated");
-			updateGame(toBeUploaded, accountName);
+			updateGame(toBeUploaded);
 			return true;
 			}//change me
 		catch(Exception e) {
@@ -187,7 +186,7 @@ public class SQLAccount {
 		}
 		}
 
-		public boolean updateGame(File game, String accountName) {
+		public boolean updateGame(File game) {
 			String fileName = game.getName();
 			String fileType = fileName.substring(fileName.indexOf('.'), fileName.length());
 			String gameName = fileName.substring(0,fileName.indexOf('.'));
@@ -210,7 +209,7 @@ public class SQLAccount {
 			return true;
 			}catch(Exception e) {return false;}
 		}
-		public File getGame(String gameName, String accountName) {
+		public File getGame(String gameName) {
 			
 			try (
 					// Step 1: Allocate a database "Connection" object
@@ -301,7 +300,7 @@ public class SQLAccount {
 			
 		}
 		
-		public boolean addHighScore(String accountName, int highscore) {
+		public boolean addHighScore(int highscore) {
 			int currentHighScore;
 			String sql, sql2;
 			try (
@@ -338,10 +337,10 @@ public class SQLAccount {
 			System.out.println("starting program");
 
 			File f = new File("AI23.bin");
-			SQLAccount test = new SQLAccount();
+			SQLAccount test = new SQLAccount("Sam");
 			
-			test.addAccount("Sam", "Big secret");
-			test.addHighScore("Sam", 110);
+			test.addAccount("Big secret");
+			test.addHighScore(110);
 			test.getHighScores();
 		}
 }

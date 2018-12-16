@@ -3,7 +3,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -14,10 +17,12 @@ import javafx.stage.Stage;
 
 public class SignUpGUI extends Application {
 	private MainMenuGUI mainMenu;
+	private SQLAccount account;
 	
 	public SignUpGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
 	}
+	
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -70,12 +75,21 @@ public class SignUpGUI extends Application {
             	//if none of the fields are blank
             	if(!usernameFieldString.equals("") && !passwordFieldString.equals("") && !rePasswordFieldString.equals("") && passwordFieldString.equals(rePasswordFieldString)) {
             		//ALL SIGN UP SQL STUFF HERE
-            		
-            		try {
-    					mainMenu.start(stage);
-    				} catch (Exception e1) {
-    					e1.printStackTrace();
-    				}
+            		account = new SQLAccount(usernameFieldString);
+            		if(!account.addAccount(passwordFieldString)) {
+            			Alert accountNameExists = new Alert(AlertType.CONFIRMATION, "Account Username Already Exists", ButtonType.YES);
+            			accountNameExists.showAndWait();
+            			if (accountNameExists.getResult() == ButtonType.YES) {
+            			    usernameField.clear();           			    
+            			}
+            		} else {
+            			try {
+                			mainMenu.setSQLAccount(account);
+        					mainMenu.start(stage);
+        				} catch (Exception e1) {
+        					e1.printStackTrace();
+        				}	
+            		}
             	}
             	
             	
