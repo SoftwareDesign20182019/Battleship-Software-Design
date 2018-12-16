@@ -173,11 +173,12 @@ public class SQLAccount {
 			stmt.execute(sql);
 			
 			System.out.println(gameName+ " has been uploaded");
+			
 				
 			return true;
 			
 		} catch(SQLIntegrityConstraintViolationException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			System.err.println(gameName+ " has been updated");
 			updateGame(toBeUploaded, accountName);
 			return true;
