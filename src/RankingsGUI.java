@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 
 public class RankingsGUI extends Application {
 	private MainMenuGUI mainMenu;
-	private SQLAccount highscoreGetter;
 	private ArrayList<ArrayList> initialList;
 	private static final int NUMBER_OF_HIGHSCORES= 10;
 	
@@ -85,7 +84,7 @@ public class RankingsGUI extends Application {
     			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 42);
     	rankList.setItems(ranks);
     	System.out.println("Perfectly fine");
-    	highscoreGetter = new SQLAccount();
+    	SQLAccount highscoreGetter = mainMenu.getSQLAccount();
     	initialList = highscoreGetter.getHighScores();
     	ObservableList<String> usernames = FXCollections.observableArrayList ();
     	ObservableList<Integer> scores = FXCollections.observableArrayList ();

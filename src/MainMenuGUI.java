@@ -31,6 +31,7 @@ public class MainMenuGUI extends Application {
 	private LoadGUI loadGame;
 	private RankingsGUI rankings;
 	private SettingsGUI settings;
+	private SQLAccount account; 
 
 	public MainMenuGUI(LoginGUI loginGUI) {
 		this.loginGUI = loginGUI;
@@ -38,6 +39,14 @@ public class MainMenuGUI extends Application {
 		rankings = new RankingsGUI(this);
     	settings = new SettingsGUI(this);
     	mainMenu = this;
+	}
+	
+	public void setSQLAccount(SQLAccount account_) {
+		this.account = account_;
+	}
+	
+	public SQLAccount getSQLAccount() {
+		return account;
 	}
 	
 	@Override
