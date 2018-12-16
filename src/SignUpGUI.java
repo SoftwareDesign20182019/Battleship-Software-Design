@@ -14,10 +14,12 @@ import javafx.stage.Stage;
 
 public class SignUpGUI extends Application {
 	private MainMenuGUI mainMenu;
+	private SQLAccount account;
 	
 	public SignUpGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
 	}
+	
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -70,8 +72,12 @@ public class SignUpGUI extends Application {
             	//if none of the fields are blank
             	if(!usernameFieldString.equals("") && !passwordFieldString.equals("") && !rePasswordFieldString.equals("") && passwordFieldString.equals(rePasswordFieldString)) {
             		//ALL SIGN UP SQL STUFF HERE
-            		
+            		account = new SQLAccount(usernameFieldString);
+            		if(!account.addAccount(passwordFieldString)) {
+            			// HERE Sam
+            		}
             		try {
+            			mainMenu.setSQLAccount(account);
     					mainMenu.start(stage);
     				} catch (Exception e1) {
     					e1.printStackTrace();
