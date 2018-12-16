@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class LoginGUI extends Application {
+public class LoginGUI extends Application {	
 	private MainMenuGUI mainMenu;
 	
 	public LoginGUI() {

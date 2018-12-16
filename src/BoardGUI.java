@@ -20,7 +20,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -28,6 +31,8 @@ public class BoardGUI extends Application {
 	private MainMenuGUI mainMenu;
 	private GameLoop gameLoop;
 	
+	private static final int sceneWidth = 800;
+	private static final int sceneHeight = 500;
 	private static final int boardWidth = 10;
 	private static final int boardHeight = 10;
 	
@@ -122,6 +127,8 @@ public class BoardGUI extends Application {
     	playerBoard.setAlignment(Pos.CENTER);
     	opponentBoard.setAlignment(Pos.CENTER);
     	
+        StackPane infoStackPane = new StackPane();
+    	
     	HBox infoPanel = new HBox();
     	infoPanel.setPadding(new Insets(10));
     	infoPanel.setAlignment(Pos.CENTER);
@@ -141,6 +148,10 @@ public class BoardGUI extends Application {
         playerShotLabel = new Label("");
         opponentShotLabel = new Label("");
         
+        Rectangle infoPanelBackground = new Rectangle(sceneWidth-25, 80);
+        infoPanelBackground.setFill(Color.TRANSPARENT);
+        infoPanelBackground.setStroke(Color.BLACK);
+               
         playerFleet.setAlignment(Pos.BASELINE_CENTER);
         opponentFleet.setAlignment(Pos.BASELINE_CENTER);
         playerShotLabel.setAlignment(Pos.BASELINE_CENTER);
@@ -186,7 +197,7 @@ public class BoardGUI extends Application {
             });
         
         //Our main VBox, root layout
-    	root.getChildren().addAll(boards, infoPanel);
+    	root.getChildren().addAll(boards, infoStackPane);
     	//First element in root, HBox. Inside this HBox contains two VBoxes opponentBoard and playerBoard
     	boards.getChildren().addAll(opponentBoard, playerBoard);
         //For both of the boards, we want to add in first the label of the board, followed by the grid
@@ -194,8 +205,9 @@ public class BoardGUI extends Application {
         opponentBoard.getChildren().addAll(opponentFleet, opponentGrid);
         //Add all relevant elements to infoPanel
         infoPanel.getChildren().addAll(playerShotLabel, opponentShotLabel);
+        infoStackPane.getChildren().addAll(infoPanelBackground, infoPanel);
         
-        Scene scene = new Scene(root, 800, 500);
+        Scene scene = new Scene(root, sceneWidth, sceneHeight);
 
         stage.setTitle("Board - Battleship");
         stage.setScene(scene);
