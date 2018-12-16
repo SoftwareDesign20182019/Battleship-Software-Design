@@ -54,14 +54,14 @@ public class Gameboard {
 	 * @return	true if deploy is valid.
 	 */
 	public boolean deploy(PlayerType player, int shipStartTileNum,
-							int shipEndTileNum) {
+							int shipEndTileNum, Ship ship) {
 		boolean deployValid = false;
 		switch(player) {
 			case HUMAN:	
-				deployValid = playerBoard.addShip(shipStartTileNum, shipEndTileNum);
+				deployValid = playerBoard.addShip(shipStartTileNum, shipEndTileNum, ship);
 				break;
 			case OPPONENT:
-				deployValid = opponentBoard.addShip(shipStartTileNum, shipEndTileNum);
+				deployValid = opponentBoard.addShip(shipStartTileNum, shipEndTileNum, ship);
 				break;
 		}
 		

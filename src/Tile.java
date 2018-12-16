@@ -12,6 +12,7 @@ public class Tile {
 	private int tileNumber;
 	private BoardGUI boardGUI;
 	private String boardName;
+	private Ship ship;
 
 	public Tile(int tileNumber, TileState currentState, BoardGUI boardGUI, String boardName) {
 
@@ -43,6 +44,7 @@ public class Tile {
 	 */
 	public boolean isHit() {
 		if(this.toString().equals("hit")) {
+			ship.hitRecived();
 			return true;
 		}
 		else {
@@ -77,9 +79,10 @@ public class Tile {
 	 * current state.
 	 * @return	true if occupy if valid.
 	 */
-	public boolean occupyThisTile() {
+	public boolean occupyThisTile(Ship ship) {
 
 		if(isFree()) {
+			this.ship = ship;
 			currentState = currentState.occupyTile();
 			currentState.setTileGUI(boardName, tileNumber, boardGUI);
 			return true;

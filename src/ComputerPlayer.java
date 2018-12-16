@@ -37,7 +37,7 @@ public class ComputerPlayer implements Player {
 		this.strategy = strategy;
 	} //where is this called
 	
-	public ArrayList<Ship> getComputerFleet() {
+	public ArrayList<Ship> getFleet() {
 		return computerFleet.getFleet();
 	}
 	
@@ -49,8 +49,8 @@ public class ComputerPlayer implements Player {
 	
 	public int[][] deployShips(){
 		int[][] deployments = new int[5][2];
-		for(int i = 0; i < getComputerFleet().size();i++) {
-			deployments[i] = getCoordiantes(getComputerFleet().get(i));
+		for(int i = 0; i < getFleet().size();i++) {
+			deployments[i] = getCoordiantes(getFleet().get(i));
 			if(i>0 && !(checkOverlap(i, deployments))) {
 				i--;
 			}
@@ -60,9 +60,9 @@ public class ComputerPlayer implements Player {
 		for(int i = 0; i< deployments.length;i++) {
 			int startIndex = deployments[i][0];
 			int endIndex = deployments[i][1];
-			getComputerFleet().get(i).setStartIndex(startIndex);
-			getComputerFleet().get(i).setEndIndex(endIndex);
-			getComputerFleet().get(i).setPositions();
+			getFleet().get(i).setStartIndex(startIndex);
+			getFleet().get(i).setEndIndex(endIndex);
+			getFleet().get(i).setPositions();
 		}
 		return deployments;
 	}

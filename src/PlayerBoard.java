@@ -1,5 +1,3 @@
-
-
 import java.util.ArrayList;
 
 /**
@@ -58,29 +56,29 @@ public class PlayerBoard {
 	 * @return	true if valid location for ship (none of the tiles 
 	 * 			occupied return null).
 	 */
-	public boolean addShip(int shipStartTileNum, int shipEndTileNum) {
+	public boolean addShip(int shipStartTileNum, int shipEndTileNum, Ship ship) {
 		
 		boolean valid = true;
 		//If ship is vertical
 		if(Math.abs(shipEndTileNum - shipStartTileNum) >= 10) {
 			//If ship is vertical negatively
 			if(shipStartTileNum > shipEndTileNum) {
-				valid = addShipVerticalNegative(shipStartTileNum, shipEndTileNum);
+				valid = addShipVerticalNegative(shipStartTileNum, shipEndTileNum, ship);
 			}
 			
 			else {
-				valid = addShipVerticalPositive(shipStartTileNum, shipEndTileNum);
+				valid = addShipVerticalPositive(shipStartTileNum, shipEndTileNum, ship);
 			}
 		}
 		//If ship is horizontal
 		else {
 			//If ship is horizontal negatively
 			if(shipStartTileNum > shipEndTileNum) {
-				valid = addShipHorizontalNegative(shipStartTileNum, shipEndTileNum);
+				valid = addShipHorizontalNegative(shipStartTileNum, shipEndTileNum, ship);
 			}
 			
 			else {
-				valid = addShipHorizontalPositive(shipStartTileNum, shipEndTileNum);
+				valid = addShipHorizontalPositive(shipStartTileNum, shipEndTileNum, ship);
 			}
 		}
 		return valid;
@@ -92,11 +90,11 @@ public class PlayerBoard {
 	 * @param shipEndTileNum
 	 * @return	true if deploy is valid
 	 */
-	private boolean addShipVerticalNegative(int shipStartTileNum, int shipEndTileNum) {
+	private boolean addShipVerticalNegative(int shipStartTileNum, int shipEndTileNum, Ship ship) {
 		boolean valid = true;
 		for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
 				tileNum = tileNum - 10) {
-				boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+				boolean tileValidity = tileList.get(tileNum).occupyThisTile(ship);
 				if(tileValidity == false) {
 					valid = false;
 				}
@@ -110,11 +108,11 @@ public class PlayerBoard {
 	 * @param shipEndTileNum
 	 * @return	true if deploy is valid
 	 */
-	private boolean addShipVerticalPositive(int shipStartTileNum, int shipEndTileNum) {
+	private boolean addShipVerticalPositive(int shipStartTileNum, int shipEndTileNum, Ship ship) {
 		boolean valid = true;
 		for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
 				tileNum = tileNum + 10) {
-			boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+			boolean tileValidity = tileList.get(tileNum).occupyThisTile(ship);
 			if(tileValidity == false) {
 				valid = false;
 			}
@@ -129,11 +127,11 @@ public class PlayerBoard {
 	 * @param shipEndTileNum
 	 * @return	true if deploy is valid
 	 */
-	private boolean addShipHorizontalNegative(int shipStartTileNum, int shipEndTileNum) {
+	private boolean addShipHorizontalNegative(int shipStartTileNum, int shipEndTileNum, Ship ship) {
 		boolean valid = true;
 		for(int tileNum = shipStartTileNum; tileNum >= shipEndTileNum; 
 				tileNum = tileNum - 1) {
-				boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+				boolean tileValidity = tileList.get(tileNum).occupyThisTile(ship);
 				if(tileValidity == false) {
 					valid = false;
 				}
@@ -147,11 +145,11 @@ public class PlayerBoard {
 	 * @param shipEndTileNum
 	 * @return	true if deploy is valid
 	 */
-	private boolean addShipHorizontalPositive(int shipStartTileNum, int shipEndTileNum) {
+	private boolean addShipHorizontalPositive(int shipStartTileNum, int shipEndTileNum, Ship ship) {
 		boolean valid = true;
 		for(int tileNum = shipStartTileNum; tileNum <= shipEndTileNum; 
 				tileNum = tileNum + 1) {
-			boolean tileValidity = tileList.get(tileNum).occupyThisTile();
+			boolean tileValidity = tileList.get(tileNum).occupyThisTile(ship);
 			if(tileValidity == false) {
 				valid = false; ;
 			}

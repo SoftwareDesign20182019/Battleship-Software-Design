@@ -15,7 +15,6 @@ public class EmptyState implements TileState {
 	
 	public TileState occupyTile() {
 		
-		//Set GUI ??
 		return new OccupiedState();
 	}
 	
