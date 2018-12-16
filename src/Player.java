@@ -11,5 +11,7 @@ public interface Player {
 	
 	public ArrayList<Ship> getFleet();
 	
-	public void setDifficulty(OpponentStrategy strategy);	
+	public void setDifficulty(OpponentStrategy strategy);
+	
+	public void addToScore(int addPoints);
 }

@@ -5,11 +5,14 @@ public class HumanPlayer implements Player {
 	//NEW changed String name to local PlayerType
 	private Gameboard.PlayerType playerType;
 	
+	private int score;
+	
 	HumanPlayer(Gameboard.PlayerType playerType){
 		
 		//NEW setting local playerType to param playerType on construction
 		this.playerType = playerType;
 		myFleet = new Fleet();
+		score = 0;
 	}
 
 	public int chooseTile(boolean wasHit) {
@@ -31,6 +34,10 @@ public class HumanPlayer implements Player {
 
 	public void setDifficulty(OpponentStrategy strategy) {
 		// TODO Auto-generated method stub
+	}
+	
+	public void addToScore(int addPoints) {
+		score = score + addPoints;
 	}
 
 }

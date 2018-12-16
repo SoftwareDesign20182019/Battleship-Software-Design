@@ -22,6 +22,10 @@ public class Tile {
 		this.boardName = boardName;
 	}
 	
+	public int getShipLength() {
+		return ship.getLength();
+	}
+	
 	public int getShipStart() {
 		return ship.getStartTile();
 	}

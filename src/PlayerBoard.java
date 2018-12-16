@@ -43,12 +43,16 @@ public class PlayerBoard {
 	 * @param tileNumber	tile to shoot
 	 * @return	true if tile's new state is HitState()
 	 */
-	public boolean shootTile(int tileNumber) {
+	public boolean shootTile(Player player, int tileNumber) {
 		
 		Tile tileShot = tileList.get(tileNumber);
 		boolean shotHit = tileShot.shootThisTile();
 		if(shotHit && tileShot.toString().equals("Destroyed")) {
 			destroyShip(tileShot);
+			player.addToScore(10 * tileShot.getShipLength());
+		}
+		else if(shotHit) {
+			player.addToScore(5);
 		}
 		return shotHit;
 		 

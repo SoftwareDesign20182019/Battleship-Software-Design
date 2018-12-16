@@ -73,7 +73,7 @@ public class GameLoop {
 	}
 	
 	public void computerTurn() {
-		wasHit = gameBoard.fireShot(opponentPlayer.getType(), opponentPlayer.chooseTile(wasHit));
+		wasHit = gameBoard.fireShot(opponentPlayer, opponentPlayer.chooseTile(wasHit));
 	}
 	
 	private void playerDeployShip(int index) {
@@ -93,7 +93,7 @@ public class GameLoop {
 	
 	public void clickResponseOpponentBoard(int index) {
 		if(!playerDeploy) {
-			gameBoard.fireShot(humanPlayer.getType(), index);
+			gameBoard.fireShot(humanPlayer, index);
 			computerTurn();
 		}
 	}

@@ -7,6 +7,7 @@ public class ComputerPlayer implements Player {
 	private int[][] shipLocations;
 	//NEW local OpponentStrategy
 	private OpponentStrategy strategy;
+	private int score;
 
 	//NEW PlayerType
 	private Gameboard.PlayerType playerType;
@@ -18,13 +19,18 @@ public class ComputerPlayer implements Player {
 		this.playerType = playerType;
 		
 		computerFleet = new Fleet();
-		this.shipLocations = deployShips();		
+		this.shipLocations = deployShips();	
+		score = 0;
 	}
 	
 	
 	public int chooseTile(boolean wasHit){
 		return strategy.chooseBlock(wasHit);
 	
+	}
+	
+	public void addToScore(int addPoints) {
+		score = score + addPoints;
 	}
 	
 	//NEW changed getName to getType
