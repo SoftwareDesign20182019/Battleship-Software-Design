@@ -107,6 +107,7 @@ public class GameLoop {
 		}
 		return playerDeploy;
 	}
+	
 	public double getScore() {
 		return (17/humanShots)*1000*scoreMultiplier;
 	}
