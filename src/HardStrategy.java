@@ -302,16 +302,16 @@ public class HardStrategy implements OpponentStrategy {
         System.out.println("DOWN = " + DOWN);
 
 
-        if (UP >= 0 && tiles[UP] != MISS && tiles[UP] != HIT_UNSUNK) {
+        if (UP >= 0 && tiles[UP] == EMPTY) {
             adjacents.add(UP);
         }
-        if (DOWN <= 99 && tiles[DOWN] != MISS && tiles[DOWN] != HIT_UNSUNK) {
+        if (DOWN <= 99 && tiles[DOWN] == EMPTY) {
             adjacents.add(DOWN);
         }
-        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] != MISS && tiles[RIGHT] != HIT_UNSUNK) {
+        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] == EMPTY) {
             adjacents.add(RIGHT);
         }
-        if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] != MISS && tiles[LEFT] != HIT_UNSUNK) {
+        if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] == EMPTY) {
             adjacents.add(LEFT);
         }
         System.out.println("Adjacents = " + adjacents);
