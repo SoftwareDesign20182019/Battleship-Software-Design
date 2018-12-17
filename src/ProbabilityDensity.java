@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  * @author Wyatt Newhall
- *
+ * Strategy which calculates the best shot to take and returns it
  */
 public class ProbabilityDensity implements OpponentStrategy {
     private int[] tiles = new int[100];
@@ -19,7 +19,6 @@ public class ProbabilityDensity implements OpponentStrategy {
     private int BOARD_SIZE = 99;
     private int lastShot = -1;
     private boolean lastShotHit;
-    private int TO_HIT = 4;
 
     private int root = -1;
 
@@ -31,38 +30,36 @@ public class ProbabilityDensity implements OpponentStrategy {
     private boolean left;
     private boolean down;
 
-    private boolean battleShip;
-    private boolean carrier; //if sunk, these change to true
+    private boolean battleShip; //when ships are sunk, change to true
+    private boolean carrier;
     private boolean oneMid;
     private boolean twoMid;
     private boolean smallShip;
 
     private int nextShot;
 
-
     private int[] tileProbabilities = new int[100];
 
 
     /**
-     * method to return a random empty coordinate
+     * method to return an empty coordinate from most likely empty coordinates
      * @return the position of the fired shot
      */
     public int chooseBlock(boolean wasHit) {
         lastShotHit = wasHit;
         System.out.println("Root =" + root);
         System.out.println("Last Shot Hit = " + lastShotHit);
-        if (wasHit && root == -1){ //BUG! This doesn't seem to register. Perhaps.... hmm.
-            root = lastShot;
+        if (wasHit && root == -1){
+            root = lastShot; //we are 'anchoring' the root at the first shot so we can come back to it if we need to
             SHIPHITS++;
             attack();
         }
         updateTiles();
-        if (SHIPHITS >= MAX_SHIP) {
+        if (SHIPHITS >= MAX_SHIP) { //catching sunk ship here just in case, but if all bugs were hammered out we shouldn't need it
             shipSunk();
         }
 
-
-        if (root != -1) {
+        if (root != -1) {   //if we are attacking a ship
             if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going up
                 nextShot = root + 10;
                 up = true;
@@ -77,29 +74,32 @@ public class ProbabilityDensity implements OpponentStrategy {
                 attack();
                 checkSunk();
                 return hunt();
-            } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //right
+            } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //down
                 nextShot = root - 10;
                 down = true;
                 SHIPHITS++;
                 attack();
                 checkSunk();
                 return hunt();
-            } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //left
+            } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //right
                 nextShot = root - 1;
                 right = true;
                 SHIPHITS++;
                 attack();
                 checkSunk();
                 return hunt();
-            } else { //root is -1;
+            } else { //we know we are attacking a ship, but we don't know where it's facing
                 System.out.println("Commence Find");
                 return find();
             }
-        } else {
+        } else { //we aren't attacking a ship, so survey the rest of the board
             return survey();
         }
     }
 
+    /**
+     *
+     */
     private void updateShips(){
         if (SHIPHITS == 5) {
             carrier = true;

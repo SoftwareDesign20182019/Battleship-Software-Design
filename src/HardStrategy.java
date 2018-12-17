@@ -15,7 +15,7 @@ public class HardStrategy implements OpponentStrategy {
     private int BOARD_SIZE = 99;
     private int lastShot = -1;
     private boolean lastShotHit;
-    private int TO_HIT = 4;
+    private int MARK = 4;
 
     private int root = -1;
 
@@ -62,7 +62,7 @@ public class HardStrategy implements OpponentStrategy {
 
 
         if (root != -1) {
-            if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going up
+            if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going down
                 nextShot = root + 10;
                 up = true;
                 SHIPHITS++;
@@ -76,14 +76,14 @@ public class HardStrategy implements OpponentStrategy {
                 attack();
                 checkSunk();
                 return hunt();
-            } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //right
+            } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //up
                 nextShot = root - 10;
                 down = true;
                 SHIPHITS++;
                 attack();
                 checkSunk();
                 return hunt();
-            } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //left
+            } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //right
                 nextShot = root - 1;
                 right = true;
                 SHIPHITS++;
@@ -142,6 +142,7 @@ public class HardStrategy implements OpponentStrategy {
     private int find() {
         //if last shot is miss, and next shot is not in AL, then shipSunk
         ArrayList<Integer> adj = getAdjacents(root);
+        System.out.println("Weird, next Shot is " + nextShot);
         if(lastShotHit) {
             for (Integer next : adj) {
                 lastShot = next;
@@ -239,8 +240,8 @@ public class HardStrategy implements OpponentStrategy {
     private int survey(){
         System.out.println("Surveying");
         ArrayList<Integer> remainingGrid = new ArrayList<>();
-        for(int i = 0; i < gridTiles.length; i ++ ){
-            if(gridTiles[i] == TO_HIT){
+        for(int i = 0; i < gridTiles.length; i++ ){
+            if(gridTiles[i] == EMPTY){
                 remainingGrid.add(i);
             }
         }
@@ -251,24 +252,20 @@ public class HardStrategy implements OpponentStrategy {
         //first randomly select a number from the arraylist
         //then use that
         lastShot = remainingGrid.get(firedTile);
-        gridTiles[lastShot] = EMPTY;
+        gridTiles[lastShot] = MARK;
+        System.out.println("Should return: " + lastShot);
         return lastShot;
     }
 
     public void populateGrid(){
-        int next = 0;
-        int count = 0;
-        while(next < 100){
-            gridTiles[next] = TO_HIT;
-            next +=2; //going over by two
-            count++;
-            if (count == 5){ //when count is at 5 add 2
-                next++;
-            }
-            if(count >= 10){ //when count is at 10
-                next --;
-                count = 0;
-            }
+        if(!smallShip) {
+            populate(2);
+        } else if (smallShip && (!oneMid || !twoMid)){
+            populate(3);
+        } else if (smallShip && (oneMid && twoMid)) { //battleship and carrier still out there
+            populate(4);
+        } else if(smallShip && (oneMid && twoMid) && battleShip){
+            populate(5);
         }
     }
 
@@ -329,6 +326,7 @@ public class HardStrategy implements OpponentStrategy {
 
     private ArrayList<Integer> getAdjacents(int centerTile) {
         ArrayList<Integer> adjacents = new ArrayList<Integer>();
+        System.out.println(root);
         int UP = centerTile - 10;
         int DOWN = centerTile + 10;
         int RIGHT = centerTile + 1;
@@ -370,10 +368,10 @@ public class HardStrategy implements OpponentStrategy {
         } else {
             if(lastShotHit){
                 tiles[lastShot] = HIT_UNSUNK;
-                gridTiles[lastShot] = EMPTY;
+                gridTiles[lastShot] = MARK;
             } else { //if the last shot was a miss
                 tiles[lastShot] = MISS;
-                gridTiles[lastShot] = EMPTY;
+                gridTiles[lastShot] = MARK;
             }
         }
     }
@@ -383,6 +381,8 @@ public class HardStrategy implements OpponentStrategy {
         shipStatus();
         root = -1;
         SHIPHITS = 0;
+        populateGrid();
+
         for(int i = 0; i < BOARD_SIZE + 1; i++) {
             if (tiles[i] == HIT_UNSUNK){
                 tiles[i] = HIT_SUNK;
@@ -410,26 +410,36 @@ public class HardStrategy implements OpponentStrategy {
 
     }
 
-    public static void main(String[] args){
-        HardStrategy play = new HardStrategy();
-//        int hit1 = play.chooseBlock(false);
-//        System.out.println(hit1);
-//        int hit2 = play.chooseBlock(false); //HITS
-//        System.out.println(hit2);
-//        int hit3 = play.chooseBlock(true); //miss, tries UP
-//        System.out.println(hit3);
-//        int hit4 = play.chooseBlock(true); //miss, tries LEFT
-//        System.out.println(hit4);
-//        int hit5 = play.chooseBlock(true); //Hits, should try RIGHT
-//        System.out.println(hit5);
-//        int hit6 = play.chooseBlock(false);
-//        System.out.println(hit6);
-//        int hit7 = play.chooseBlock(false);
-//        System.out.println(hit7);
-
-
-
+    public void populate(int smallestShip){
+        int  indent = 0;
+        int line = 0;
+        while (line<10){
+            int index = 0;
+            while(index<10){
+                if((index - indent) % smallestShip == 0 ) {
+                    if(tiles[index + (line * 10)] == EMPTY) {
+                        gridTiles[index + (line * 10)] = EMPTY;
+                    }
+                }
+                else{
+                    gridTiles[index + (line * 10)] = MARK;
+                }
+                index++;
+            }
+            line++;
+            indent ++;
+            if(indent >= smallestShip){
+                indent = 0;
+            }
+        }
     }
+
+        public static void main(String[] args){
+        HardStrategy play = new HardStrategy();
+            play.populate(5);
+        }
+
+
 
 
 }
