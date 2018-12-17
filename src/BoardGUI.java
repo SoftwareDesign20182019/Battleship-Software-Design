@@ -31,6 +31,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+/**
+ * BoardGUI handles all of the board graphics!
+ * @author SamDoggett
+ */
+
 public class BoardGUI extends Application {
 	private MainMenuGUI mainMenu;
 	private GameLoop gameLoop;
@@ -55,6 +60,7 @@ public class BoardGUI extends Application {
 	private int deploySize;
 	private int deployIndex;
 	private int deployCount;
+	
 	private BoardGUI.Rotation currentRotation;
 	private BoardGUI.ShipType shipType;
 	private ArrayList<ImageView> tempDisplayShip;
@@ -65,10 +71,6 @@ public class BoardGUI extends Application {
 	
 	private enum ShipType {
 		PATROL, SUB, DESTROYER, BATTLESHIP, AIRCRAFTCARRIER;
-	}
-
-	public BoardGUI() {
-		// Empty constructor, used for tests
 	}
 
 	public BoardGUI(GameLoop gameLoop, MainMenuGUI mainMenu) {
@@ -180,6 +182,7 @@ public class BoardGUI extends Application {
 		ArrayList<StackPane> playerFleetList = setupPlayerFleetHBox(playerFleetHBox);
 
 		boolean[] activeDeployShips = new boolean[5];
+		
 		for(int b=0; b<activeDeployShips.length; b++) {
 			activeDeployShips[b] = true;
 		}
@@ -408,9 +411,14 @@ public class BoardGUI extends Application {
 		for (ImageView image : tempDisplayShip) {
 			playerGrid.getChildren().remove(image);
 		}
-		tempDisplayShip = tempShipSetGridElements(index);
+		tempDisplayShip = tempDeployGridElements(index);
 	}
 
+	/**
+	 * Based on rotation, returns an array of indexes for ship placement
+	 * @param index index of the piviot point
+	 * @return indexes of each ship segement
+	 */
 	private int[] tempShipIndexes(int index) {
 		int[] indexes = new int[deploySize];
 
@@ -439,7 +447,13 @@ public class BoardGUI extends Application {
 		return indexes;
 	}
 
-	private ArrayList<ImageView> tempShipSetGridElements(int index) {
+	/**
+	 * This method will display where a ship will be deployed if deployed
+	 * at this index + rotation. 
+	 * @param index selected index
+	 * @return ArrayList of ImageViews. Each image view is one of the temp deployment images.
+	 */
+	private ArrayList<ImageView> tempDeployGridElements(int index) {
 		ArrayList<ImageView> tempShip = new ArrayList<ImageView>();
 
 		int[] indexes = tempShipIndexes(index);
@@ -503,10 +517,21 @@ public class BoardGUI extends Application {
 		return tempShip;
 	}
 
+	/**
+	 * Helper Method for createShipStack. Takes in the length of the ship
+	 * and returns the size of the stroke rectangle.
+	 * @param numberOfSegments length of ship
+	 * @return width of the stroke rectangle
+	 */
 	private int shipStrokeWidth(int numberOfSegments) {
 		return (numberOfSegments * 25) + (numberOfSegments * 5) + 20;
 	}
 
+	/**
+	 * Creates a stack that contains a deploy ship model
+	 * @param shipLength length of the deploy ship model
+	 * @return Stack pane of model with outline
+	 */
 	private StackPane createShipStack(int shipLength) {
 		int shipStrokeHeight = 35;
 
@@ -530,6 +555,12 @@ public class BoardGUI extends Application {
 		return shipStack;
 	}
 
+	/**
+	 * Returns an arrayList of stack panes. Each stack pane contains a deploy ship model
+	 * that will be place in the bottom stack panel (info panel).
+	 * @param playerFleetHBox the HBox we want the stack panes to go into
+	 * @return ArrayList of all the stack panes
+	 */
 	private ArrayList<StackPane> setupPlayerFleetHBox(HBox playerFleetHBox) {
 		ArrayList<StackPane> fleet = new ArrayList<StackPane>();
 
@@ -550,6 +581,11 @@ public class BoardGUI extends Application {
 		return fleet;
 	}
 
+	/**
+	 * converts an index to a col and row
+	 * @param index index we want to convert
+	 * @return int array containing the col and row
+	 */
 	private int[] convertIndexToCord(int index) {
 		int[] cord = new int[2];
 		int col = index % 10;
@@ -559,6 +595,12 @@ public class BoardGUI extends Application {
 		return cord;
 	}
 
+	/**
+	 * converts column and rows into an index
+	 * @param col column index
+	 * @param row row index
+	 * @return combined index
+	 */
 	private int convertCordToIndex(int col, int row) {
 		return (row * 10) + col;
 	}
