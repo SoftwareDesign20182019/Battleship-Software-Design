@@ -24,7 +24,7 @@ public class ProbabilityDensity implements OpponentStrategy {
     private int root = -1;
 
     private int SHIPHITS = 0;
-    private int MAX_SHIP = 6;
+    private int MAX_SHIP = 5;
 
     private boolean up;
     private boolean right;
@@ -35,6 +35,7 @@ public class ProbabilityDensity implements OpponentStrategy {
     private boolean carrier; //if sunk, these change to true
     private boolean oneMid;
     private boolean twoMid;
+    private boolean smallShip;
 
     private int nextShot;
 
@@ -134,6 +135,9 @@ public class ProbabilityDensity implements OpponentStrategy {
             MAX_SHIP = 2;
             System.out.println("Carrier and BattleShip and Midsized Ships Sunk");
         }
+        if(smallShip && !twoMid && carrier && battleShip){
+            MAX_SHIP = 3;
+        }
     }
 
     private int find() {
@@ -149,14 +153,17 @@ public class ProbabilityDensity implements OpponentStrategy {
 
 
         }else { //Last Shot Missed
+            System.out.println("Next Shot: " + nextShot);
+
             for (Integer linedUp : adj) {
                 if (nextShot != 0) {
-                    if (nextShot == linedUp) {
-                        lastShot = linedUp;
+                    if (adj.contains(nextShot)) {
+                        lastShot = nextShot;
                         nextShot = 0;
                         return lastShot;
                     }
-                    else {
+                }
+                else {
                         System.out.println("Ship hits = " + SHIPHITS);
                         if (SHIPHITS == 3 && !oneMid) {
                             System.out.println("One Mid Sunk");
@@ -176,20 +183,50 @@ public class ProbabilityDensity implements OpponentStrategy {
                             shipSunk();
                             return survey();
                         }
+                        if (SHIPHITS == 2){
+                            System.out.println("Small ship sunk");
+                            smallShip = true;
+                            shipSunk();
+                            return survey();
+                        }
                         System.out.println("BUG~?");
                         lastShot = linedUp;
                         return lastShot; //or return survey!
                     }
                 }
+
                 System.out.println("BUG??");
-                lastShot = linedUp;
-                return lastShot;
+            System.out.println("Ship hits = " + SHIPHITS);
+            if (SHIPHITS == 3 && !oneMid) {
+                System.out.println("One Mid Sunk");
+                oneMid = true;
+                shipSunk();
+                return survey();
             }
-        }
-//            for (Integer next : adj) {
-//                lastShot = next;
-//                return lastShot;
-//            }
+            if (SHIPHITS == 3 && oneMid) {
+                System.out.println("Two Mids Sunk");
+                twoMid = true;
+                shipSunk();
+                return survey();
+            }
+            if (SHIPHITS == 4) {
+                System.out.println("BattleShip Sunk");
+                battleShip = true;
+                shipSunk();
+                return survey();
+            }
+            if (SHIPHITS == 2){
+                System.out.println("Small ship sunk");
+                smallShip = true;
+                shipSunk();
+                return survey();
+            }
+                for (Integer next : adj) {
+                    lastShot = next;
+                    return lastShot;
+                }
+            }
+
         //shipsunk()
         return survey();
     }
@@ -250,10 +287,10 @@ public class ProbabilityDensity implements OpponentStrategy {
             if (tiles[i] == EMPTY) {
                 //horizontal
                 //right
-                if (i + RIGHT <= 99 && i + RIGHT / 10 == i / 10 && tiles[i + RIGHT] == EMPTY) {
+                if (!smallShip && i + RIGHT <= 99 && i + RIGHT / 10 == i / 10 && tiles[i + RIGHT] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (i + RIGHT*2 <= 99 && (i + RIGHT*2) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY) {
+                if ((!oneMid && !twoMid) && i + RIGHT*2 <= 99 && (i + RIGHT*2) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
                 if (!battleShip && (i + RIGHT*3) <= 99 && (i + RIGHT * 3) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY && tiles[i + RIGHT * 3] == EMPTY) {
@@ -263,10 +300,10 @@ public class ProbabilityDensity implements OpponentStrategy {
                     tileProbabilities[i]++;
                 }
                 //LEFT
-                if (i + LEFT >= 0 && i + LEFT / 10 == i / 10 && tiles[i + LEFT] == EMPTY) {
+                if (!smallShip && i + LEFT >= 0 && i + LEFT / 10 == i / 10 && tiles[i + LEFT] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (i + LEFT*2 >= 0 && (i + LEFT * 2) / 10 == i / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY) {
+                if ((!oneMid && !twoMid) && i + LEFT*2 >= 0 && (i + LEFT * 2) / 10 == i / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
                 if (!battleShip && i + LEFT*3 >= 0 && (i + LEFT * 3) / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY && tiles[i + LEFT * 3] == EMPTY) {
@@ -276,10 +313,10 @@ public class ProbabilityDensity implements OpponentStrategy {
                     tileProbabilities[i]++;
                 }
                 //down
-                if (i + DOWN <= 99 && tiles[i + DOWN] == EMPTY) {
+                if (!smallShip && i + DOWN <= 99 && tiles[i + DOWN] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (i + DOWN * 2 <= 99 &&  tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY) {
+                if ((!oneMid && !twoMid) && i + DOWN * 2 <= 99 &&  tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
                 if (!battleShip && i + DOWN*3 <= 99 && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY && tiles[i + DOWN * 3] == EMPTY) {
@@ -290,10 +327,10 @@ public class ProbabilityDensity implements OpponentStrategy {
                 }
                 //up
 
-                if (i + UP >= 0 && tiles[i + UP] == EMPTY) {
+                if (!smallShip && i + UP >= 0 && tiles[i + UP] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (i + UP*2 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY) {
+                if ((!oneMid && !twoMid) && i + UP*2 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
                 if (!battleShip && i + UP*3 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY) {
@@ -348,6 +385,7 @@ public class ProbabilityDensity implements OpponentStrategy {
                     return lastShot;
                 }
             } else {
+                System.out.println("In Right");
                 right = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot + 1)) {
@@ -369,17 +407,17 @@ public class ProbabilityDensity implements OpponentStrategy {
         int RIGHT = centerTile + 1;
         int LEFT = centerTile - 1;
 
-        System.out.println("UP = " + UP);
-        System.out.println("RIGHT " + RIGHT);
-        System.out.println("LEFT = " + LEFT);
-        System.out.println("DOWN = " + DOWN);
+//        System.out.println("UP = " + UP);
+//        System.out.println("RIGHT " + RIGHT);
+//        System.out.println("LEFT = " + LEFT);
+//        System.out.println("DOWN = " + DOWN);
 
 
         if (UP >= 0 && tiles[UP] == EMPTY) {
             adjacents.add(UP);
         }
 
-        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] == EMPTY) {
+        if (RIGHT <= 99 && (RIGHT / 10 == centerTile / 10) && tiles[RIGHT] == EMPTY) {
             adjacents.add(RIGHT);
         }
 
@@ -387,7 +425,7 @@ public class ProbabilityDensity implements OpponentStrategy {
             adjacents.add(DOWN);
         }
 
-        if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] == EMPTY) {
+        if (LEFT >= 0 && (LEFT / 10 == centerTile / 10) && tiles[LEFT] == EMPTY) {
             adjacents.add(LEFT);
         }
         System.out.println("Adjacents = " + adjacents);
@@ -413,6 +451,7 @@ public class ProbabilityDensity implements OpponentStrategy {
 
     private void shipSunk(){
         System.out.println("Ship Sunk");
+        shipStatus();
         root = -1;
         SHIPHITS = 0;
         for(int i = 0; i < BOARD_SIZE + 1; i++) {
@@ -420,6 +459,26 @@ public class ProbabilityDensity implements OpponentStrategy {
                 tiles[i] = HIT_SUNK;
             }
         }
+    }
+
+    private void shipStatus(){
+        System.out.println("Ships Sunk:");
+        if(carrier){
+            System.out.println("Carrier");
+        }
+        if(battleShip){
+            System.out.println("BattleShip");
+        }
+        if (oneMid && !twoMid){
+            System.out.println("One Mid Sized");
+        }
+        if (oneMid && twoMid){
+            System.out.println("Mid Sized Ships");
+        }
+        if(smallShip){
+            System.out.println("Small ship sunk");
+        }
+
     }
 
     public static void main(String[] args){
