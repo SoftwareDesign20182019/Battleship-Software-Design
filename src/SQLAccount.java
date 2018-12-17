@@ -55,7 +55,7 @@ public class SQLAccount {
 				String sql = "create table if not exists Accounts("+
 					"AccountName varchar(30),"+
 					"Password varchar(30) not NULL,"+
-					"HighScore int,"+
+					"HighScore double,"+
 					"primary key (AccountName));";
 				stmt.execute(sql);
 				sql = "create table if not exists Games("+
@@ -67,7 +67,7 @@ public class SQLAccount {
 				stmt.execute(sql);
 				sql = "create table if not exists HighScores("+
 					"ScoreHolder varchar(50) not null," +
-					"Score int,"+
+					"Score double,"+
 					"ScoreID int AUTO_INCREMENT,"+
 					"primary key (ScoreID),"+ 
 					"foreign key (ScoreHolder) references Accounts(AccountName));";

@@ -26,6 +26,8 @@ public class GameLoop {
 	private int shipStartIndex;
 	private int shipEndIndex;
 	private int currentShip;
+	private double humanShots;
+	private double scoreMultiplier;
 	
 	public GameLoop(Stage stage, MainMenuGUI mainMenu) {
 		this.guiStage = stage;
@@ -41,6 +43,7 @@ public class GameLoop {
 	 */
 	public void setOpponentDifficulty(Player opponent) {
 		opponentPlayer.setDifficulty(new MediumStrategy());
+		scoreMultiplier = 1;
 	}
 	
 	/**
@@ -114,6 +117,7 @@ public class GameLoop {
 	public void clickResponseOpponentBoard(int index) {
 		if(!playerDeploy) {
 			gameBoard.fireShot(humanPlayer, index);
+			humanShots++;
 			computerTurn();
 		}
 	}
@@ -128,5 +132,8 @@ public class GameLoop {
 		if(playerDeploy) {
 			playerDeployShip(index);
 		}
+	}
+	public double getScore() {
+		return (17/humanShots)*1000*scoreMultiplier;
 	}
 }
