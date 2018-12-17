@@ -1,5 +1,4 @@
-import javax.print.attribute.IntegerSyntax;
-import java.lang.reflect.Array;
+
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -16,18 +15,26 @@ public class MediumStrategy implements OpponentStrategy {
     private int BOARD_SIZE = 99;
     private int lastShot = -1;
     private boolean lastShotHit;
+    private int TO_HIT = 4;
 
     private int root = -1;
 
     private int SHIPHITS = 0;
-    private int FULLSHIP = 6;
+    private int MAX_SHIP = 5;
 
     private boolean up;
     private boolean right;
     private boolean left;
     private boolean down;
 
-    private int direction = 0;
+    private boolean battleShip;
+    private boolean carrier; //if sunk, these change to true
+    private boolean oneMid;
+    private boolean twoMid;
+    private boolean smallShip;
+
+    private int nextShot;
+
 
 
     /**
@@ -36,38 +43,49 @@ public class MediumStrategy implements OpponentStrategy {
      */
     public int chooseBlock(boolean wasHit) {
         lastShotHit = wasHit;
+        System.out.println("Root =" + root);
         System.out.println("Last Shot Hit = " + lastShotHit);
-        if (wasHit && root == -1) {
+        if (wasHit && root == -1){
             root = lastShot;
             SHIPHITS++;
-        }
-        if (wasHit) {
-            SHIPHITS++;
+            attack();
         }
         updateTiles();
-        if (SHIPHITS >= FULLSHIP) {
+        if (SHIPHITS >= MAX_SHIP) {
             shipSunk();
         }
 
 
         if (root != -1) {
             if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going up
-                direction = 0;
+                nextShot = root + 10;
                 up = true;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root - 1) || (lastShot == root - 2) || (lastShot == root - 3) || (lastShot == root - 4))) {//left
+                nextShot = root + 1;
                 left = true;
-                direction = 0;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //right
+                nextShot = root - 10;
                 down = true;
-                direction = 0;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //left
+                nextShot = root - 1;
                 right = true;
-                direction = 0;
+                SHIPHITS++;
+                attack();
+                checkSunk();
                 return hunt();
-            } else { //why does this happen! LastShotHit is false!
+            } else { //root is -1;
                 System.out.println("Commence Find");
                 return find();
             }
@@ -76,31 +94,159 @@ public class MediumStrategy implements OpponentStrategy {
         }
     }
 
-    private int find() {
-       ArrayList<Integer> adj = getAdjacents(root);
-        for(Integer next: adj){
-            lastShot = next;
-            return lastShot;
+    private void updateShips(){
+        if (SHIPHITS == 5) {
+            carrier = true;
         }
-        System.out.println("In find, nothing in Adjacents");
-        shipSunk();
+        if(SHIPHITS == 4 && carrier){
+            battleShip = true;
+        }
+        if(SHIPHITS == 3 && carrier && battleShip){
+            oneMid = true;
+        }
+        if(SHIPHITS == 3 && carrier && battleShip && oneMid){
+            twoMid = true;
+        }
+    }
+
+    private void checkSunk(){
+        if (SHIPHITS >= MAX_SHIP) {
+            shipSunk();
+        }
+    }
+
+    private void attack(){
+        updateShips();
+        if(carrier && !battleShip){
+            MAX_SHIP = 4;
+            System.out.println("Carrier Sunk");
+        }
+        if(carrier && battleShip){
+            MAX_SHIP = 3;
+            System.out.println("Carrier and BattleShip Sunk");
+        }
+        if(carrier && battleShip && oneMid && twoMid){
+            MAX_SHIP = 2;
+            System.out.println("Carrier and BattleShip and Midsized Ships Sunk");
+        }
+        if(smallShip && !twoMid && carrier && battleShip){
+            MAX_SHIP = 3;
+        }
+    }
+
+    private int find() {
+        //if last shot is miss, and next shot is not in AL, then shipSunk
+        ArrayList<Integer> adj = getAdjacents(root);
+        if(lastShotHit) {
+            for (Integer next : adj) {
+                lastShot = next;
+                return lastShot;
+            }
+            System.out.println("In find, nothing in Adjacents");
+
+
+
+        }else { //Last Shot Missed
+            System.out.println("Next Shot: " + nextShot);
+
+            for (Integer linedUp : adj) {
+                if (nextShot != 0) {
+                    if (adj.contains(nextShot)) {
+                        lastShot = nextShot;
+                        nextShot = 0;
+                        return lastShot;
+                    }
+                }
+                else {
+                    System.out.println("Ship hits = " + SHIPHITS);
+                    if (SHIPHITS == 3 && !oneMid) {
+                        System.out.println("One Mid Sunk");
+                        oneMid = true;
+                        shipSunk();
+                        return random();
+                    }
+                    if (SHIPHITS == 3 && oneMid) {
+                        System.out.println("Two Mids Sunk");
+                        twoMid = true;
+                        shipSunk();
+                        return random();
+                    }
+                    if (SHIPHITS == 4) {
+                        System.out.println("BattleShip Sunk");
+                        battleShip = true;
+                        shipSunk();
+                        return random();
+                    }
+                    if (SHIPHITS == 2){
+                        System.out.println("Small ship sunk");
+                        smallShip = true;
+                        shipSunk();
+                        return random();
+                    }
+                    System.out.println("BUG~?");
+                    lastShot = linedUp;
+                    return lastShot; //or return survey!
+                }
+            }
+
+            System.out.println("BUG??");
+            System.out.println("Ship hits = " + SHIPHITS);
+            if (SHIPHITS == 3 && !oneMid) {
+                System.out.println("One Mid Sunk");
+                oneMid = true;
+                shipSunk();
+                return random();
+            }
+            if (SHIPHITS == 3 && oneMid) {
+                System.out.println("Two Mids Sunk");
+                twoMid = true;
+                shipSunk();
+                return random();
+            }
+            if (SHIPHITS == 4) {
+                System.out.println("BattleShip Sunk");
+                battleShip = true;
+                shipSunk();
+                return random();
+            }
+            if (SHIPHITS == 2){
+                System.out.println("Small ship sunk");
+                smallShip = true;
+                shipSunk();
+                return random();
+            }
+            for (Integer next : adj) {
+                lastShot = next;
+                return lastShot;
+            }
+        }
+
+        //shipsunk()
         return random();
     }
 
+
+
+    /**
+     * Go into the array and select a random remaining 4
+     * @return next number to hit
+     */
     private int random(){
         Random rand = new Random();
         int firedTile;
-        firedTile = rand.nextInt(BOARD_SIZE); //should be returned
-        while (tiles[firedTile] != EMPTY) {
+        firedTile = rand.nextInt(BOARD_SIZE); //try not to hit yourself
+        while(tiles[firedTile] != EMPTY){
             firedTile = rand.nextInt(BOARD_SIZE);
         }
-        lastShot = firedTile;
+        tiles[firedTile] = HIT_UNSUNK;
         return firedTile;
     }
 
 
 
+
     private int hunt(){
+        System.out.println("Hunting");
         ArrayList<Integer> adjAL;
         boolean done = false;
         int i = 0;
@@ -109,7 +255,6 @@ public class MediumStrategy implements OpponentStrategy {
             if (i > 10){
                 return find(); //change back to random if sketchy
             }
-            System.out.printf("Loop = %d\n", i);
             if (up) {
                 up = false;
                 adjAL = getAdjacents(lastShot);
@@ -138,6 +283,7 @@ public class MediumStrategy implements OpponentStrategy {
                     return lastShot;
                 }
             } else {
+                System.out.println("In Right");
                 right = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot + 1)) {
@@ -159,18 +305,31 @@ public class MediumStrategy implements OpponentStrategy {
         int RIGHT = centerTile + 1;
         int LEFT = centerTile - 1;
 
+//        System.out.println("UP = " + UP);
+//        System.out.println("RIGHT " + RIGHT);
+//        System.out.println("LEFT = " + LEFT);
+//        System.out.println("DOWN = " + DOWN);
 
-        if (UP >= 0 && UP <= 99 && tiles[UP] != MISS && tiles[UP] != HIT_UNSUNK) {
+
+        if (UP >= 0 && tiles[UP] == EMPTY) {
             adjacents.add(UP);
         }
-        if (DOWN >= 0 && DOWN <= 99 && tiles[DOWN] != MISS && tiles[DOWN] != HIT_UNSUNK) {
-            adjacents.add(DOWN);
-        }
-        if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] != MISS && tiles[RIGHT] != HIT_UNSUNK) {
+
+        if (RIGHT <= 99 && (RIGHT / 10 == centerTile / 10) && tiles[RIGHT] == EMPTY) {
             adjacents.add(RIGHT);
         }
-        if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] != MISS && tiles[LEFT] != HIT_UNSUNK) {
+
+        if (DOWN <= 99 && tiles[DOWN] == EMPTY) {
+            adjacents.add(DOWN);
+        }
+
+        if (LEFT >= 0 && (LEFT / 10 == centerTile / 10) && tiles[LEFT] == EMPTY) {
             adjacents.add(LEFT);
+        }
+        System.out.println("Adjacents = " + adjacents);
+        //@TODO Not sure where to put this but if not adjacents, root should be = -1
+        if (adjacents.size() == 0){
+            root = -1;
         }
         return adjacents;
     }
@@ -190,6 +349,7 @@ public class MediumStrategy implements OpponentStrategy {
 
     private void shipSunk(){
         System.out.println("Ship Sunk");
+        shipStatus();
         root = -1;
         SHIPHITS = 0;
         for(int i = 0; i < BOARD_SIZE + 1; i++) {
@@ -199,23 +359,23 @@ public class MediumStrategy implements OpponentStrategy {
         }
     }
 
-    public static void main(String[] args){
-        MediumStrategy play = new MediumStrategy();
-        int hit1 = play.chooseBlock(false);
-        System.out.println(hit1);
-        int hit2 = play.chooseBlock(false); //HITS
-        System.out.println(hit2);
-        int hit3 = play.chooseBlock(true); //miss, tries UP
-        System.out.println(hit3);
-        int hit4 = play.chooseBlock(true); //miss, tries LEFT
-        System.out.println(hit4);
-        int hit5 = play.chooseBlock(true); //Hits, should try RIGHT
-        System.out.println(hit5);
-        int hit6 = play.chooseBlock(false);
-        System.out.println(hit6);
-        int hit7 = play.chooseBlock(false);
-        System.out.println(hit7);
-
+    private void shipStatus(){
+        System.out.println("Ships Sunk:");
+        if(carrier){
+            System.out.println("Carrier");
+        }
+        if(battleShip){
+            System.out.println("BattleShip");
+        }
+        if (oneMid && !twoMid){
+            System.out.println("One Mid Sized");
+        }
+        if (oneMid && twoMid){
+            System.out.println("Mid Sized Ships");
+        }
+        if(smallShip){
+            System.out.println("Small ship sunk");
+        }
 
     }
 
