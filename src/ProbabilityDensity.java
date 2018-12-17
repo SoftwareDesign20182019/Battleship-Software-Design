@@ -242,56 +242,56 @@ public class ProbabilityDensity implements OpponentStrategy {
             if (tiles[i] == EMPTY) {
                 //horizontal
                 //right
-                if (tiles[RIGHT] <= 99 && tiles[i + RIGHT] / 10 == tiles[i] / 10 && tiles[i + RIGHT] == EMPTY) {
+                if (i + RIGHT <= 99 && i + RIGHT / 10 == i / 10 && tiles[i + RIGHT] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (tiles[RIGHT] <= 99 && tiles[i + RIGHT * 2] / 10 == tiles[i] / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY) {
+                if (i + RIGHT*2 <= 99 && (i + RIGHT*2) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!battleShip && tiles[RIGHT] <= 99 && tiles[i + RIGHT * 3] / 10 == tiles[i] / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY && tiles[i + RIGHT * 3] == EMPTY) {
+                if (!battleShip && (i + RIGHT*3) <= 99 && (i + RIGHT * 3) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY && tiles[i + RIGHT * 3] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!carrier && tiles[RIGHT] <= 99 && tiles[i + RIGHT * 4] / 10 == tiles[i] / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY && tiles[i + RIGHT * 3] == EMPTY && tiles[i + RIGHT * 4] == EMPTY) {
+                if (!carrier && (i + RIGHT*4) <= 99 && (i + RIGHT * 4) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY && tiles[i + RIGHT * 3] == EMPTY && tiles[i + RIGHT * 4] == EMPTY) {
                     tileProbabilities[i]++;
                 }
                 //LEFT
-                if (tiles[LEFT] >= 0 && tiles[i + LEFT] / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY) {
+                if (i + LEFT >= 0 && i + LEFT / 10 == i / 10 && tiles[i + LEFT] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (tiles[LEFT] >= 0 && tiles[i + LEFT * 2] / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY) {
+                if (i + LEFT*2 >= 0 && (i + LEFT * 2) / 10 == i / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!battleShip && tiles[LEFT] >= 0 && tiles[i + LEFT * 3] / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY && tiles[i + LEFT * 3] == EMPTY) {
+                if (!battleShip && i + LEFT*3 >= 0 && (i + LEFT * 3) / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY && tiles[i + LEFT * 3] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!carrier && tiles[LEFT] >= 0 && tiles[i + LEFT * 4] / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY && tiles[i + LEFT * 3] == EMPTY && tiles[i + LEFT * 4] == EMPTY) {
+                if (!carrier && i + LEFT*4 >= 0 && (i + LEFT * 4) / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY && tiles[i + LEFT * 3] == EMPTY && tiles[i + LEFT * 4] == EMPTY) {
                     tileProbabilities[i]++;
                 }
                 //down
-                if (tiles[DOWN] <= 99 && tiles[i + DOWN] / 10 == tiles[i] / 10 && tiles[i + DOWN] == EMPTY) {
+                if (i + DOWN <= 99 && tiles[i + DOWN] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (tiles[DOWN] <= 99 && tiles[i + DOWN * 2] / 10 == tiles[i] / 10 && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY) {
+                if (i + DOWN * 2 <= 99 &&  tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!battleShip && tiles[DOWN] <= 99 && tiles[i + DOWN * 3] / 10 == tiles[i] / 10 && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY && tiles[i + DOWN * 3] == EMPTY) {
+                if (!battleShip && i + DOWN*3 <= 99 && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY && tiles[i + DOWN * 3] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!carrier && tiles[DOWN] <= 99 && tiles[i + DOWN * 4] / 10 == tiles[i] / 10 && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY && tiles[i + DOWN * 3] == EMPTY && tiles[i + DOWN * 4] == EMPTY) {
+                if (!carrier && i + DOWN*4 <= 99  && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY && tiles[i + DOWN * 3] == EMPTY && tiles[i + DOWN * 4] == EMPTY) {
                     tileProbabilities[i]++;
                 }
                 //up
 
-                if (tiles[UP] >= 0 && tiles[i + UP] / 10 == tiles[i] / 10 && tiles[i + UP] == EMPTY) {
+                if (i + UP >= 0 && tiles[i + UP] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (tiles[UP] >= 0 && tiles[i + UP * 2] / 10 == tiles[i] / 10 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY) {
+                if (i + UP*2 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!battleShip && tiles[UP] >= 0 && tiles[i + UP * 3] / 10 == tiles[i] / 10 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY) {
+                if (!battleShip && i + UP*3 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-                if (!carrier && tiles[UP] >= 0 && tiles[i + UP * 4] / 10 == tiles[i] / 10 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY && tiles[i + UP * 4] == EMPTY) {
+                if (!carrier && i + UP*4 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY && tiles[i + UP * 4] == EMPTY) {
                     tileProbabilities[i]++;
                 }
 
@@ -409,7 +409,7 @@ public class ProbabilityDensity implements OpponentStrategy {
     }
 
     public static void main(String[] args){
-        HardStrategy play = new HardStrategy();
+        ProbabilityDensity play = new ProbabilityDensity();
 //        int hit1 = play.chooseBlock(false);
 //        System.out.println(hit1);
 //        int hit2 = play.chooseBlock(false); //HITS
