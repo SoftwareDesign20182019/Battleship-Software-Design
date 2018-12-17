@@ -3,13 +3,11 @@ import java.util.ArrayList;
 public class HumanPlayer implements Player {
 	private Fleet myFleet;
 	private Gameboard.PlayerType playerType;
-	private int score;
-	
+
 	HumanPlayer(Gameboard.PlayerType playerType){
 	
 		this.playerType = playerType;
 		myFleet = new Fleet();
-		score = 0;
 	}
 
 	public int chooseTile(boolean wasHit) {
@@ -30,14 +28,6 @@ public class HumanPlayer implements Player {
 
 	public void setDifficulty(OpponentStrategy strategy) {
 		// TODO Auto-generated method stub
-	}
-	
-	public int getScore() {
-		return score;
-	}
-	
-	public void addToScore(int addPoints) {
-		score = score + addPoints;
 	}
 
 }

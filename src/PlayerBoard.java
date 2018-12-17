@@ -52,11 +52,8 @@ public class PlayerBoard {
 		boolean shotHit = tileShot.shootThisTile();
 		if(shotHit && tileShot.toString().equals("Destroyed")) {
 			destroyShip(tileShot);
-			player.addToScore(10 * tileShot.getShipLength());
 		}
-		else if(shotHit) {
-			player.addToScore(5);
-		}
+		
 		return shotHit;
 		 
 	}
