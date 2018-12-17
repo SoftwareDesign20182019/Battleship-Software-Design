@@ -90,6 +90,7 @@ public class GameLoop {
 		wasHit = gameBoard.fireShot(opponentPlayer, opponentPlayer.chooseTile(wasHit));
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * Deploy human player's ships. Helper method for clickResponsePlayerBoard(int index)
 	 * @param index	tile chosen for deployment
@@ -114,6 +115,8 @@ public class GameLoop {
 	 * computerTurn() method
 	 * @param index	tile human player chooses to shoot
 	 */
+=======
+>>>>>>> PlayerDeploymentGUI
 	public void clickResponseOpponentBoard(int index) {
 		if(!playerDeploy) {
 			gameBoard.fireShot(humanPlayer, index);
@@ -122,16 +125,22 @@ public class GameLoop {
 		}
 	}
 	
+<<<<<<< HEAD
 	/**
 	 * clickResponse method for player board. Deploys player fleet if playerDeploy is true
 	 * @param index	tile chosen for deployment
 	 */
 	public void clickResponsePlayerBoard(int index) {
 		//if playerDeploy = true, deploy ship, otherwise playerTurn
+=======
+	public boolean clickResponsePlayerBoard(int shipStartIndex, int shipEndIndex, int shipSize) {
+>>>>>>> PlayerDeploymentGUI
 		playerDeploy = currentShip <= humanFleet.size();
 		if(playerDeploy) {
-			playerDeployShip(index);
+			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(shipSize));
+			return true;
 		}
+		return false;
 	}
 	public double getScore() {
 		return (17/humanShots)*1000*scoreMultiplier;
