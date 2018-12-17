@@ -161,16 +161,19 @@ public class HardStrategy implements OpponentStrategy {
                                 System.out.println("One Mid Sunk");
                                 oneMid = true;
                                 shipSunk();
+                                return survey();
                             }
                             if (SHIPHITS == 3 && oneMid) {
                                 System.out.println("Two Mids Sunk");
                                 twoMid = true;
                                 shipSunk();
+                                return survey();
                             }
                             if (SHIPHITS == 4) {
                                 System.out.println("BattleShip Sunk");
                                 battleShip = true;
                                 shipSunk();
+                                return survey();
                             }
                             System.out.println("BUG~?");
                             lastShot = linedUp;
