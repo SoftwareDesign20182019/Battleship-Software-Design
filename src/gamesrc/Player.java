@@ -24,11 +24,4 @@ public interface Player {
 	
 	public void setDifficulty(OpponentStrategy strategy);
 	
-	public int getScore();
-	
-	/**
-	 * Increase Player score attribute
-	 * @param addPoints	points to be added to score
-	 */
-	public void addToScore(int addPoints);
 }
