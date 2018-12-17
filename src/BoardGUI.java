@@ -59,7 +59,6 @@ public class BoardGUI extends Application {
 
 	private int deploySize;
 	private int deployIndex;
-	private int deployCount;
 	
 	private BoardGUI.Rotation currentRotation;
 	private BoardGUI.ShipType shipType;
@@ -79,7 +78,6 @@ public class BoardGUI extends Application {
 		deployPhase = true;
 		deploySize = 0;
 		deployIndex = -1;
-		deployCount = 0;
 		tempDisplayShip = new ArrayList<ImageView>();
 		currentRotation = Rotation.EAST;
 	}
@@ -336,13 +334,8 @@ public class BoardGUI extends Application {
 							playerFleetList.get(4).getChildren().addAll(cross9, cross10);
 							break;
 						}
-						
-						deploySize = 0;
-						deployCount++;
-						if(deployCount == 5) {
-							deployPhase = false;
-						}
 						tempDisplayShip.clear();
+						deploySize = 0;
 					}					
 					if (!deployPhase) {
 						bottomStackPane.getChildren().remove(stackVBox);

@@ -21,10 +21,6 @@ public class GameLoop {
 
 	private ArrayList<Ship> humanFleet;
 	private boolean playerDeploy;
-	private boolean playerShipStart;
-	private boolean playerShipEnd;
-	private int shipStartIndex;
-	private int shipEndIndex;
 	private int currentShip;
 	private double humanShots;
 	private double scoreMultiplier;
@@ -34,7 +30,7 @@ public class GameLoop {
 		this.mainMenu = mainMenu;
 		gameOver = false;
 		playerTurn = true;
-		playerShipStart = true;
+		playerDeploy = true;
 	}
 
 	/**
@@ -105,12 +101,11 @@ public class GameLoop {
 
 	public boolean clickResponsePlayerBoard(int shipStartIndex, int shipEndIndex, int shipSize) {
 		currentShip++;
-		playerDeploy = currentShip < humanFleet.size();
 		if(playerDeploy) {
 			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(shipSize));
-			return true;
+			playerDeploy = currentShip < humanFleet.size();
 		}
-		return false;
+		return playerDeploy;
 	}
 	public double getScore() {
 		return (17/humanShots)*1000*scoreMultiplier;
