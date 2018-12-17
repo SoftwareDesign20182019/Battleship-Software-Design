@@ -323,7 +323,6 @@ public class BoardGUI extends Application {
 						if(!checkOverlap(startIndex)) {
                             int[] indexes = tempShipIndexes(startIndex);
                             int endIndex = indexes[indexes.length - 1];
-                            deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length - 1);
                             //this will add a X to the deployment selection
                             switch (shipType) {
                                 case PATROL:
@@ -331,31 +330,36 @@ public class BoardGUI extends Application {
                                     Line cross1 = new Line(0, 0, shipStrokeWidth(2), 35);
                                     Line cross2 = new Line(0, 35, shipStrokeWidth(2), 0);
                                     playerFleetList.get(0).getChildren().addAll(cross1, cross2);
-                                    break;
+									deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, 4);
+									break;
                                 case SUB:
                                     activeDeployShips[1] = false;
                                     Line cross3 = new Line(0, 0, shipStrokeWidth(3), 35);
                                     Line cross4 = new Line(0, 35, shipStrokeWidth(3), 0);
                                     playerFleetList.get(1).getChildren().addAll(cross3, cross4);
-                                    break;
+									deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, 3);
+									break;
                                 case DESTROYER:
                                     activeDeployShips[2] = false;
                                     Line cross5 = new Line(0, 0, shipStrokeWidth(3), 35);
                                     Line cross6 = new Line(0, 35, shipStrokeWidth(3), 0);
                                     playerFleetList.get(2).getChildren().addAll(cross5, cross6);
-                                    break;
+									deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, 2);
+									break;
                                 case BATTLESHIP:
                                     activeDeployShips[3] = false;
                                     Line cross7 = new Line(0, 0, shipStrokeWidth(4), 35);
                                     Line cross8 = new Line(0, 35, shipStrokeWidth(4), 0);
                                     playerFleetList.get(3).getChildren().addAll(cross7, cross8);
-                                    break;
+									deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, 1);
+									break;
                                 case AIRCRAFTCARRIER:
                                     activeDeployShips[4] = false;
                                     Line cross9 = new Line(0, 0, shipStrokeWidth(5), 35);
                                     Line cross10 = new Line(0, 35, shipStrokeWidth(5), 0);
                                     playerFleetList.get(4).getChildren().addAll(cross9, cross10);
-                                    break;
+									deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, 0);
+									break;
                             }
                             tempDisplayShip.clear();
                             deploySize = 0;
@@ -425,15 +429,28 @@ public class BoardGUI extends Application {
 
 	public void setInfoPanelElements(boolean humanWins, boolean opponentWins, double score) {
 		if(humanWins) {
-			infoPanel.getChildren().removeAll();
-			Label humanWinsLabel = new Label("You destroyed the opponents fleet! Your score: " + score);
+			infoPanel.getChildren().clear();
+			Label humanWinsLabel = new Label("You destroyed the opponents fleet! Your score: " + (int)score);
 			infoPanel.getChildren().add(humanWinsLabel);
 		} else if(opponentWins) {
-			infoPanel.getChildren().removeAll();
-			Label opponentWinsLabel = new Label("The opponent destroyed your fleet! Your score: " + score);
+			infoPanel.getChildren().clear();
+			Label opponentWinsLabel = new Label("The opponent destroyed your fleet! Your score: " + (int)score);
 			infoPanel.getChildren().add(opponentWinsLabel);
 		} else {
-			infoPanel.getChildren().removeAll();
+			infoPanel.getChildren().clear();
+
+			HBox playerHBox = new HBox();
+			playerHBox.setPadding(new Insets(10));
+			playerHBox.setAlignment(Pos.CENTER);
+
+			HBox opponentHBox = new HBox();
+			opponentHBox.setPadding(new Insets(10));
+			opponentHBox.setAlignment(Pos.CENTER);
+
+			Label playerScore = new Label("Current Score: " + (int)score);
+
+			playerHBox.getChildren().add(playerScore);
+			infoPanel.getChildren().addAll(opponentHBox, playerHBox);
 		}
 	}
 

@@ -111,10 +111,10 @@ public class GameLoop {
 		}
 	}
 
-	public boolean clickResponsePlayerBoard(int shipStartIndex, int shipEndIndex, int shipSize) {
-		currentShip++;
+	public boolean clickResponsePlayerBoard(int shipStartIndex, int shipEndIndex, int shipType) {
 		if(playerDeploy) {
-			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(shipSize));
+			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(shipType));
+			currentShip++;
 			playerDeploy = currentShip < humanFleet.size();
 		}
 		return playerDeploy;
@@ -125,9 +125,8 @@ public class GameLoop {
 		if(opponentPlayer.destroyedFleet()) {
 			mainMenu.getSQLAccount().addHighScore(score) ;
 			return score;
-		}
-		else {
-			return 0;
+		} else {
+			return score;
 		}
 	}
 }
