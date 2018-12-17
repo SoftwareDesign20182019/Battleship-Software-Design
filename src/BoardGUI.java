@@ -158,7 +158,7 @@ public class BoardGUI extends Application {
 
 		HBox boards = new HBox();
 
-		boards.setPadding(new Insets(10));
+		boards.setSpacing(10);
 		boards.setAlignment(Pos.CENTER);
 
 		// Each of these VBoxes will contain a gridpane(each board), and also a label
@@ -166,8 +166,8 @@ public class BoardGUI extends Application {
 		VBox playerBoard = new VBox();
 		VBox opponentBoard = new VBox();
 
-		playerBoard.setPadding(new Insets(20));
-		opponentBoard.setPadding(new Insets(20));
+		playerBoard.setPadding(new Insets(5));
+		opponentBoard.setPadding(new Insets(5));
 
 		playerBoard.setAlignment(Pos.CENTER);
 		opponentBoard.setAlignment(Pos.CENTER);
@@ -184,6 +184,7 @@ public class BoardGUI extends Application {
 		VBox stackVBox = new VBox();
 		stackVBox.setSpacing(10);
 		stackVBox.setAlignment(Pos.CENTER);
+		stackVBox.setPadding(new Insets(10));
 
 		Label deployFleetLabel = new Label("Select Ship from Fleet to Deploy");
 		deployFleetLabel.setFont(new Font("Arial", 24));
@@ -262,6 +263,11 @@ public class BoardGUI extends Application {
 
 					displayTempShip(deployIndex);
 				}
+
+				if(keyEvent.getCode() == KeyCode.ESCAPE) {
+					//LOAD ESCAPE MENU
+					System.out.println("Escape");
+				}
 			}
 		});
 		//info panel will replace the deployment selection once all ships are selected
@@ -279,21 +285,24 @@ public class BoardGUI extends Application {
 		opponentGrid.setHgap(5);
 		opponentGrid.setVgap(5);
 
+		Label battleShipLabel = new Label("BATTLESHIP");
 		Label playerFleetLabel = new Label("Player Fleet");
-		Label opponentFleet = new Label("Opponent Fleet");
-		Label placeHolderLabel = new Label("Game Information Placeholder");
+		Label opponentFleetLabel = new Label("Opponent Fleet");
+		Label escapeGameLabel = new Label("Press Esc to Access Exit Menu");
 
+		battleShipLabel.setAlignment(Pos.BASELINE_CENTER);
 		playerFleetLabel.setAlignment(Pos.BASELINE_CENTER);
-		opponentFleet.setAlignment(Pos.BASELINE_CENTER);
-		placeHolderLabel.setAlignment(Pos.BASELINE_CENTER);
+		opponentFleetLabel.setAlignment(Pos.BASELINE_CENTER);
+		escapeGameLabel.setAlignment(Pos.BOTTOM_CENTER);
 
-		playerFleetLabel.setPadding(new Insets(10));
-		opponentFleet.setPadding(new Insets(10));
-		placeHolderLabel.setPadding(new Insets(10));
+		playerFleetLabel.setPadding(new Insets(5));
+		opponentFleetLabel.setPadding(new Insets(5));
+		escapeGameLabel.setPadding(new Insets(2));
 
+		battleShipLabel.setFont(new Font("Arial", 30));
 		playerFleetLabel.setFont(new Font("Arial", 24));
-		opponentFleet.setFont(new Font("Arial", 24));
-		placeHolderLabel.setFont(new Font("Arial", 24));
+		opponentFleetLabel.setFont(new Font("Arial", 24));
+		escapeGameLabel.setFont(new Font("Arial", 18));
 
 		// Setup player grid with empties
 		for (int row = 0; row < boardHeight; row++) {
@@ -410,14 +419,14 @@ public class BoardGUI extends Application {
 		});
 
 		// Our main VBox, root layout
-		root.getChildren().addAll(boards, bottomStackPane);
+		root.getChildren().addAll(battleShipLabel, boards, bottomStackPane, escapeGameLabel);
 		// First element in root, HBox. Inside this HBox contains two VBoxes
 		// opponentBoard and playerBoard
 		boards.getChildren().addAll(opponentBoard, playerBoard);
 		// For both of the boards, we want to add in first the label of the board,
 		// followed by the grid
 		playerBoard.getChildren().addAll(playerFleetLabel, playerGrid);
-		opponentBoard.getChildren().addAll(opponentFleet, opponentGrid);
+		opponentBoard.getChildren().addAll(opponentFleetLabel, opponentGrid);
 		stackVBox.getChildren().addAll(deployFleetLabel, playerFleetHBox);
 		bottomStackPane.getChildren().addAll(stackPaneFrame, stackVBox);
 
