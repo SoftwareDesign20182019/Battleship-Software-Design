@@ -20,37 +20,31 @@ public class SQLAccount {
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
 		public String accountName;
-		private static final String USER_NAME = "root"; 
-		private static final String PASSWORD = "root"; 
-		private static final String HOST ="localhost";
-		//private static final String USER_NAME = "softwarebuds"; 
-		//private static final String PASSWORD = "battleship"; 
-		//private static final String HOST ="18.224.24.63";
+		private static final String USER_NAME = "softwarebuds"; 
+		private static final String PASSWORD = "battleship"; 
+		//private static final String HOST ="samdoggett.com";
+		private static final String HOST ="18.224.24.63";
 		private static final String INITIAL_CONNECT = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/";
 		private static final String CONNECTION_INFO = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/"+ DATABASENAME +"?user="+ USER_NAME +"&password="+PASSWORD;
-		
+		private Connection conn; // MySQL
+		private Statement stmt;
 
 		public SQLAccount(String accountName_) {
-			this.accountName = accountName_;
-			try (
-					// Step 1: Allocate a database "Connection" object
-					Connection conn = DriverManager.getConnection(INITIAL_CONNECT,USER_NAME, PASSWORD); // MySQL
-					// Step 2: Allocate a "Statement" object in the Connection
-					Statement stmt = conn.createStatement();
-					) {
+			this.accountName = accountName_; 
+			try {
+					conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
+					stmt = conn.createStatement();
+				
 				// Step 3 - create our database
 				String sql = "create database if not exists "+ DATABASENAME;
 				stmt.execute(sql);
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 			}
-			try (
-					// Step 1: Allocate a database "Connection" object
-					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
-
-					// Step 2: Allocate a "Statement" object in the Connection
-					Statement stmt = conn.createStatement();
-					) {
+			/**
+			 * fix me daddy
+			 */
+			try {
 				// Step 3 - create our new table
 				String sql = "create table if not exists Accounts("+
 					"AccountName varchar(30),"+
@@ -72,7 +66,7 @@ public class SQLAccount {
 					"primary key (ScoreID),"+ 
 					"foreign key (ScoreHolder) references Accounts(AccountName));";
 				stmt.execute(sql);
-
+				
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -87,20 +81,14 @@ public class SQLAccount {
 				return true;
 			}
 			String sql = "";
-			try (
-					// Step 1: Allocate a database "Connection" object
-					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
-
-					// Step 2: Allocate a "Statement" object in the Connection
-					Statement stmt = conn.createStatement();
-				) {
+			try 
+			{
 			
 				sql = "INSERT INTO `Accounts`(`AccountName`, `Password`) VALUES ('"+accountName+"','"+password+"')";			
 				stmt.execute(sql);
 				return true;
 					
 			}catch(SQLIntegrityConstraintViolationException es) {
-				System.out.println("Account Already Exists");
 				return false;}
 			catch(Exception e) {
 				e.printStackTrace();
@@ -113,11 +101,8 @@ public class SQLAccount {
 			if(accountName == null) {
 				return true;
 			}
-			try (
-					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
-					Statement stmt = conn.createStatement();
-				) {
-			
+			try 
+			{
 			
 			
 				ResultSet rs;
@@ -164,13 +149,7 @@ public class SQLAccount {
 			String fileName = toBeUploaded.getName();
 			String fileType = fileName.substring(fileName.indexOf('.'), fileName.length());
 			String gameName = fileName.substring(0,fileName.indexOf('.'));
-			try (
-					// Step 1: Allocate a database "Connection" object
-					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
-
-					// Step 2: Allocate a "Statement" object in the Connection
-					Statement stmt = conn.createStatement();
-				) {
+			try  {
 
 
 			if(!fileType.equals(".bin")) {
@@ -224,24 +203,42 @@ public class SQLAccount {
 			return true;
 			}catch(Exception e) {return false;}
 		}
+		
+		public ArrayList<String> getUserGames(){
+			ArrayList<String> games = new ArrayList<String>();
+			
+			if(accountName == null) {
+				return null;
+			}
+			
+			try {
+				ResultSet rs;
+				String query = "SELECT name FROM Games where GameAccount = '"+ accountName +"'";
+				rs = stmt.executeQuery(query);
+				while(rs.next()) {
+					games.add(rs.getString(1));
+				}
+				
+				
+			}catch(Exception e) {
+					e.printStackTrace();
+					return null;
+				}
+			return games;
+			}
+			
+		
 		public File getGame(String gameName) {
 			if(accountName == null) {
 				return null;
 			}
 			
-			try (
-					// Step 1: Allocate a database "Connection" object
-					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
-
-					// Step 2: Allocate a "Statement" object in the Connection
-					Statement stmt = conn.createStatement();
-				) {
+			try  {
 			
 			
 			
 				ResultSet rs;
 				String query = "SELECT game,name FROM Games where GameAccount = '"+ accountName +"'";
-				//stmt = conn.createStatement();//fix me 
 				
 				
 				rs = stmt.executeQuery(query);
@@ -282,10 +279,7 @@ public class SQLAccount {
 			ArrayList<String> names = new ArrayList<String>();
 			ArrayList<ArrayList> allData = new ArrayList<ArrayList>();
 
-			try (
-					Connection conn = DriverManager.getConnection(CONNECTION_INFO); 
-					Statement stmt = conn.createStatement();
-				) {
+			try {
 				
 				ResultSet rs;
 				String query = "SELECT Score,ScoreHolder FROM HighScores ORDER BY Score DESC";
@@ -320,10 +314,8 @@ public class SQLAccount {
 			}
 			double currentHighScore;
 			String sql, sql2;
-			try (
-					Connection conn = DriverManager.getConnection(CONNECTION_INFO); 
-					Statement stmt = conn.createStatement();
-				) {
+			try {
+				stmt.setFetchSize(30);
 				ResultSet rs;
 				sql = "INSERT INTO `HighScores`(`ScoreHolder`, `Score`) VALUES ('"+accountName+"', "+highscore+")";
 				stmt.execute(sql);
@@ -355,10 +347,10 @@ public class SQLAccount {
 
 			File f = new File("AI23.bin");
 			SQLAccount test = new SQLAccount("Sam");
+			//SQLAccount test2 = new SQLAccount("Drew");
 			
-			test.addAccount("Big secret");
-			test.addHighScore(110);
-			test.getHighScores();
-		}
+			test.logIn("Big secret");
+			
+			}
 }
 
