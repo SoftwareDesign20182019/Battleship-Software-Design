@@ -318,45 +318,46 @@ public class BoardGUI extends Application {
 						int col = playerGrid.getColumnIndex((ImageView) source);
 						int row = playerGrid.getRowIndex((ImageView) source);
 						int startIndex = convertCordToIndex(col, row);
-						int[] indexes = tempShipIndexes(startIndex);
-						int endIndex = indexes[indexes.length - 1];
-						deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length - 1);
-
-						//this will add a X to the deployment selection
-						switch (shipType) {
-						case PATROL:
-							activeDeployShips[0] = false;
-							Line cross1 = new Line(0, 0, shipStrokeWidth(2), 35);
-							Line cross2 = new Line(0, 35, shipStrokeWidth(2), 0);
-							playerFleetList.get(0).getChildren().addAll(cross1, cross2);
-							break;
-						case SUB:
-							activeDeployShips[1] = false;
-							Line cross3 = new Line(0, 0, shipStrokeWidth(3), 35);
-							Line cross4 = new Line(0, 35, shipStrokeWidth(3), 0);
-							playerFleetList.get(1).getChildren().addAll(cross3, cross4);
-							break;
-						case DESTROYER:
-							activeDeployShips[2] = false;
-							Line cross5 = new Line(0, 0, shipStrokeWidth(3), 35);
-							Line cross6 = new Line(0, 35, shipStrokeWidth(3), 0);
-							playerFleetList.get(2).getChildren().addAll(cross5, cross6);
-							break;
-						case BATTLESHIP:
-							activeDeployShips[3] = false;
-							Line cross7 = new Line(0, 0, shipStrokeWidth(4), 35);
-							Line cross8 = new Line(0, 35, shipStrokeWidth(4), 0);
-							playerFleetList.get(3).getChildren().addAll(cross7, cross8);
-							break;
-						case AIRCRAFTCARRIER:
-							activeDeployShips[4] = false;
-							Line cross9 = new Line(0, 0, shipStrokeWidth(5), 35);
-							Line cross10 = new Line(0, 35, shipStrokeWidth(5), 0);
-							playerFleetList.get(4).getChildren().addAll(cross9, cross10);
-							break;
-						}
-						tempDisplayShip.clear();
-						deploySize = 0;
+						if(!checkOverlap(startIndex)) {
+                            int[] indexes = tempShipIndexes(startIndex);
+                            int endIndex = indexes[indexes.length - 1];
+                            deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length - 1);
+                            //this will add a X to the deployment selection
+                            switch (shipType) {
+                                case PATROL:
+                                    activeDeployShips[0] = false;
+                                    Line cross1 = new Line(0, 0, shipStrokeWidth(2), 35);
+                                    Line cross2 = new Line(0, 35, shipStrokeWidth(2), 0);
+                                    playerFleetList.get(0).getChildren().addAll(cross1, cross2);
+                                    break;
+                                case SUB:
+                                    activeDeployShips[1] = false;
+                                    Line cross3 = new Line(0, 0, shipStrokeWidth(3), 35);
+                                    Line cross4 = new Line(0, 35, shipStrokeWidth(3), 0);
+                                    playerFleetList.get(1).getChildren().addAll(cross3, cross4);
+                                    break;
+                                case DESTROYER:
+                                    activeDeployShips[2] = false;
+                                    Line cross5 = new Line(0, 0, shipStrokeWidth(3), 35);
+                                    Line cross6 = new Line(0, 35, shipStrokeWidth(3), 0);
+                                    playerFleetList.get(2).getChildren().addAll(cross5, cross6);
+                                    break;
+                                case BATTLESHIP:
+                                    activeDeployShips[3] = false;
+                                    Line cross7 = new Line(0, 0, shipStrokeWidth(4), 35);
+                                    Line cross8 = new Line(0, 35, shipStrokeWidth(4), 0);
+                                    playerFleetList.get(3).getChildren().addAll(cross7, cross8);
+                                    break;
+                                case AIRCRAFTCARRIER:
+                                    activeDeployShips[4] = false;
+                                    Line cross9 = new Line(0, 0, shipStrokeWidth(5), 35);
+                                    Line cross10 = new Line(0, 35, shipStrokeWidth(5), 0);
+                                    playerFleetList.get(4).getChildren().addAll(cross9, cross10);
+                                    break;
+                            }
+                            tempDisplayShip.clear();
+                            deploySize = 0;
+                        }
 					}
 					if (!deployPhase) {
 						bottomStackPane.getChildren().remove(stackVBox);
@@ -463,6 +464,44 @@ public class BoardGUI extends Application {
 		return indexes;
 	}
 
+    /**
+     * check if there is overlap with the ship indexes
+     * @param index index of first location
+     * @return t/f if there are overlaps
+     */
+	private boolean checkOverlap(int index) {
+		int[] indexes = tempShipIndexes(index);
+
+		for(int t=0; t< indexes.length; t++) {
+			int indexRow = index / 10;
+			int currIndex = indexes[t] / 10;
+
+			switch (currentRotation) {
+				case NORTH:
+					if(indexes[t] < 0) {
+						return true;
+					}
+                    break;
+                case EAST:
+					if(indexRow != currIndex) {
+						return true;
+					}
+                    break;
+                case SOUTH:
+					if(indexes[t] > 99) {
+						return true;
+					}
+					break;
+				case WEST:
+					if(indexRow != currIndex) {
+						return true;
+					}
+					break;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * This method will display where a ship will be deployed if deployed
 	 * at this index + rotation.
@@ -471,54 +510,53 @@ public class BoardGUI extends Application {
 	 */
 	private ArrayList<ImageView> tempDeployGridElements(int index) {
 		ArrayList<ImageView> tempShip = new ArrayList<ImageView>();
+        int[] indexes = tempShipIndexes(index);
 
-		int[] indexes = tempShipIndexes(index);
+        edgeOverlap = false;
+        int edgeIndex = -1;
 
-		edgeOverlap = false;
-		int edgeIndex = -1;
+        for(int t=0; t< indexes.length; t++) {
+            int indexRow = index / 10;
+            int currIndex = indexes[t] / 10;
 
-		for(int t=0; t< indexes.length; t++) {
-			int indexRow = index / 10;
-			int currIndex = indexes[t] / 10;
-
-			switch (currentRotation) {
-			case NORTH:
-				if(indexes[t] < 0) {
-					edgeOverlap = true;
-					edgeIndex = t;
-				} else {
-					edgeOverlap = false;
-				}
-				break;
-			case EAST:
-				if(indexRow != currIndex) {
-					edgeOverlap = true;
-					edgeIndex = t;
-				} else {
-					edgeOverlap = false;
-				}
-				break;
-			case SOUTH:
-				if(indexes[t] > 99) {
-					edgeOverlap = true;
-					edgeIndex = t;
-				} else {
-					edgeOverlap = false;
-				}
-				break;
-			case WEST:
-				if(indexRow != currIndex) {
-					edgeOverlap = true;
-					edgeIndex = t;
-				} else {
-					edgeOverlap = false;
-				}
-				break;
-			}
-			if(edgeOverlap) {
-				break;
-			}
-		}
+            switch (currentRotation) {
+                case NORTH:
+                    if(indexes[t] < 0) {
+                        edgeOverlap = true;
+                        edgeIndex = t;
+                    } else {
+                        edgeOverlap = false;
+                    }
+                    break;
+                case EAST:
+                    if(indexRow != currIndex) {
+                        edgeOverlap = true;
+                        edgeIndex = t;
+                    } else {
+                        edgeOverlap = false;
+                    }
+                    break;
+                case SOUTH:
+                    if(indexes[t] > 99) {
+                        edgeOverlap = true;
+                        edgeIndex = t;
+                    } else {
+                        edgeOverlap = false;
+                    }
+                    break;
+                case WEST:
+                    if(indexRow != currIndex) {
+                        edgeOverlap = true;
+                        edgeIndex = t;
+                    } else {
+                        edgeOverlap = false;
+                    }
+                    break;
+            }
+            if(edgeOverlap) {
+                break;
+            }
+        }
 
 		if(!edgeOverlap) {
 			for (int i = 0; i < indexes.length; i++) {
