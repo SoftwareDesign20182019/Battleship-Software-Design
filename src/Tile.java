@@ -80,6 +80,7 @@ public class Tile {
 			if(this.toString().equals("Hit")) {
 				hit = true;
 				ship.hitRecived();
+				shipDestroyed();
 			}
 		}
 
