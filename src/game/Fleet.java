@@ -16,6 +16,14 @@ public class Fleet {
 		buildFleet();
 	}
 	
+	/**
+	 * Return specified ship in fleet
+	 * @param index of ship in fleet
+	 * @return	ship specified
+	 */
+	public Ship getShip(int index) {
+		return myFleet.get(index);
+	}
 	
 	public ArrayList<Ship> getFleet(){
 		return myFleet;
@@ -55,14 +63,7 @@ public class Fleet {
 		}
 	}
 	
-	/**
-	 * For testing only will be deleted
-	 * @param index
-	 * @return
-	 */
-	public Ship getShip(int index) {
-		return myFleet.get(index);
-	}
+	
 	
 	/**
 	 * For testing.
