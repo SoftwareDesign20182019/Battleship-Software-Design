@@ -20,12 +20,12 @@ public class SQLAccount {
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
 		public String accountName;
-		//private static final String USER_NAME = "root"; 
-		//private static final String PASSWORD = "root"; 
-		//private static final String HOST ="localhost";
-		private static final String USER_NAME = "softwarebuds"; 
-		private static final String PASSWORD = "battleship"; 
-		private static final String HOST ="samdoggett.com";
+		private static final String USER_NAME = "root"; 
+		private static final String PASSWORD = "root"; 
+		private static final String HOST ="localhost";
+		//private static final String USER_NAME = "softwarebuds"; 
+		//private static final String PASSWORD = "battleship"; 
+		//private static final String HOST ="18.224.24.63";
 		private static final String INITIAL_CONNECT = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/";
 		private static final String CONNECTION_INFO = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/"+ DATABASENAME +"?user="+ USER_NAME +"&password="+PASSWORD;
 		
@@ -79,7 +79,13 @@ public class SQLAccount {
 				
 		}
 		
+		public String getName() {
+			return accountName;
+		}
 		public boolean addAccount(String password) {
+			if(accountName == null) {
+				return true;
+			}
 			String sql = "";
 			try (
 					// Step 1: Allocate a database "Connection" object
@@ -104,6 +110,9 @@ public class SQLAccount {
 		}
 	
 		public boolean logIn(String password) {
+			if(accountName == null) {
+				return true;
+			}
 			try (
 					Connection conn = DriverManager.getConnection(CONNECTION_INFO); // MySQL
 					Statement stmt = conn.createStatement();
@@ -149,6 +158,9 @@ public class SQLAccount {
 		}
 		
 		public boolean uploadGame(File toBeUploaded) {
+			if(accountName == null) {
+				return true;
+			}
 			String fileName = toBeUploaded.getName();
 			String fileType = fileName.substring(fileName.indexOf('.'), fileName.length());
 			String gameName = fileName.substring(0,fileName.indexOf('.'));
@@ -187,6 +199,9 @@ public class SQLAccount {
 		}
 
 		public boolean updateGame(File game) {
+			if(accountName == null) {
+				return true;
+			}
 			String fileName = game.getName();
 			String fileType = fileName.substring(fileName.indexOf('.'), fileName.length());
 			String gameName = fileName.substring(0,fileName.indexOf('.'));
@@ -210,6 +225,9 @@ public class SQLAccount {
 			}catch(Exception e) {return false;}
 		}
 		public File getGame(String gameName) {
+			if(accountName == null) {
+				return null;
+			}
 			
 			try (
 					// Step 1: Allocate a database "Connection" object
@@ -237,7 +255,7 @@ public class SQLAccount {
 					String tempName = rs.getString("name");
 					
 					if(tempName.equals(gameName)) {
-						    System.out.println("Read "+ temp.length() + " bytes ");
+						    //System.out.println("Read "+ temp.length() + " bytes ");
 						    byte [] array = temp.getBytes( 1, ( int ) temp.length() );
 						    File file = new File(tempName+".bin");
 						    FileOutputStream out = new FileOutputStream( file );
@@ -276,17 +294,13 @@ public class SQLAccount {
 				rs = stmt.executeQuery(query);
 				int count = 1;
 				while(rs.next() && count <= 10) {
-					System.out.println("it added me");
 					scores.add(rs.getInt(1));
 					names.add(rs.getString(2));
 					count ++;
 				}
 				
 				
-				for(int i = 0; i< scores.size(); i++) {
-					System.out.print(scores.get(i) + " ");
-					System.out.println(names.get(i));
-				}
+				
 				allData.add(scores);
 				allData.add(names);
 				return allData;
@@ -300,8 +314,11 @@ public class SQLAccount {
 			
 		}
 		
-		public boolean addHighScore(int highscore) {
-			int currentHighScore;
+		public boolean addHighScore(double highscore) {
+			if(accountName == null) {
+				return true;
+			}
+			double currentHighScore;
 			String sql, sql2;
 			try (
 					Connection conn = DriverManager.getConnection(CONNECTION_INFO); 

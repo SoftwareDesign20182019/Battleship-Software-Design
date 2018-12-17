@@ -79,6 +79,7 @@ public class GameLoop {
 		currentShip = 0;
 		//Check for destroyed fleets, end game
 		if(humanPlayer.destroyedFleet() || opponentPlayer.destroyedFleet()) {
+			getScore();
 			gameOver = true;
 		}
 	}
@@ -134,6 +135,13 @@ public class GameLoop {
 		}
 	}
 	public double getScore() {
-		return (17/humanShots)*1000*scoreMultiplier;
+		double score = (17/humanShots)*1000*scoreMultiplier;
+		if(opponentPlayer.destroyedFleet()) {
+			mainMenu.getSQLAccount().addHighScore(score) ;
+			return score;
+		}
+		else {
+			return 0;
+		}
 	}
 }

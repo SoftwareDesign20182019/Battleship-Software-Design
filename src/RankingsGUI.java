@@ -83,13 +83,12 @@ public class RankingsGUI extends Application {
     	ObservableList<Integer> ranks = FXCollections.observableArrayList (
     			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 42);
     	rankList.setItems(ranks);
-    	System.out.println("Perfectly fine");
     	SQLAccount highscoreGetter = mainMenu.getSQLAccount();
     	initialList = highscoreGetter.getHighScores();
     	ObservableList<String> usernames = FXCollections.observableArrayList ();
     	ObservableList<Integer> scores = FXCollections.observableArrayList ();
     	
-    	for(int i = 0; i< NUMBER_OF_HIGHSCORES; i++) {
+    	for(int i = 0; i< initialList.get(0).size(); i++) {
     		
     		scores.add((Integer) initialList.get(0).get(i));
     		usernames.add((String) initialList.get(1).get(i));
