@@ -42,7 +42,7 @@ public class GameLoop {
 	 * @param opponent	player whose difficulty (strategy) user will set
 	 */
 	public void setOpponentDifficulty(Player opponent) {
-		opponentPlayer.setDifficulty(new MediumStrategy());
+		opponentPlayer.setDifficulty(new HardStrategy());
 		scoreMultiplier = 1;
 	}
 	
