@@ -56,10 +56,15 @@ public class BoardGUI extends Application {
 	private int deploySize;
 	private int deployIndex;
 	private BoardGUI.Rotation currentRotation;
+	private BoardGUI.ShipType shipType;
 	private ArrayList<ImageView> tempDisplayShip;
 
 	private enum Rotation {
 		NORTH, EAST, SOUTH, WEST;
+	}
+	
+	private enum ShipType {
+		PATROL, SUB, DESTROYER, BATTLESHIP, AIRCRAFTCARRIER;
 	}
 
 	public BoardGUI() {
@@ -182,18 +187,23 @@ public class BoardGUI extends Application {
 					if (deployPhase) {
 						switch (playerFleetList.indexOf(stack)) {
 						case 0:
+							shipType = ShipType.PATROL;
 							deploySize = 2;
 							break;
 						case 1:
+							shipType = ShipType.SUB;
 							deploySize = 3;
 							break;
 						case 2:
+							shipType = ShipType.DESTROYER;
 							deploySize = 3;
 							break;
 						case 3:
+							shipType = ShipType.BATTLESHIP;
 							deploySize = 4;
 							break;
 						case 4:
+							shipType = ShipType.AIRCRAFTCARRIER;
 							deploySize = 5;
 							break;
 						}
@@ -281,13 +291,35 @@ public class BoardGUI extends Application {
 			@Override
 			public void handle(MouseEvent e) {
 				Object source = e.getTarget();
-				if (deployPhase && source instanceof ImageView) {
-					int col = playerGrid.getColumnIndex((ImageView) source);
-					int row = playerGrid.getRowIndex((ImageView) source);
-					int startIndex = convertCordToIndex(col, row);
-					int[] indexes = tempShipIndexes(startIndex);
-					int endIndex = indexes[indexes.length - 1];
-					deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length);
+				if (source instanceof ImageView) {
+					ImageView sourceImageView = (ImageView)source;
+					if(deployPhase) {
+						int col = playerGrid.getColumnIndex((ImageView) source);
+						int row = playerGrid.getRowIndex((ImageView) source);
+						int startIndex = convertCordToIndex(col, row);
+						int[] indexes = tempShipIndexes(startIndex);
+						int endIndex = indexes[indexes.length - 1];
+						deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length);
+						
+						switch (shipType) {
+						case PATROL:
+							playerFleetHBox.getChildren().remove(0);
+							break;
+						case SUB:
+							playerFleetHBox.getChildren().remove(1);
+							break;
+						case DESTROYER:
+							playerFleetHBox.getChildren().remove(2);
+							break;
+						case BATTLESHIP:
+							playerFleetHBox.getChildren().remove(3);
+							break;
+						case AIRCRAFTCARRIER:
+							playerFleetHBox.getChildren().remove(4);
+							break;
+						}
+						tempDisplayShip.clear();
+					}					
 					if (!deployPhase) {
 						bottomStackPane.getChildren().remove(playerFleetHBox);
 						bottomStackPane.getChildren().add(infoPanel);
