@@ -51,6 +51,7 @@ public class BoardGUI extends Application {
 	private Label opponentShotLabel;
 
 	private boolean deployPhase;
+	private boolean edgeOverlap;
 
 	private int deploySize;
 	private int deployIndex;
@@ -283,7 +284,10 @@ public class BoardGUI extends Application {
 				if (deployPhase && source instanceof ImageView) {
 					int col = playerGrid.getColumnIndex((ImageView) source);
 					int row = playerGrid.getRowIndex((ImageView) source);
-					deployPhase = gameLoop.clickResponsePlayerBoard(convertCordToIndex(col, row));
+					int startIndex = convertCordToIndex(col, row);
+					int[] indexes = tempShipIndexes(startIndex);
+					int endIndex = indexes[indexes.length - 1];
+					deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length);
 					if (!deployPhase) {
 						bottomStackPane.getChildren().remove(playerFleetHBox);
 						bottomStackPane.getChildren().add(infoPanel);
@@ -387,7 +391,7 @@ public class BoardGUI extends Application {
 
 		int[] indexes = tempShipIndexes(index);
 		
-		boolean edgeOverlap = false;
+		edgeOverlap = false;
 		int edgeIndex = -1;
 		
 		for(int t=0; t< indexes.length; t++) {

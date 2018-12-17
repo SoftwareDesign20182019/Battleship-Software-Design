@@ -76,21 +76,6 @@ public class GameLoop {
 		wasHit = gameBoard.fireShot(opponentPlayer.getType(), opponentPlayer.chooseTile(wasHit));
 	}
 	
-	private void playerDeployShip(int index) {
-		if(playerShipStart) {
-			shipStartIndex = index;
-			playerShipStart = false;
-			playerShipEnd = true;
-		}
-		else if(playerShipEnd) {
-			shipEndIndex = index;
-			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(currentShip));
-			currentShip++;
-			playerShipStart = true;
-			playerShipEnd = false;
-		}
-	}
-	
 	public void clickResponseOpponentBoard(int index) {
 		if(!playerDeploy) {
 			gameBoard.fireShot(humanPlayer.getType(), index);
@@ -98,11 +83,10 @@ public class GameLoop {
 		}
 	}
 	
-	public boolean clickResponsePlayerBoard(int index) {
-		//if playerDeploy = true, deploy ship, otherwise playerTurn
+	public boolean clickResponsePlayerBoard(int shipStartIndex, int shipEndIndex, int shipSize) {
 		playerDeploy = currentShip <= humanFleet.size();
 		if(playerDeploy) {
-			playerDeployShip(index);
+			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(shipSize));
 			return true;
 		}
 		return false;
