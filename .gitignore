@@ -13,3 +13,4 @@
 /.recommenders/
 '.idea' 
 *.xml
+.idea/workspace.xml
