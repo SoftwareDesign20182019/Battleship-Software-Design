@@ -1,4 +1,8 @@
-
+/**
+ * Destroyed TileState
+ * @author owenmiller
+ *
+ */
 public class DestroyedState implements TileState {
 	
 	public TileState shootTile() {

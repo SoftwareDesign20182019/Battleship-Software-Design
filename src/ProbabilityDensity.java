@@ -1,4 +1,8 @@
 
+
+
+import javax.management.BadAttributeValueExpException;
+import java.lang.reflect.Array;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -6,7 +10,7 @@ import java.util.ArrayList;
  * @author Wyatt Newhall
  *
  */
-public class MediumStrategy implements OpponentStrategy {
+public class ProbabilityDensity implements OpponentStrategy {
     private int[] tiles = new int[100];
     private int EMPTY = 0;
     private int HIT_UNSUNK = 1;
@@ -36,6 +40,8 @@ public class MediumStrategy implements OpponentStrategy {
     private int nextShot;
 
 
+    private int[] tileProbabilities = new int[100];
+
 
     /**
      * method to return a random empty coordinate
@@ -45,7 +51,7 @@ public class MediumStrategy implements OpponentStrategy {
         lastShotHit = wasHit;
         System.out.println("Root =" + root);
         System.out.println("Last Shot Hit = " + lastShotHit);
-        if (wasHit && root == -1){
+        if (wasHit && root == -1){ //BUG! This doesn't seem to register. Perhaps.... hmm.
             root = lastShot;
             SHIPHITS++;
             attack();
@@ -54,6 +60,7 @@ public class MediumStrategy implements OpponentStrategy {
         if (SHIPHITS >= MAX_SHIP) {
             shipSunk();
         }
+
 
         if (root != -1) {
             if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going up
@@ -89,7 +96,7 @@ public class MediumStrategy implements OpponentStrategy {
                 return find();
             }
         } else {
-            return random();
+            return survey();
         }
     }
 
@@ -157,71 +164,71 @@ public class MediumStrategy implements OpponentStrategy {
                     }
                 }
                 else {
-                    System.out.println("Ship hits = " + SHIPHITS);
-                    if (SHIPHITS == 3 && !oneMid) {
-                        System.out.println("One Mid Sunk");
-                        oneMid = true;
-                        shipSunk();
-                        return random();
+                        System.out.println("Ship hits = " + SHIPHITS);
+                        if (SHIPHITS == 3 && !oneMid) {
+                            System.out.println("One Mid Sunk");
+                            oneMid = true;
+                            shipSunk();
+                            return survey();
+                        }
+                        if (SHIPHITS == 3 && oneMid) {
+                            System.out.println("Two Mids Sunk");
+                            twoMid = true;
+                            shipSunk();
+                            return survey();
+                        }
+                        if (SHIPHITS == 4) {
+                            System.out.println("BattleShip Sunk");
+                            battleShip = true;
+                            shipSunk();
+                            return survey();
+                        }
+                        if (SHIPHITS == 2){
+                            System.out.println("Small ship sunk");
+                            smallShip = true;
+                            shipSunk();
+                            return survey();
+                        }
+                        System.out.println("BUG~?");
+                        lastShot = linedUp;
+                        return lastShot; //or return survey!
                     }
-                    if (SHIPHITS == 3 && oneMid) {
-                        System.out.println("Two Mids Sunk");
-                        twoMid = true;
-                        shipSunk();
-                        return random();
-                    }
-                    if (SHIPHITS == 4) {
-                        System.out.println("BattleShip Sunk");
-                        battleShip = true;
-                        shipSunk();
-                        return random();
-                    }
-                    if (SHIPHITS == 2){
-                        System.out.println("Small ship sunk");
-                        smallShip = true;
-                        shipSunk();
-                        return random();
-                    }
-                    System.out.println("BUG~?");
-                    lastShot = linedUp;
-                    return lastShot; //or return survey!
                 }
-            }
 
-            System.out.println("BUG??");
+                System.out.println("BUG??");
             System.out.println("Ship hits = " + SHIPHITS);
             if (SHIPHITS == 3 && !oneMid) {
                 System.out.println("One Mid Sunk");
                 oneMid = true;
                 shipSunk();
-                return random();
+                return survey();
             }
             if (SHIPHITS == 3 && oneMid) {
                 System.out.println("Two Mids Sunk");
                 twoMid = true;
                 shipSunk();
-                return random();
+                return survey();
             }
             if (SHIPHITS == 4) {
                 System.out.println("BattleShip Sunk");
                 battleShip = true;
                 shipSunk();
-                return random();
+                return survey();
             }
             if (SHIPHITS == 2){
                 System.out.println("Small ship sunk");
                 smallShip = true;
                 shipSunk();
-                return random();
+                return survey();
             }
-            for (Integer next : adj) {
-                lastShot = next;
-                return lastShot;
+                for (Integer next : adj) {
+                    lastShot = next;
+                    return lastShot;
+                }
             }
-        }
 
         //shipsunk()
-        return random();
+        return survey();
     }
 
 
@@ -230,17 +237,112 @@ public class MediumStrategy implements OpponentStrategy {
      * Go into the array and select a random remaining 4
      * @return next number to hit
      */
-    private int random(){
-        Random rand = new Random();
-        int firedTile;
-        firedTile = rand.nextInt(BOARD_SIZE); //try not to hit yourself
-        while(tiles[firedTile] != EMPTY){
-            firedTile = rand.nextInt(BOARD_SIZE);
+    private int survey(){
+        System.out.println("Surveying");
+        ArrayList<Integer> largestest = new ArrayList<>();
+
+        for(int i = 0; i < tileProbabilities.length; i++ ){
+            tileProbabilities[i] = tiles[i];
+            if(tileProbabilities[i] == 0){
+                tileProbabilities[i] = 1;
+            } else {
+                tileProbabilities[i] = 0;
+            }
         }
-        tiles[firedTile] = HIT_UNSUNK;
-        lastShot = firedTile;
-        return firedTile;
+    //Probability Function Goes Here
+    //1st check how many times a ship can go on each squa
+        boolean done = false;
+        findDensities();
+        //find largest number in tileProbabilities
+        int largest = 0;
+        for(int n = 0; n < tileProbabilities.length; n ++){
+            //System.out.println(n + " hit count = " + tileProbabilities[n]);
+            if(tileProbabilities[n] > tileProbabilities[largest]){
+                largest = n;
+            }
+        }
+        for(int j = 0; j < tileProbabilities.length; j ++){
+            if(tileProbabilities[j] == tileProbabilities[largest]){
+                largestest.add(j);
+            }
+        }
+        Random rand = new Random();
+        int fireShot = rand.nextInt(largestest.size());
+
+        //first randomly select a number from the arraylist
+        //then use that
+        lastShot = largestest.get(fireShot);
+        return lastShot;
     }
+
+    private void findDensities() {
+        int UP = -10;
+        int DOWN = 10;
+        int RIGHT = 1;
+        int LEFT = -1;
+
+        for (int i = 0; i < tiles.length; i++) {
+            //horizontal
+            //do this for each ship
+            if (tiles[i] == EMPTY) {
+                //horizontal
+                //right
+                if (!smallShip && i + RIGHT <= 99 && i + RIGHT / 10 == i / 10 && tiles[i + RIGHT] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if ((!oneMid && !twoMid) && i + RIGHT*2 <= 99 && (i + RIGHT*2) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!battleShip && (i + RIGHT*3) <= 99 && (i + RIGHT * 3) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY && tiles[i + RIGHT * 3] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!carrier && (i + RIGHT*4) <= 99 && (i + RIGHT * 4) / 10 == i / 10 && tiles[i + RIGHT] == EMPTY && tiles[i + RIGHT * 2] == EMPTY && tiles[i + RIGHT * 3] == EMPTY && tiles[i + RIGHT * 4] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                //LEFT
+                if (!smallShip && i + LEFT >= 0 && i + LEFT / 10 == i / 10 && tiles[i + LEFT] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if ((!oneMid && !twoMid) && i + LEFT*2 >= 0 && (i + LEFT * 2) / 10 == i / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!battleShip && i + LEFT*3 >= 0 && (i + LEFT * 3) / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY && tiles[i + LEFT * 3] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!carrier && i + LEFT*4 >= 0 && (i + LEFT * 4) / 10 == tiles[i] / 10 && tiles[i + LEFT] == EMPTY && tiles[i + LEFT * 2] == EMPTY && tiles[i + LEFT * 3] == EMPTY && tiles[i + LEFT * 4] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                //down
+                if (!smallShip && i + DOWN <= 99 && tiles[i + DOWN] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if ((!oneMid && !twoMid) && i + DOWN * 2 <= 99 &&  tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!battleShip && i + DOWN*3 <= 99 && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY && tiles[i + DOWN * 3] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!carrier && i + DOWN*4 <= 99  && tiles[i + DOWN] == EMPTY && tiles[i + DOWN * 2] == EMPTY && tiles[i + DOWN * 3] == EMPTY && tiles[i + DOWN * 4] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                //up
+
+                if (!smallShip && i + UP >= 0 && tiles[i + UP] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if ((!oneMid && !twoMid) && i + UP*2 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!battleShip && i + UP*3 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+                if (!carrier && i + UP*4 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY && tiles[i + UP * 4] == EMPTY) {
+                    tileProbabilities[i]++;
+                }
+            }
+        }
+    }
+
 
 
 
@@ -379,6 +481,28 @@ public class MediumStrategy implements OpponentStrategy {
 
     }
 
+    public static void main(String[] args){
+        ProbabilityDensity play = new ProbabilityDensity();
+//        int hit1 = play.chooseBlock(false);
+//        System.out.println(hit1);
+//        int hit2 = play.chooseBlock(false); //HITS
+//        System.out.println(hit2);
+//        int hit3 = play.chooseBlock(true); //miss, tries UP
+//        System.out.println(hit3);
+//        int hit4 = play.chooseBlock(true); //miss, tries LEFT
+//        System.out.println(hit4);
+//        int hit5 = play.chooseBlock(true); //Hits, should try RIGHT
+//        System.out.println(hit5);
+//        int hit6 = play.chooseBlock(false);
+//        System.out.println(hit6);
+//        int hit7 = play.chooseBlock(false);
+//        System.out.println(hit7);
+
+
+
+    }
+
 
 }
+
 
