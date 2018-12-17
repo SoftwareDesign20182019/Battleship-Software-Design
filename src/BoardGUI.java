@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import javafx.application.Application;
@@ -25,6 +26,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -47,14 +49,12 @@ public class BoardGUI extends Application {
 	private Image ship;
 	private Image deploy;
 
-	private Label playerShotLabel;
-	private Label opponentShotLabel;
-
 	private boolean deployPhase;
 	private boolean edgeOverlap;
 
 	private int deploySize;
 	private int deployIndex;
+	private int deployCount;
 	private BoardGUI.Rotation currentRotation;
 	private BoardGUI.ShipType shipType;
 	private ArrayList<ImageView> tempDisplayShip;
@@ -75,8 +75,9 @@ public class BoardGUI extends Application {
 		this.mainMenu = mainMenu;
 		this.gameLoop = gameLoop;
 		deployPhase = true;
-		deploySize = -1;
+		deploySize = 0;
 		deployIndex = -1;
+		deployCount = 0;
 		tempDisplayShip = new ArrayList<ImageView>();
 		currentRotation = Rotation.EAST;
 	}
@@ -128,10 +129,8 @@ public class BoardGUI extends Application {
 			}
 
 			if (gridName.equals("playerBoard")) {
-				playerShotLabel.setText("Player " + shotType + ": " + col + "," + row);
 				playerGrid.add(gridImage, col, row);
 			} else if (gridName.equals("opponentBoard")) {
-				opponentShotLabel.setText("Opponent " + shotType + ": " + col + "," + row);
 				opponentGrid.add(gridImage, col, row);
 			}
 			return gridImage;
@@ -180,11 +179,16 @@ public class BoardGUI extends Application {
 
 		ArrayList<StackPane> playerFleetList = setupPlayerFleetHBox(playerFleetHBox);
 
+		boolean[] activeDeployShips = new boolean[5];
+		for(int b=0; b<activeDeployShips.length; b++) {
+			activeDeployShips[b] = true;
+		}
+		
 		for (StackPane stack : playerFleetList) {
 			stack.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 				@Override
 				public void handle(MouseEvent e) {
-					if (deployPhase) {
+					if (deployPhase && activeDeployShips[playerFleetList.indexOf(stack)]) {
 						switch (playerFleetList.indexOf(stack)) {
 						case 0:
 							shipType = ShipType.PATROL;
@@ -255,23 +259,19 @@ public class BoardGUI extends Application {
 
 		Label playerFleetLabel = new Label("Player Fleet");
 		Label opponentFleet = new Label("Opponent Fleet");
-		playerShotLabel = new Label("");
-		opponentShotLabel = new Label("");
+		Label placeHolderLabel = new Label("Game Information Placeholder");
 
 		playerFleetLabel.setAlignment(Pos.BASELINE_CENTER);
 		opponentFleet.setAlignment(Pos.BASELINE_CENTER);
-		playerShotLabel.setAlignment(Pos.BASELINE_CENTER);
-		opponentShotLabel.setAlignment(Pos.BASELINE_CENTER);
+		placeHolderLabel.setAlignment(Pos.BASELINE_CENTER);
 
 		playerFleetLabel.setPadding(new Insets(10));
 		opponentFleet.setPadding(new Insets(10));
-		playerShotLabel.setPadding(new Insets(10));
-		opponentShotLabel.setPadding(new Insets(10));
+		placeHolderLabel.setPadding(new Insets(10));
 
 		playerFleetLabel.setFont(new Font("Arial", 24));
 		opponentFleet.setFont(new Font("Arial", 24));
-		playerShotLabel.setFont(new Font("Arial", 24));
-		opponentShotLabel.setFont(new Font("Arial", 24));
+		placeHolderLabel.setFont(new Font("Arial", 24));
 
 		// Setup player grid with empties
 		for (int row = 0; row < boardHeight; row++) {
@@ -299,29 +299,50 @@ public class BoardGUI extends Application {
 						int startIndex = convertCordToIndex(col, row);
 						int[] indexes = tempShipIndexes(startIndex);
 						int endIndex = indexes[indexes.length - 1];
-						deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length);
+						deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length - 1);
 						
 						switch (shipType) {
 						case PATROL:
-							playerFleetHBox.getChildren().remove(0);
+							activeDeployShips[0] = false;
+							Line cross1 = new Line(0, 0, shipStrokeWidth(2), 35);
+							Line cross2 = new Line(0, 35, shipStrokeWidth(2), 0);
+							playerFleetList.get(0).getChildren().addAll(cross1, cross2);
 							break;
 						case SUB:
-							playerFleetHBox.getChildren().remove(1);
+							activeDeployShips[1] = false;
+							Line cross3 = new Line(0, 0, shipStrokeWidth(3), 35);
+							Line cross4 = new Line(0, 35, shipStrokeWidth(3), 0);
+							playerFleetList.get(1).getChildren().addAll(cross3, cross4);
 							break;
 						case DESTROYER:
-							playerFleetHBox.getChildren().remove(2);
+							activeDeployShips[2] = false;
+							Line cross5 = new Line(0, 0, shipStrokeWidth(3), 35);
+							Line cross6 = new Line(0, 35, shipStrokeWidth(3), 0);
+							playerFleetList.get(2).getChildren().addAll(cross5, cross6);
 							break;
 						case BATTLESHIP:
-							playerFleetHBox.getChildren().remove(3);
+							activeDeployShips[3] = false;
+							Line cross7 = new Line(0, 0, shipStrokeWidth(4), 35);
+							Line cross8 = new Line(0, 35, shipStrokeWidth(4), 0);
+							playerFleetList.get(3).getChildren().addAll(cross7, cross8);
 							break;
 						case AIRCRAFTCARRIER:
-							playerFleetHBox.getChildren().remove(4);
+							activeDeployShips[4] = false;
+							Line cross9 = new Line(0, 0, shipStrokeWidth(5), 35);
+							Line cross10 = new Line(0, 35, shipStrokeWidth(5), 0);
+							playerFleetList.get(4).getChildren().addAll(cross9, cross10);
 							break;
+						}
+						
+						deploySize = 0;
+						deployCount++;
+						if(deployCount == 5) {
+							deployPhase = false;
 						}
 						tempDisplayShip.clear();
 					}					
 					if (!deployPhase) {
-						bottomStackPane.getChildren().remove(playerFleetHBox);
+						bottomStackPane.getChildren().remove(stackVBox);
 						bottomStackPane.getChildren().add(infoPanel);
 					}
 				}
@@ -373,7 +394,7 @@ public class BoardGUI extends Application {
 		opponentBoard.getChildren().addAll(opponentFleet, opponentGrid);
 		// Add all relevant elements to infoPanel. infoPanel will not be added to the
 		// stackPane by default until the deployment phase is over
-		infoPanel.getChildren().addAll(playerShotLabel, opponentShotLabel);
+		infoPanel.getChildren().addAll(placeHolderLabel);
 		stackVBox.getChildren().addAll(deployFleetLabel, playerFleetHBox);
 		bottomStackPane.getChildren().addAll(stackPaneFrame, stackVBox);
 		
