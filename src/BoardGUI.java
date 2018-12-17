@@ -96,38 +96,41 @@ public class BoardGUI extends Application {
 	 * @param newImage the new image we wish to set
 	 */
 	public ImageView setGridElement(String gridName, int index, String shotType) {
-		int[] cords = convertIndexToCord(index);
-		int col = cords[0];
-		int row = cords[1];
+		if(index >= 0 && index <= 99) {
+			int[] cords = convertIndexToCord(index);
+			int col = cords[0];
+			int row = cords[1];
 
-		ImageView gridImage = new ImageView();
+			ImageView gridImage = new ImageView();
 
-		switch (shotType) {
-		case "Hit":
-			gridImage.setImage(hit);
-			break;
-		case "Empty":
-			gridImage.setImage(empty);
-			break;
-		case "Miss":
-			gridImage.setImage(miss);
-			break;
-		case "Ship":
-			gridImage.setImage(ship);
-			break;
-		case "Deploy":
-			gridImage.setImage(deploy);
-			break;
+			switch (shotType) {
+			case "Hit":
+				gridImage.setImage(hit);
+				break;
+			case "Empty":
+				gridImage.setImage(empty);
+				break;
+			case "Miss":
+				gridImage.setImage(miss);
+				break;
+			case "Ship":
+				gridImage.setImage(ship);
+				break;
+			case "Deploy":
+				gridImage.setImage(deploy);
+				break;
+			}
+
+			if (gridName.equals("playerBoard")) {
+				playerShotLabel.setText("Player " + shotType + ": " + col + "," + row);
+				playerGrid.add(gridImage, col, row);
+			} else if (gridName.equals("opponentBoard")) {
+				opponentShotLabel.setText("Opponent " + shotType + ": " + col + "," + row);
+				opponentGrid.add(gridImage, col, row);
+			}
+			return gridImage;
 		}
-
-		if (gridName.equals("playerBoard")) {
-			playerShotLabel.setText("Player " + shotType + ": " + col + "," + row);
-			playerGrid.add(gridImage, col, row);
-		} else if (gridName.equals("opponentBoard")) {
-			opponentShotLabel.setText("Opponent " + shotType + ": " + col + "," + row);
-			opponentGrid.add(gridImage, col, row);
-		}
-		return gridImage;
+		return null;
 	}
 
 	private boolean setupUI(Stage stage) {
@@ -383,10 +386,63 @@ public class BoardGUI extends Application {
 		ArrayList<ImageView> tempShip = new ArrayList<ImageView>();
 
 		int[] indexes = tempShipIndexes(index);
-
-		for (int i = 0; i < indexes.length; i++) {
-			tempShip.add(setGridElement("playerBoard", indexes[i], "Deploy"));
+		
+		boolean edgeOverlap = false;
+		int edgeIndex = -1;
+		
+		for(int t=0; t< indexes.length; t++) {
+			int indexRow = index / 10;
+			int currIndex = indexes[t] / 10;
+			
+			switch (currentRotation) {
+			case NORTH:
+				if(indexes[t] < 0) {
+					edgeOverlap = true;
+					edgeIndex = t;
+				} else {
+					edgeOverlap = false;
+				}
+				break;
+			case EAST:
+				if(indexRow != currIndex) {
+					edgeOverlap = true;
+					edgeIndex = t;
+				} else {
+					edgeOverlap = false;
+				}
+				break;
+			case SOUTH:
+				if(indexes[t] > 99) {
+					edgeOverlap = true;
+					edgeIndex = t;
+				} else {
+					edgeOverlap = false;
+				}
+				break;
+			case WEST:
+				if(indexRow != currIndex) {
+					edgeOverlap = true;
+					edgeIndex = t;
+				} else {
+					edgeOverlap = false;
+				}
+				break;
+			}
+			if(edgeOverlap) {
+				break;
+			}
 		}
+
+		if(!edgeOverlap) {
+			for (int i = 0; i < indexes.length; i++) {
+				tempShip.add(setGridElement("playerBoard", indexes[i], "Deploy"));
+			}
+		} else {
+			for (int i = 0; i < edgeIndex; i++) {
+				tempShip.add(setGridElement("playerBoard", indexes[i], "Hit"));
+			}
+		}
+		
 		return tempShip;
 	}
 
