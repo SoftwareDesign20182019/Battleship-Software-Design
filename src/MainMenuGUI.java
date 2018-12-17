@@ -15,12 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -54,6 +49,16 @@ public class MainMenuGUI extends Application {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);
+
+        BackgroundImage backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+
+        Background background = new Background(backgroundimage);
+
+        root.setBackground(background);
     	
     	Label battleshipTitle = new Label("BATTLESHIP");
     	Button newGameButton = new Button("New Game");
@@ -129,7 +134,7 @@ public class MainMenuGUI extends Application {
 				}
             }
         	});
-    	
+
     	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, signOutButton);
     	
     	Scene scene = new Scene(root, 800, 500);
