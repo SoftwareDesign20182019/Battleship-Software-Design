@@ -53,6 +53,7 @@ public class BoardGUI extends Application {
 	private Image miss;
 	private Image ship;
 	private Image deploy;
+	private Image destroyed;
 
 	private boolean deployPhase;
 	private boolean edgeOverlap;
@@ -94,6 +95,7 @@ public class BoardGUI extends Application {
 		miss = new Image("File:miss.png", true);
 		ship = new Image("File:ship.png", true);
 		deploy = new Image("File:deploy.png", true);
+		destroyed = new Image("File:destroyed.png", true);
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class BoardGUI extends Application {
 	 * @param gridName the grid we would like to change
 	 * @param newImage the new image we wish to set
 	 */
-	public ImageView setGridElement(String gridName, int index, String shotType) {
+	public ImageView setGridElement(String gridName, int index, String newImage) {
 		if(index >= 0 && index <= 99) {
 			int[] cords = convertIndexToCord(index);
 			int col = cords[0];
@@ -110,7 +112,7 @@ public class BoardGUI extends Application {
 
 			ImageView gridImage = new ImageView();
 
-			switch (shotType) {
+			switch (newImage) {
 			case "Hit":
 				gridImage.setImage(hit);
 				break;
@@ -125,6 +127,9 @@ public class BoardGUI extends Application {
 				break;
 			case "Deploy":
 				gridImage.setImage(deploy);
+				break;
+			case "Destroyed":
+				gridImage.setImage(destroyed);
 				break;
 			}
 
