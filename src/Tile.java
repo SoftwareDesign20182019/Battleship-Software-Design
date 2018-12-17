@@ -80,7 +80,9 @@ public class Tile {
 			if(this.toString().equals("Hit")) {
 				hit = true;
 				ship.hitRecived();
-				shipDestroyed();
+				if(ship.isDestroyed()) {
+					shipDestroyed();
+				}
 			}
 		}
 
@@ -92,9 +94,8 @@ public class Tile {
 	 * @return	true if ship is destroyed
 	 */
 	public void shipDestroyed() {
-		if(ship.isDestroyed()) {
-			currentState = currentState.destroyShip();
-		}
+		currentState = currentState.destroyShip();
+		currentState.setTileGUI(boardName, tileNumber, boardGUI);
 	}
 
 

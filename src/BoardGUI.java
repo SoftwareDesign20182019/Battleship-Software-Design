@@ -48,6 +48,8 @@ public class BoardGUI extends Application {
 	private GridPane playerGrid;
 	private GridPane opponentGrid;
 
+	private HBox infoPanel;
+
 	private Image empty;
 	private Image hit;
 	private Image miss;
@@ -263,7 +265,7 @@ public class BoardGUI extends Application {
 			}
 		});
 		//info panel will replace the deployment selection once all ships are selected
-		HBox infoPanel = new HBox();
+		infoPanel = new HBox();
 		infoPanel.setPadding(new Insets(10));
 		infoPanel.setAlignment(Pos.CENTER);
 
@@ -395,7 +397,7 @@ public class BoardGUI extends Application {
 			@Override
 			public void handle(MouseEvent e) {
 				Object source = e.getTarget();
-				if (!deployPhase && source instanceof ImageView) {
+				if (!deployPhase && source instanceof ImageView && ((ImageView) source).getImage() == empty) {
 					int col = opponentGrid.getColumnIndex((ImageView) source);
 					int row = opponentGrid.getRowIndex((ImageView) source);
 					gameLoop.clickResponseOpponentBoard(convertCordToIndex(col, row));
@@ -412,9 +414,6 @@ public class BoardGUI extends Application {
 		// followed by the grid
 		playerBoard.getChildren().addAll(playerFleetLabel, playerGrid);
 		opponentBoard.getChildren().addAll(opponentFleet, opponentGrid);
-		// Add all relevant elements to infoPanel. infoPanel will not be added to the
-		// stackPane by default until the deployment phase is over
-		infoPanel.getChildren().addAll(placeHolderLabel);
 		stackVBox.getChildren().addAll(deployFleetLabel, playerFleetHBox);
 		bottomStackPane.getChildren().addAll(stackPaneFrame, stackVBox);
 
@@ -422,6 +421,20 @@ public class BoardGUI extends Application {
 		stage.setScene(scene);
 		stage.show();
 		return true;
+	}
+
+	public void setInfoPanelElements(boolean humanWins, boolean opponentWins, double score) {
+		if(humanWins) {
+			infoPanel.getChildren().removeAll();
+			Label humanWinsLabel = new Label("You destroyed the opponents fleet! Your score: " + score);
+			infoPanel.getChildren().add(humanWinsLabel);
+		} else if(opponentWins) {
+			infoPanel.getChildren().removeAll();
+			Label opponentWinsLabel = new Label("The opponent destroyed your fleet! Your score: " + score);
+			infoPanel.getChildren().add(opponentWinsLabel);
+		} else {
+			infoPanel.getChildren().removeAll();
+		}
 	}
 
 	private void displayTempShip(int index) {

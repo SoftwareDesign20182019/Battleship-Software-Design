@@ -22,7 +22,7 @@ public class DestroyedState implements TileState {
 	
 	public TileState destroyShip() {
 		
-		return null;
+		return new DestroyedState();
 	}
 	
 	public String getState() {

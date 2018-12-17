@@ -16,7 +16,8 @@ public class GameLoop {
 	private ArrayList<Ship> opponentShips;
 	private boolean wasHit;
 
-	private boolean gameOver;
+	private boolean humanWins;
+	private boolean opponentWins;
 	private boolean playerTurn;
 
 	private ArrayList<Ship> humanFleet;
@@ -28,7 +29,6 @@ public class GameLoop {
 	public GameLoop(Stage stage, MainMenuGUI mainMenu) {
 		this.guiStage = stage;
 		this.mainMenu = mainMenu;
-		gameOver = false;
 		playerTurn = true;
 		playerDeploy = true;
 	}
@@ -64,7 +64,6 @@ public class GameLoop {
 		boardGUI = new BoardGUI(this, mainMenu);
 		gameBoard = new Gameboard(boardGUI);
 		boardGUI.start(guiStage);
-		gameOver = false;
 		//Deploy Computer
 		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
 		setOpponentDifficulty(opponentPlayer);
@@ -73,18 +72,29 @@ public class GameLoop {
 		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		humanFleet = humanPlayer.getFleet();
 		currentShip = 0;
+	}
+
+	private void updateGameStatus() {
 		//Check for destroyed fleets, end game
-		if(humanPlayer.destroyedFleet() || opponentPlayer.destroyedFleet()) {
+		if(humanPlayer.destroyedFleet()){
 			getScore();
-			gameOver = true;
+			opponentWins = true;
 		}
+		if( opponentPlayer.destroyedFleet()) {
+			getScore();
+			humanWins = true;
+		}
+		boardGUI.setInfoPanelElements(humanWins, opponentWins, getScore());
 	}
 
 	/**
 	 * Fire computer player shot
 	 */
 	public void computerTurn() {
-		wasHit = gameBoard.fireShot(opponentPlayer, opponentPlayer.chooseTile(wasHit));
+		if(!humanWins && !opponentWins) {
+			wasHit = gameBoard.fireShot(opponentPlayer, opponentPlayer.chooseTile(wasHit));
+			updateGameStatus();
+		}
 	}
 
 	/**
@@ -93,9 +103,10 @@ public class GameLoop {
 	 * @param index	tile human player chooses to shoot
 	 */
 	public void clickResponseOpponentBoard(int index) {
-		if(!playerDeploy) {
+		if(!playerDeploy && !humanWins && !opponentWins) {
 			gameBoard.fireShot(humanPlayer, index);
 			humanShots++;
+			updateGameStatus();
 			computerTurn();
 		}
 	}

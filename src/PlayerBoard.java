@@ -112,7 +112,9 @@ public class PlayerBoard {
 	 * 			occupied return null).
 	 */
 	public boolean addShip(int shipStartTileNum, int shipEndTileNum, Ship ship) {
-		
+		ship.setStartIndex(shipStartTileNum);
+		ship.setEndIndex(shipEndTileNum);
+
 		boolean valid = true;
 		//If ship is vertical
 		if(Math.abs(shipEndTileNum - shipStartTileNum) >= 10) {
