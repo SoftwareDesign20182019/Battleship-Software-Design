@@ -59,7 +59,7 @@ public class BoardGUI extends Application {
 
 	private int deploySize;
 	private int deployIndex;
-	
+
 	private BoardGUI.Rotation currentRotation;
 	private BoardGUI.ShipType shipType;
 	private ArrayList<ImageView> tempDisplayShip;
@@ -67,7 +67,7 @@ public class BoardGUI extends Application {
 	private enum Rotation {
 		NORTH, EAST, SOUTH, WEST;
 	}
-	
+
 	private enum ShipType {
 		PATROL, SUB, DESTROYER, BATTLESHIP, AIRCRAFTCARRIER;
 	}
@@ -98,7 +98,7 @@ public class BoardGUI extends Application {
 
 	/**
 	 * Sets a grid element to the specified INDEX
-	 * 
+	 *
 	 * @param gridName the grid we would like to change
 	 * @param newImage the new image we wish to set
 	 */
@@ -138,12 +138,17 @@ public class BoardGUI extends Application {
 		return null;
 	}
 
+	/**
+	* setupUI is the intital UI setup of the board. This includes all of the listeners needed to call other methods in gameloop.
+	* @param stage the stage we are working on
+	* @return did setup UI complete?
+	*/
 	private boolean setupUI(Stage stage) {
 		VBox root = new VBox();
 		root.setAlignment(Pos.BASELINE_CENTER);
 
 		Scene scene = new Scene(root, sceneWidth, sceneHeight);
-		
+
 		HBox boards = new HBox();
 
 		boards.setPadding(new Insets(10));
@@ -160,12 +165,15 @@ public class BoardGUI extends Application {
 		playerBoard.setAlignment(Pos.CENTER);
 		opponentBoard.setAlignment(Pos.CENTER);
 
+		//The bottom stack pane will be somewhat of a information panel at the bottom of the stage.
+		//It will contain either the deployment selection or the information panel.
 		StackPane bottomStackPane = new StackPane();
 
 		Rectangle stackPaneFrame = new Rectangle(sceneWidth - 25, 80);
 		stackPaneFrame.setFill(Color.TRANSPARENT);
 		stackPaneFrame.setStroke(Color.BLACK);
 
+		//this is the vbox that will be the layout for the bottomStackPane
 		VBox stackVBox = new VBox();
 		stackVBox.setSpacing(10);
 		stackVBox.setAlignment(Pos.CENTER);
@@ -173,18 +181,22 @@ public class BoardGUI extends Application {
 		Label deployFleetLabel = new Label("Select Ship from Fleet to Deploy");
 		deployFleetLabel.setFont(new Font("Arial", 24));
 
+		//this is the deployment selection layout. Will contain 5 ships.
 		HBox playerFleetHBox = new HBox();
 		playerFleetHBox.setSpacing(20);
 		playerFleetHBox.setAlignment(Pos.CENTER);
 
+		//this will contain all of the deployment selections that will be placed in the bottom stack pane
 		ArrayList<StackPane> playerFleetList = setupPlayerFleetHBox(playerFleetHBox);
 
+		//boolean value is a deployment selection is active
 		boolean[] activeDeployShips = new boolean[5];
-		
+
 		for(int b=0; b<activeDeployShips.length; b++) {
 			activeDeployShips[b] = true;
 		}
-		
+
+		//for each of the ships in the stack, add a mouse pressed listener to select the ship.
 		for (StackPane stack : playerFleetList) {
 			stack.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 				@Override
@@ -217,6 +229,8 @@ public class BoardGUI extends Application {
 			});
 		}
 
+		//create a scene wide listener that will listen for spacebar key event.
+		//when key pressed, switch rotation.
 		scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent keyEvent) {
@@ -238,17 +252,17 @@ public class BoardGUI extends Application {
 						currentRotation = Rotation.EAST;
 						break;
 					}
-					
+
 					displayTempShip(deployIndex);
 				}
 			}
 		});
-
+		//info panel will replace the deployment selection once all ships are selected
 		HBox infoPanel = new HBox();
 		infoPanel.setPadding(new Insets(10));
 		infoPanel.setAlignment(Pos.CENTER);
 
-		// We will add these to the VBox boards
+		//create the gridpanes that will contain all of the ship images
 		playerGrid = new GridPane();
 		opponentGrid = new GridPane();
 
@@ -288,6 +302,7 @@ public class BoardGUI extends Application {
 			}
 		}
 
+		//playerGrid event listener that checks during deployPhase if ship is placable
 		playerGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
@@ -301,7 +316,8 @@ public class BoardGUI extends Application {
 						int[] indexes = tempShipIndexes(startIndex);
 						int endIndex = indexes[indexes.length - 1];
 						deployPhase = gameLoop.clickResponsePlayerBoard(startIndex, endIndex, indexes.length - 1);
-						
+
+						//this will add a X to the deployment selection
 						switch (shipType) {
 						case PATROL:
 							activeDeployShips[0] = false;
@@ -336,7 +352,7 @@ public class BoardGUI extends Application {
 						}
 						tempDisplayShip.clear();
 						deploySize = 0;
-					}					
+					}
 					if (!deployPhase) {
 						bottomStackPane.getChildren().remove(stackVBox);
 						bottomStackPane.getChildren().add(infoPanel);
@@ -345,6 +361,7 @@ public class BoardGUI extends Application {
 			}
 		});
 
+		//during deploy phase, we want a mouse hover to display where the ship would be placed if placed on the current cell
 		playerGrid.addEventFilter(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
 			ImageView currImage;
 
@@ -356,7 +373,7 @@ public class BoardGUI extends Application {
 						int col = opponentGrid.getColumnIndex((ImageView) source);
 						int row = opponentGrid.getRowIndex((ImageView) source);
 						deployIndex = convertCordToIndex(col, row);
-						
+
 						if ((ImageView)source != currImage && deploySize > 0) {
 							currImage = (ImageView)source;
 							displayTempShip(deployIndex);
@@ -367,6 +384,7 @@ public class BoardGUI extends Application {
 
 		});
 
+		//deals with shots at the opponents board!
 		opponentGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
@@ -393,13 +411,13 @@ public class BoardGUI extends Application {
 		infoPanel.getChildren().addAll(placeHolderLabel);
 		stackVBox.getChildren().addAll(deployFleetLabel, playerFleetHBox);
 		bottomStackPane.getChildren().addAll(stackPaneFrame, stackVBox);
-		
+
 		stage.setTitle("Board - Battleship");
 		stage.setScene(scene);
 		stage.show();
 		return true;
 	}
-	
+
 	private void displayTempShip(int index) {
 		for (ImageView image : tempDisplayShip) {
 			playerGrid.getChildren().remove(image);
@@ -442,7 +460,7 @@ public class BoardGUI extends Application {
 
 	/**
 	 * This method will display where a ship will be deployed if deployed
-	 * at this index + rotation. 
+	 * at this index + rotation.
 	 * @param index selected index
 	 * @return ArrayList of ImageViews. Each image view is one of the temp deployment images.
 	 */
@@ -450,14 +468,14 @@ public class BoardGUI extends Application {
 		ArrayList<ImageView> tempShip = new ArrayList<ImageView>();
 
 		int[] indexes = tempShipIndexes(index);
-		
+
 		edgeOverlap = false;
 		int edgeIndex = -1;
-		
+
 		for(int t=0; t< indexes.length; t++) {
 			int indexRow = index / 10;
 			int currIndex = indexes[t] / 10;
-			
+
 			switch (currentRotation) {
 			case NORTH:
 				if(indexes[t] < 0) {
@@ -506,7 +524,7 @@ public class BoardGUI extends Application {
 				tempShip.add(setGridElement("playerBoard", indexes[i], "Hit"));
 			}
 		}
-		
+
 		return tempShip;
 	}
 
