@@ -39,7 +39,7 @@ public class ProbabilityDensity implements OpponentStrategy {
     private int nextShot;
 
 
-    private double[] tileProbabilities = new double[100];
+    private int[] tileProbabilities = new int[100];
 
 
     /**
@@ -50,7 +50,7 @@ public class ProbabilityDensity implements OpponentStrategy {
         lastShotHit = wasHit;
         System.out.println("Root =" + root);
         System.out.println("Last Shot Hit = " + lastShotHit);
-        if (wasHit && root == -1){
+        if (wasHit && root == -1){ //BUG! This doesn't seem to register. Perhaps.... hmm.
             root = lastShot;
             SHIPHITS++;
             attack();
@@ -202,7 +202,7 @@ public class ProbabilityDensity implements OpponentStrategy {
      */
     private int survey(){
         System.out.println("Surveying");
-        ArrayList<Integer> remainingGrid = new ArrayList<>();
+        ArrayList<Integer> largestest = new ArrayList<>();
 
         for(int i = 0; i < tileProbabilities.length; i++ ){
             tileProbabilities[i] = tiles[i];
@@ -219,14 +219,22 @@ public class ProbabilityDensity implements OpponentStrategy {
         //find largest number in tileProbabilities
         int largest = 0;
         for(int n = 0; n < tileProbabilities.length; n ++){
+            //System.out.println(n + " hit count = " + tileProbabilities[n]);
             if(tileProbabilities[n] > tileProbabilities[largest]){
                 largest = n;
             }
         }
+        for(int j = 0; j < tileProbabilities.length; j ++){
+            if(tileProbabilities[j] == tileProbabilities[largest]){
+                largestest.add(j);
+            }
+        }
+        Random rand = new Random();
+        int fireShot = rand.nextInt(largestest.size());
 
         //first randomly select a number from the arraylist
         //then use that
-        lastShot = largest;
+        lastShot = largestest.get(fireShot);
         return lastShot;
     }
 
@@ -294,7 +302,6 @@ public class ProbabilityDensity implements OpponentStrategy {
                 if (!carrier && i + UP*4 >= 0 && tiles[i + UP] == EMPTY && tiles[i + UP * 2] == EMPTY && tiles[i + UP * 3] == EMPTY && tiles[i + UP * 4] == EMPTY) {
                     tileProbabilities[i]++;
                 }
-
             }
         }
     }
@@ -371,16 +378,23 @@ public class ProbabilityDensity implements OpponentStrategy {
         if (UP >= 0 && tiles[UP] == EMPTY) {
             adjacents.add(UP);
         }
-        if (DOWN <= 99 && tiles[DOWN] == EMPTY) {
-            adjacents.add(DOWN);
-        }
+
         if (RIGHT <= 99 && RIGHT / 10 == centerTile / 10 && tiles[RIGHT] == EMPTY) {
             adjacents.add(RIGHT);
         }
+
+        if (DOWN <= 99 && tiles[DOWN] == EMPTY) {
+            adjacents.add(DOWN);
+        }
+
         if (LEFT >= 0 && LEFT / 10 == centerTile / 10 && tiles[LEFT] == EMPTY) {
             adjacents.add(LEFT);
         }
         System.out.println("Adjacents = " + adjacents);
+        //@TODO Not sure where to put this but if not adjacents, root should be = -1
+        if (adjacents.size() == 0){
+            root = -1;
+        }
         return adjacents;
     }
 
