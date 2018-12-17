@@ -104,6 +104,7 @@ public class LoginGUI extends Application {
             @Override
             public void handle(MouseEvent e) {
             	try {
+            		mainMenu.setSQLAccount(new SQLAccount(null));
 					mainMenu.start(stage);
 				} catch (Exception e1) {
 					e1.printStackTrace();
