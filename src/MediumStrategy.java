@@ -55,7 +55,6 @@ public class MediumStrategy implements OpponentStrategy {
             shipSunk();
         }
 
-
         if (root != -1) {
             if (lastShotHit && ((lastShot == root - 10) || (lastShot == root - 20) || (lastShot == root - 30) || (lastShot == root - 40))) { //going up
                 nextShot = root + 10;
@@ -239,6 +238,7 @@ public class MediumStrategy implements OpponentStrategy {
             firedTile = rand.nextInt(BOARD_SIZE);
         }
         tiles[firedTile] = HIT_UNSUNK;
+        lastShot = firedTile;
         return firedTile;
     }
 
