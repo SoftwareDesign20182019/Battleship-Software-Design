@@ -21,6 +21,8 @@ public class SignUpGUI extends Application {
 	
 	public SignUpGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
+		this.account = mainMenu.getSQLAccount();
+
 	}
 	
 	
@@ -75,7 +77,7 @@ public class SignUpGUI extends Application {
             	//if none of the fields are blank
             	if(!usernameFieldString.equals("") && !passwordFieldString.equals("") && !rePasswordFieldString.equals("") && passwordFieldString.equals(rePasswordFieldString)) {
             		//ALL SIGN UP SQL STUFF HERE
-            		account = new SQLAccount(usernameFieldString);
+            		
             		if(!account.addAccount(passwordFieldString)) {
             			Alert accountNameExists = new Alert(AlertType.CONFIRMATION, "Account Username Already Exists", ButtonType.YES);
             			accountNameExists.showAndWait();
@@ -84,8 +86,8 @@ public class SignUpGUI extends Application {
             			}
             		} else {
             			try {
-                			mainMenu.setSQLAccount(account);
-        					mainMenu.start(stage);
+            				account.SetName(usernameFieldString);
+                			mainMenu.start(stage);
         				} catch (Exception e1) {
         					e1.printStackTrace();
         				}	
