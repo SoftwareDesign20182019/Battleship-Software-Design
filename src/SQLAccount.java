@@ -20,10 +20,13 @@ public class SQLAccount {
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
 		public String accountName;
-		private static final String USER_NAME = "softwarebuds"; 
-		private static final String PASSWORD = "battleship"; 
+		//private static final String USER_NAME = "softwarebuds";
+		//private static final String PASSWORD = "battleship";
 		//private static final String HOST ="samdoggett.com";
-		private static final String HOST ="18.224.24.63";
+		//
+		private static final String HOST ="localhost";
+		private static final String USER_NAME = "root";
+		private static final String PASSWORD = "root";
 		private static final String INITIAL_CONNECT = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/";
 		private static final String CONNECTION_INFO = "jdbc:mysql://"+HOST+":" + PORT_NUMBER + "/"+ DATABASENAME +"?user="+ USER_NAME +"&password="+PASSWORD;
 		private Connection conn; // MySQL
