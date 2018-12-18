@@ -25,12 +25,14 @@ public class GameLoop {
 	private int currentShip;
 	private double humanShots;
 	private double scoreMultiplier;
+	private double humanScore;
 
 	public GameLoop(Stage stage, MainMenuGUI mainMenu) {
 		this.guiStage = stage;
 		this.mainMenu = mainMenu;
 		playerTurn = true;
 		playerDeploy = true;
+		humanScore = 0;
 	}
 
 	/**
@@ -79,12 +81,15 @@ public class GameLoop {
 		if(humanPlayer.destroyedFleet()){
 			getScore();
 			opponentWins = true;
-		}
-		if( opponentPlayer.destroyedFleet()) {
+			boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore);
+		} else if( opponentPlayer.destroyedFleet()) {
 			getScore();
 			humanWins = true;
+			boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore);
+		} else {
+			boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore);
+
 		}
-		boardGUI.setInfoPanelElements(humanWins, opponentWins, getScore());
 	}
 
 	/**
@@ -120,13 +125,13 @@ public class GameLoop {
 		return playerDeploy;
 	}
 	
-	public double getScore() {
+	public void getScore() {
 		double score = (17/humanShots)*1000*scoreMultiplier;
 		if(opponentPlayer.destroyedFleet()) {
 			mainMenu.getSQLAccount().addHighScore(score) ;
-			return score;
+			humanScore = score;
 		} else {
-			return score;
+			//return score;
 		}
 	}
 }

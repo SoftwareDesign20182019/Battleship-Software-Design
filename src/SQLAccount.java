@@ -79,6 +79,36 @@ public class SQLAccount {
 		public String getName() {
 			return accountName;
 		}
+		
+		public void SetName(String name_) {		
+				this.accountName = name_;
+		}
+		
+		public boolean checkIfNameExists(String nameCheck) {
+			ResultSet rs;
+			Statement st;
+			String passwordCompare;
+			try {
+				String query = "SELECT password FROM Accounts where AccountName = '"+ accountName +"'";
+				st = conn.createStatement();//fix me 
+			
+			
+				rs = st.executeQuery(query);
+				if(!rs.isBeforeFirst()) {
+					System.err.println("Name already exists");
+					return true;
+				}
+				else {
+					return false;
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		
+		}
+		
+		
 		public boolean addAccount(String password) {
 			if(accountName == null) {
 				return true;
@@ -146,7 +176,7 @@ public class SQLAccount {
 		}
 		
 		public boolean uploadGame(File toBeUploaded) {
-			if(accountName == null) {
+			if(accountName.equals("Guest")) {
 				return true;
 			}
 			String fileName = toBeUploaded.getName();
@@ -181,7 +211,7 @@ public class SQLAccount {
 		}
 
 		public boolean updateGame(File game) {
-			if(accountName == null) {
+			if(accountName.equals("Guest")) {
 				return true;
 			}
 			String fileName = game.getName();
@@ -210,7 +240,7 @@ public class SQLAccount {
 		public ArrayList<String> getUserGames(){
 			ArrayList<String> games = new ArrayList<String>();
 			
-			if(accountName == null) {
+			if(accountName.equals("Guest")) {
 				return null;
 			}
 			
@@ -232,7 +262,7 @@ public class SQLAccount {
 			
 		
 		public File getGame(String gameName) {
-			if(accountName == null) {
+			if(accountName.equals("Guest")) {
 				return null;
 			}
 			
@@ -312,7 +342,7 @@ public class SQLAccount {
 		}
 		
 		public boolean addHighScore(double highscore) {
-			if(accountName == null) {
+			if(accountName.equals("Guest")) {
 				return true;
 			}
 			double currentHighScore;
@@ -324,6 +354,7 @@ public class SQLAccount {
 				stmt.execute(sql);
 				
 				String query = "SELECT HighScore FROM Accounts WHERE AccountName = '"+accountName +"'";
+				System.out.println("Hi im here");
 				rs = stmt.executeQuery(query);
 
 				if(rs.next()) {

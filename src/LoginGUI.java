@@ -17,9 +17,12 @@ import javafx.stage.Stage;
 
 public class LoginGUI extends Application {	
 	private MainMenuGUI mainMenu;
+	private SQLAccount account;
 	
 	public LoginGUI() {
+		account = new SQLAccount(null);
 		mainMenu = new MainMenuGUI(this);
+		mainMenu.setSQLAccount(account);
 	}
 
 	public LoginGUI(MainMenuGUI mainMenu) {
@@ -78,7 +81,6 @@ public class LoginGUI extends Application {
             	
             	String usernameFieldString = usernameField.getCharacters().toString();
             	String passwordFieldString = passwordField.getCharacters().toString();
-            	SQLAccount account = new SQLAccount(usernameFieldString);
             	if(!usernameFieldString.equals("") && !passwordFieldString.equals("")) {
             		if(!account.logIn(passwordFieldString)) {
             			Alert accountNameExists = new Alert(AlertType.CONFIRMATION, "Username or password is incorrect", ButtonType.YES);
@@ -90,6 +92,7 @@ public class LoginGUI extends Application {
             		}
             		else {
             			try {
+            				account.SetName(usernameFieldString);
             				mainMenu.setSQLAccount(account);
         					mainMenu.start(stage);
         				} catch (Exception e1) {
@@ -104,7 +107,7 @@ public class LoginGUI extends Application {
             @Override
             public void handle(MouseEvent e) {
             	try {
-            		mainMenu.setSQLAccount(new SQLAccount(null));
+            		account.SetName("Guest");
 					mainMenu.start(stage);
 				} catch (Exception e1) {
 					e1.printStackTrace();
