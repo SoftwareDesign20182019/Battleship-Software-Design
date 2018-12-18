@@ -109,8 +109,8 @@ public class GameLoop {
             humanShipsLeft = humanPlayer.getShipsLeft();
             opponentShipsLeft = opponentPlayer.getShipsLeft();
             if(humanShots != 0 && opponentShots != 0) {
-                humanHitPercentage = (humanHits / humanShots);
-                opponentHitPercentage = (opponentHits / opponentShots);
+                humanHitPercentage = ((float)humanHits / (float)humanShots) * 100;
+                opponentHitPercentage = ((float)opponentHits / (float)opponentShots) * 100;
             }
             boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore, humanShipsLeft, opponentShipsLeft, humanShots,
                     opponentShots, humanHits, opponentHits, humanHitPercentage, opponentHitPercentage);
@@ -162,8 +162,6 @@ public class GameLoop {
 		if(opponentPlayer.destroyedFleet()) {
 			mainMenu.getSQLAccount().addHighScore(score) ;
 			humanScore = score;
-		} else {
-			//return score;
 		}
 	}
 }

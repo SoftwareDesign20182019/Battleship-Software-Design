@@ -1,11 +1,8 @@
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,11 +12,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -27,7 +21,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  * BoardGUI handles all of the board graphics!
@@ -49,15 +42,16 @@ public class BoardGUI extends Application {
 
 	private HBox infoPanel;
 
-	private Image empty;
-	private Image hit;
-	private Image miss;
-	private Image ship;
-	private Image deploy;
-	private Image destroyed;
+	private Image emptyImage;
+	private Image hitImage;
+	private Image missImage;
+	private Image shipImage;
+	private Image deployImage;
+	private Image destroyedImage;
 
 	private boolean deployPhase;
 	private boolean edgeOverlap;
+	private int edgeIndex;
 
 	private int deploySize;
 	private int deployIndex;
@@ -65,6 +59,9 @@ public class BoardGUI extends Application {
 	private BoardGUI.Rotation currentRotation;
 	private BoardGUI.ShipType shipType;
 	private ArrayList<ImageView> tempDisplayShip;
+
+	//Used to make sure the user does not deployImage on previous deployment overlap
+	private ArrayList<Integer> playerShipIndexes;
 
 	private enum Rotation {
 		NORTH, EAST, SOUTH, WEST;
@@ -81,6 +78,7 @@ public class BoardGUI extends Application {
 		deploySize = 0;
 		deployIndex = -1;
 		tempDisplayShip = new ArrayList<ImageView>();
+		playerShipIndexes = new ArrayList<Integer>();
 		currentRotation = Rotation.EAST;
 	}
 
@@ -92,12 +90,12 @@ public class BoardGUI extends Application {
 	}
 
 	private void initResources() {
-		empty = new Image("File:empty.png", true);
-		hit = new Image("File:hit.png", true);
-		miss = new Image("File:miss.png", true);
-		ship = new Image("File:ship.png", true);
-		deploy = new Image("File:deploy.png", true);
-		destroyed = new Image("File:destroyed.png", true);
+		emptyImage = new Image("File:empty.png", true);
+		hitImage = new Image("File:hit.png", true);
+		missImage = new Image("File:miss.png", true);
+		shipImage = new Image("File:ship.png", true);
+		deployImage = new Image("File:deploy.png", true);
+		destroyedImage = new Image("File:destroyed.png", true);
 	}
 
 	/**
@@ -116,22 +114,23 @@ public class BoardGUI extends Application {
 
 			switch (newImage) {
 			case "Hit":
-				gridImage.setImage(hit);
+				gridImage.setImage(hitImage);
 				break;
 			case "Empty":
-				gridImage.setImage(empty);
+				gridImage.setImage(emptyImage);
 				break;
 			case "Miss":
-				gridImage.setImage(miss);
+				gridImage.setImage(missImage);
 				break;
 			case "Ship":
-				gridImage.setImage(ship);
+				gridImage.setImage(shipImage);
+				playerShipIndexes.add(index);
 				break;
 			case "Deploy":
-				gridImage.setImage(deploy);
+				gridImage.setImage(deployImage);
 				break;
 			case "Destroyed":
-				gridImage.setImage(destroyed);
+				gridImage.setImage(destroyedImage);
 				break;
 			}
 
@@ -204,7 +203,7 @@ public class BoardGUI extends Application {
 			activeDeployShips[b] = true;
 		}
 
-		//for each of the ships in the stack, add a mouse pressed listener to select the ship.
+		//for each of the ships in the stack, add a mouse pressed listener to select the shipImage.
 		for (StackPane stack : playerFleetList) {
 			stack.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 				@Override
@@ -274,7 +273,7 @@ public class BoardGUI extends Application {
 		infoPanel.setSpacing(100);
 		infoPanel.setAlignment(Pos.CENTER);
 
-		//create the gridpanes that will contain all of the ship images
+		//create the gridpanes that will contain all of the shipImage images
 		playerGrid = new GridPane();
 		opponentGrid = new GridPane();
 
@@ -306,18 +305,18 @@ public class BoardGUI extends Application {
 		// Setup player grid with empties
 		for (int row = 0; row < boardHeight; row++) {
 			for (int column = 0; column < boardWidth; column++) {
-				playerGrid.add(new ImageView(empty), column, row);
+				playerGrid.add(new ImageView(emptyImage), column, row);
 			}
 		}
 
 		// Setup opponent grid with empties
 		for (int row = 0; row < boardHeight; row++) {
 			for (int column = 0; column < boardWidth; column++) {
-				opponentGrid.add(new ImageView(empty), column, row);
+				opponentGrid.add(new ImageView(emptyImage), column, row);
 			}
 		}
 
-		//playerGrid event listener that checks during deployPhase if ship is placable
+		//playerGrid event listener that checks during deployPhase if shipImage is placable
 		playerGrid.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
@@ -376,12 +375,13 @@ public class BoardGUI extends Application {
 					if (!deployPhase) {
 						bottomStackPane.getChildren().remove(stackVBox);
 						bottomStackPane.getChildren().add(infoPanel);
+						infoPanel.getChildren().add(new Label("Click on Opponent's Board to Fire the First Shot!"));
 					}
 				}
 			}
 		});
 
-		//during deploy phase, we want a mouse hover to display where the ship would be placed if placed on the current cell
+		//during deployImage phase, we want a mouse hover to display where the shipImage would be placed if placed on the current cell
 		playerGrid.addEventFilter(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
 			ImageView currImage;
 
@@ -409,7 +409,7 @@ public class BoardGUI extends Application {
 			@Override
 			public void handle(MouseEvent e) {
 				Object source = e.getTarget();
-				if (!deployPhase && source instanceof ImageView && ((ImageView) source).getImage() == empty) {
+				if (!deployPhase && source instanceof ImageView && ((ImageView) source).getImage() == emptyImage) {
 					int col = opponentGrid.getColumnIndex((ImageView) source);
 					int row = opponentGrid.getRowIndex((ImageView) source);
 					gameLoop.clickResponseOpponentBoard(convertCordToIndex(col, row));
@@ -439,35 +439,46 @@ public class BoardGUI extends Application {
 									 int opponentShots, int humanHits, int opponentHits, double humanHitPercentage, double opponentHitPercentage) {
 		if(humanWins) {
 			infoPanel.getChildren().clear();
-			Label humanWinsLabel = new Label("You destroyed the opponents fleet! Your score: " + (int)score);
+			Label humanWinsLabel = new Label("You destroyedImage the opponents fleet! Your score: " + (int)score);
 			infoPanel.getChildren().add(humanWinsLabel);
 		} else if(opponentWins) {
 			infoPanel.getChildren().clear();
-			Label opponentWinsLabel = new Label("The opponent destroyed your fleet! Your score: " + (int)score);
+			Label opponentWinsLabel = new Label("The opponent destroyedImage your fleet! Your score: " + (int)score);
 			infoPanel.getChildren().add(opponentWinsLabel);
 		} else {
 			infoPanel.getChildren().clear();
 
 			VBox playerVBox = new VBox();
-			playerVBox.setSpacing(3);
+			playerVBox.setSpacing(6);
 			playerVBox.setAlignment(Pos.CENTER);
 
+			HBox playerHBox = new HBox();
+			playerHBox.setAlignment(Pos.CENTER);
+
 			VBox opponentVBox = new VBox();
-			opponentVBox.setSpacing(3);
+			opponentVBox.setSpacing(6);
 			opponentVBox.setAlignment(Pos.CENTER);
 
-			Label hShipLeft = new Label("Human Ships Left: " + humanShipsLeft);
-			Label hShots = new Label("Human Shots: " + humanShots);
-			Label hHits = new Label("Human Hits: " + humanHits);
-			Label hHitPercentage = new Label("Human Hit Percentage: " + humanHitPercentage);
+			HBox opponentHBox = new HBox();
+			opponentHBox.setAlignment(Pos.CENTER);
+
+			Label hShipLeft = new Label("Player Ships Left: " + humanShipsLeft);
+			hShipLeft.setFont(new Font("Arial", 22));
+			Label hShots = new Label("Shots: " + humanShots + "  |  ");
+			Label hHits = new Label("Hits: " + humanHits  + "  |  ");
+			Label hHitPercentage = new Label("Hit Percentage: " + (int)humanHitPercentage + "%");
 
 			Label oShipLeft = new Label("Opponent Ships Left: " + opponentShipsLeft);
-			Label oShots = new Label("Opponent Shots: " + opponentShots);
-			Label oHits = new Label("Opponent Hits: " + opponentHits);
-			Label oHitPercentage = new Label("Opponent Hit Percentage: " + opponentHitPercentage);
+			oShipLeft.setFont(new Font("Arial", 22));
+			Label oShots = new Label("Shots: " + opponentShots + "  |  ");
+			Label oHits = new Label("Hits: " + opponentHits  + "  |  ");
+			Label oHitPercentage = new Label("Hit Percentage: " + (int)opponentHitPercentage + "%");
 
-			playerVBox.getChildren().addAll(hShipLeft, hShots, hHits, hHitPercentage);
-			opponentVBox.getChildren().addAll(oShipLeft, oShots, oHits, oHitPercentage);
+			playerHBox.getChildren().addAll(hShots, hHits, hHitPercentage);
+			opponentHBox.getChildren().addAll(oShots, oHits, oHitPercentage);
+
+			playerVBox.getChildren().addAll(hShipLeft, playerHBox);
+			opponentVBox.getChildren().addAll(oShipLeft, opponentHBox);
 			infoPanel.getChildren().addAll(opponentVBox, playerVBox);
 		}
 	}
@@ -480,9 +491,9 @@ public class BoardGUI extends Application {
 	}
 
 	/**
-	 * Based on rotation, returns an array of indexes for ship placement
+	 * Based on rotation, returns an array of indexes for shipImage placement
 	 * @param index index of the piviot point
-	 * @return indexes of each ship segement
+	 * @return indexes of each shipImage segement
 	 */
 	private int[] tempShipIndexes(int index) {
 		int[] indexes = new int[deploySize];
@@ -513,7 +524,7 @@ public class BoardGUI extends Application {
 	}
 
     /**
-     * check if there is overlap with the ship indexes
+     * check if there is overlap with the shipImage indexes
      * @param index index of first location
      * @return t/f if there are overlaps
      */
@@ -527,31 +538,43 @@ public class BoardGUI extends Application {
 			switch (currentRotation) {
 				case NORTH:
 					if(indexes[t] < 0) {
+						edgeIndex = t;
 						return true;
 					}
                     break;
                 case EAST:
 					if(indexRow != currIndex) {
+						edgeIndex = t;
 						return true;
 					}
                     break;
                 case SOUTH:
 					if(indexes[t] > 99) {
+						edgeIndex = t;
 						return true;
 					}
 					break;
 				case WEST:
 					if(indexRow != currIndex) {
+						edgeIndex = t;
 						return true;
 					}
 					break;
+			}
+			//if ship has been placed on any of the indexes, do not allow placement
+			for(Integer shipIndex : playerShipIndexes) {
+				if(shipIndex.equals(indexes[t])) {
+					//make sure the whole ship will be displayed as red
+					edgeIndex = indexes.length;
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
 	/**
-	 * This method will display where a ship will be deployed if deployed
+	 * This method will display where a shipImage will be deployed if deployed
 	 * at this index + rotation.
 	 * @param index selected index
 	 * @return ArrayList of ImageViews. Each image view is one of the temp deployment images.
@@ -559,52 +582,8 @@ public class BoardGUI extends Application {
 	private ArrayList<ImageView> tempDeployGridElements(int index) {
 		ArrayList<ImageView> tempShip = new ArrayList<ImageView>();
         int[] indexes = tempShipIndexes(index);
-
         edgeOverlap = false;
-        int edgeIndex = -1;
-
-        for(int t=0; t< indexes.length; t++) {
-            int indexRow = index / 10;
-            int currIndex = indexes[t] / 10;
-
-            switch (currentRotation) {
-                case NORTH:
-                    if(indexes[t] < 0) {
-                        edgeOverlap = true;
-                        edgeIndex = t;
-                    } else {
-                        edgeOverlap = false;
-                    }
-                    break;
-                case EAST:
-                    if(indexRow != currIndex) {
-                        edgeOverlap = true;
-                        edgeIndex = t;
-                    } else {
-                        edgeOverlap = false;
-                    }
-                    break;
-                case SOUTH:
-                    if(indexes[t] > 99) {
-                        edgeOverlap = true;
-                        edgeIndex = t;
-                    } else {
-                        edgeOverlap = false;
-                    }
-                    break;
-                case WEST:
-                    if(indexRow != currIndex) {
-                        edgeOverlap = true;
-                        edgeIndex = t;
-                    } else {
-                        edgeOverlap = false;
-                    }
-                    break;
-            }
-            if(edgeOverlap) {
-                break;
-            }
-        }
+        edgeOverlap = checkOverlap(index);
 
 		if(!edgeOverlap) {
 			for (int i = 0; i < indexes.length; i++) {
@@ -620,9 +599,9 @@ public class BoardGUI extends Application {
 	}
 
 	/**
-	 * Helper Method for createShipStack. Takes in the length of the ship
+	 * Helper Method for createShipStack. Takes in the length of the shipImage
 	 * and returns the size of the stroke rectangle.
-	 * @param numberOfSegments length of ship
+	 * @param numberOfSegments length of shipImage
 	 * @return width of the stroke rectangle
 	 */
 	private int shipStrokeWidth(int numberOfSegments) {
@@ -630,8 +609,8 @@ public class BoardGUI extends Application {
 	}
 
 	/**
-	 * Creates a stack that contains a deploy ship model
-	 * @param shipLength length of the deploy ship model
+	 * Creates a stack that contains a deployImage shipImage model
+	 * @param shipLength length of the deployImage shipImage model
 	 * @return Stack pane of model with outline
 	 */
 	private StackPane createShipStack(int shipLength) {
@@ -644,7 +623,7 @@ public class BoardGUI extends Application {
 		shipHBox.setAlignment(Pos.CENTER);
 
 		for (int i = 0; i < shipLength; i++) {
-			ImageView segment = new ImageView(ship);
+			ImageView segment = new ImageView(shipImage);
 			shipHBox.getChildren().add(segment);
 		}
 
@@ -658,7 +637,7 @@ public class BoardGUI extends Application {
 	}
 
 	/**
-	 * Returns an arrayList of stack panes. Each stack pane contains a deploy ship model
+	 * Returns an arrayList of stack panes. Each stack pane contains a deployImage shipImage model
 	 * that will be place in the bottom stack panel (info panel).
 	 * @param playerFleetHBox the HBox we want the stack panes to go into
 	 * @return ArrayList of all the stack panes
