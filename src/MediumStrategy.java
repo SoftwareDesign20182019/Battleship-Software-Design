@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 /**
  * @author Wyatt Newhall
- *
+ * Medium Strategy randomly finds a tile until it scores a hit
+ * Then it "hunts" the next available squares for the ship path
+ * Then it follows down the path until the ship is sunk, and continues to randomly look for blocks
  */
 public class MediumStrategy implements OpponentStrategy {
     private int[] tiles = new int[100];
@@ -38,17 +40,16 @@ public class MediumStrategy implements OpponentStrategy {
 
 
     /**
-     * method to return a random empty coordinate
+     * method to return a random empty coordinate or the rest of a ship
+     * @param wasHit - true if the last shot was a hit
      * @return the position of the fired shot
      */
     public int chooseBlock(boolean wasHit) {
         lastShotHit = wasHit;
-        System.out.println("Root =" + root);
-        System.out.println("Last Shot Hit = " + lastShotHit);
         if (wasHit && root == -1){
             root = lastShot;
             SHIPHITS++;
-            attack();
+            updateMaxShips();
         }
         updateTiles();
         if (SHIPHITS >= MAX_SHIP) {
@@ -60,28 +61,28 @@ public class MediumStrategy implements OpponentStrategy {
                 nextShot = root + 10;
                 up = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShips();
                 checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root - 1) || (lastShot == root - 2) || (lastShot == root - 3) || (lastShot == root - 4))) {//left
                 nextShot = root + 1;
                 left = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShips();
                 checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //right
                 nextShot = root - 10;
                 down = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShips();
                 checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //left
                 nextShot = root - 1;
                 right = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShips();
                 checkSunk();
                 return hunt();
             } else { //root is -1;
@@ -93,6 +94,9 @@ public class MediumStrategy implements OpponentStrategy {
         }
     }
 
+    /**
+     * Helper method of updateMaxShips() to see which ships have been sunk
+     */
     private void updateShips(){
         if (SHIPHITS == 5) {
             carrier = true;
@@ -107,32 +111,38 @@ public class MediumStrategy implements OpponentStrategy {
             twoMid = true;
         }
     }
-
+    /**
+     * just checks to see if ships have been sunk
+     */
     private void checkSunk(){
         if (SHIPHITS >= MAX_SHIP) {
             shipSunk();
         }
     }
 
-    private void attack(){
+    /**
+     * updates the Max Ship variable
+     */
+    private void updateMaxShips(){
         updateShips();
         if(carrier && !battleShip){
             MAX_SHIP = 4;
-            System.out.println("Carrier Sunk");
         }
         if(carrier && battleShip){
             MAX_SHIP = 3;
-            System.out.println("Carrier and BattleShip Sunk");
         }
         if(carrier && battleShip && oneMid && twoMid){
             MAX_SHIP = 2;
-            System.out.println("Carrier and BattleShip and Midsized Ships Sunk");
         }
         if(smallShip && !twoMid && carrier && battleShip){
             MAX_SHIP = 3;
         }
     }
-
+    /**
+     * This method looks in the available tiles surrounding the root tile
+     * and gives back the next shot to take
+     * @return lastShot
+     */
     private int find() {
         //if last shot is miss, and next shot is not in AL, then shipSunk
         ArrayList<Integer> adj = getAdjacents(root);
@@ -141,12 +151,8 @@ public class MediumStrategy implements OpponentStrategy {
                 lastShot = next;
                 return lastShot;
             }
-            System.out.println("In find, nothing in Adjacents");
-
-
 
         }else { //Last Shot Missed
-            System.out.println("Next Shot: " + nextShot);
 
             for (Integer linedUp : adj) {
                 if (nextShot != 0) {
@@ -157,59 +163,47 @@ public class MediumStrategy implements OpponentStrategy {
                     }
                 }
                 else {
-                    System.out.println("Ship hits = " + SHIPHITS);
                     if (SHIPHITS == 3 && !oneMid) {
-                        System.out.println("One Mid Sunk");
                         oneMid = true;
                         shipSunk();
                         return random();
                     }
                     if (SHIPHITS == 3 && oneMid) {
-                        System.out.println("Two Mids Sunk");
                         twoMid = true;
                         shipSunk();
                         return random();
                     }
                     if (SHIPHITS == 4) {
-                        System.out.println("BattleShip Sunk");
                         battleShip = true;
                         shipSunk();
                         return random();
                     }
                     if (SHIPHITS == 2){
-                        System.out.println("Small ship sunk");
                         smallShip = true;
                         shipSunk();
                         return random();
                     }
-                    System.out.println("BUG~?");
                     lastShot = linedUp;
                     return lastShot; //or return survey!
                 }
             }
 
-            System.out.println("BUG??");
-            System.out.println("Ship hits = " + SHIPHITS);
             if (SHIPHITS == 3 && !oneMid) {
-                System.out.println("One Mid Sunk");
                 oneMid = true;
                 shipSunk();
                 return random();
             }
             if (SHIPHITS == 3 && oneMid) {
-                System.out.println("Two Mids Sunk");
                 twoMid = true;
                 shipSunk();
                 return random();
             }
             if (SHIPHITS == 4) {
-                System.out.println("BattleShip Sunk");
                 battleShip = true;
                 shipSunk();
                 return random();
             }
             if (SHIPHITS == 2){
-                System.out.println("Small ship sunk");
                 smallShip = true;
                 shipSunk();
                 return random();
@@ -219,15 +213,13 @@ public class MediumStrategy implements OpponentStrategy {
                 return lastShot;
             }
         }
-
-        //shipsunk()
         return random();
     }
 
 
 
     /**
-     * Go into the array and select a random remaining 4
+     * Goes into the array and select a random remaining tile
      * @return next number to hit
      */
     private int random(){
@@ -243,10 +235,12 @@ public class MediumStrategy implements OpponentStrategy {
     }
 
 
-
-
+    /**
+     * This algorithm is a smarter way of selecting the next shot to take
+     * if the last shot was missed and the root has not been established
+     * @return next number to hit
+     */
     private int hunt(){
-        System.out.println("Hunting");
         ArrayList<Integer> adjAL;
         boolean done = false;
         int i = 0;
@@ -283,7 +277,6 @@ public class MediumStrategy implements OpponentStrategy {
                     return lastShot;
                 }
             } else {
-                System.out.println("In Right");
                 right = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot + 1)) {
@@ -294,22 +287,21 @@ public class MediumStrategy implements OpponentStrategy {
                 }
             }
         }
-        System.out.println("if you're seeing this things went awry");
-        return root = -1;
+        root = -1;
+        return random();
     }
 
+    /**
+     *  This determines which shots in the surrounding area are free and returns a list of the free shots
+     * @param centerTile - the tile, usually the last shot, around which we want to survey
+     * @return ArrayList of adjacent tiles
+     */
     private ArrayList<Integer> getAdjacents(int centerTile) {
         ArrayList<Integer> adjacents = new ArrayList<Integer>();
         int UP = centerTile - 10;
         int DOWN = centerTile + 10;
         int RIGHT = centerTile + 1;
         int LEFT = centerTile - 1;
-
-//        System.out.println("UP = " + UP);
-//        System.out.println("RIGHT " + RIGHT);
-//        System.out.println("LEFT = " + LEFT);
-//        System.out.println("DOWN = " + DOWN);
-
 
         if (UP >= 0 && tiles[UP] == EMPTY) {
             adjacents.add(UP);
@@ -326,16 +318,16 @@ public class MediumStrategy implements OpponentStrategy {
         if (LEFT >= 0 && (LEFT / 10 == centerTile / 10) && tiles[LEFT] == EMPTY) {
             adjacents.add(LEFT);
         }
-        System.out.println("Adjacents = " + adjacents);
-        //@TODO Not sure where to put this but if not adjacents, root should be = -1
         if (adjacents.size() == 0){
             root = -1;
         }
         return adjacents;
     }
 
+    /**
+     * updates tiles based on incoming information: last shot hit or miss
+     */
     private void updateTiles(){
-        System.out.printf("Last Shot = %d \n", lastShot);
         if (lastShot == -1){
             lastShot = -1;
         } else {
@@ -347,8 +339,10 @@ public class MediumStrategy implements OpponentStrategy {
         }
     }
 
+    /**
+     * resets "root", resets ship hits, prints shit status
+     */
     private void shipSunk(){
-        System.out.println("Ship Sunk");
         shipStatus();
         root = -1;
         SHIPHITS = 0;
@@ -359,6 +353,9 @@ public class MediumStrategy implements OpponentStrategy {
         }
     }
 
+    /**
+     * Prints out ship status
+     */
     private void shipStatus(){
         System.out.println("Ships Sunk:");
         if(carrier){

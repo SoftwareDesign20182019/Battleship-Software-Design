@@ -2,6 +2,7 @@ import java.util.Random;
 
 /**
  * @author Wyatt Newhall
+ * Easy strategy is very simple, gives back a random tile
  */
 public class EasyStrategy implements OpponentStrategy {
     private int[] tiles = new int[100];
@@ -17,7 +18,7 @@ public class EasyStrategy implements OpponentStrategy {
     public int chooseBlock(boolean wasHit) {
         Random rand = new Random();
         int firedTile;
-        firedTile = rand.nextInt(BOARD_SIZE); //try not to hit yourself
+        firedTile = rand.nextInt(BOARD_SIZE);
         while(tiles[firedTile] != EMPTY){
             firedTile = rand.nextInt(BOARD_SIZE);
         }

@@ -1,16 +1,14 @@
 
 
 
-import javax.management.BadAttributeValueExpException;
-import java.lang.reflect.Array;
 import java.util.Random;
 import java.util.ArrayList;
 
 /**
  * @author Wyatt Newhall
- * Strategy which calculates the best shot to take and returns it
+ * Strategy which calculates the best shot using an algorithm which checks every possible configuration of ships
  */
-public class ProbabilityDensity implements OpponentStrategy {
+public class AIStrategy implements OpponentStrategy {
     private int[] tiles = new int[100];
     private int EMPTY = 0;
     private int HIT_UNSUNK = 1;
@@ -42,17 +40,16 @@ public class ProbabilityDensity implements OpponentStrategy {
 
 
     /**
-     * method to return an empty coordinate from most likely empty coordinates
+     * determines the next shot to take based on the status of the board
+     * @param wasHit - the status of the last shot taken
      * @return the position of the fired shot
      */
     public int chooseBlock(boolean wasHit) {
         lastShotHit = wasHit;
-        System.out.println("Root =" + root);
-        System.out.println("Last Shot Hit = " + lastShotHit);
         if (wasHit && root == -1){
             root = lastShot; //we are 'anchoring' the root at the first shot so we can come back to it if we need to
             SHIPHITS++;
-            attack();
+            updateMaxShip();
         }
         updateTiles();
         if (SHIPHITS >= MAX_SHIP) { //catching sunk ship here just in case, but if all bugs were hammered out we shouldn't need it
@@ -64,32 +61,31 @@ public class ProbabilityDensity implements OpponentStrategy {
                 nextShot = root + 10;
                 up = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShip();
                 checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root - 1) || (lastShot == root - 2) || (lastShot == root - 3) || (lastShot == root - 4))) {//left
                 nextShot = root + 1;
                 left = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShip();
                 checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 10) || (lastShot == root + 20) || (lastShot == root + 30) || (lastShot == root + 40))) { //down
                 nextShot = root - 10;
                 down = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShip();
                 checkSunk();
                 return hunt();
             } else if (lastShotHit && ((lastShot == root + 1) || (lastShot == root + 2) || (lastShot == root + 3) || (lastShot == root + 4))) { //right
                 nextShot = root - 1;
                 right = true;
                 SHIPHITS++;
-                attack();
+                updateMaxShip();
                 checkSunk();
                 return hunt();
             } else { //we know we are attacking a ship, but we don't know where it's facing
-                System.out.println("Commence Find");
                 return find();
             }
         } else { //we aren't attacking a ship, so survey the rest of the board
@@ -98,7 +94,7 @@ public class ProbabilityDensity implements OpponentStrategy {
     }
 
     /**
-     *
+     * helper method to update ship statuses
      */
     private void updateShips(){
         if (SHIPHITS == 5) {
@@ -115,31 +111,38 @@ public class ProbabilityDensity implements OpponentStrategy {
         }
     }
 
+    /**
+     * checks if ship has been sunk
+     */
     private void checkSunk(){
         if (SHIPHITS >= MAX_SHIP) {
             shipSunk();
         }
     }
 
-    private void attack(){
+    /**
+     * updates max ship size
+     */
+    private void updateMaxShip(){
         updateShips();
         if(carrier && !battleShip){
             MAX_SHIP = 4;
-            System.out.println("Carrier Sunk");
         }
         if(carrier && battleShip){
             MAX_SHIP = 3;
-            System.out.println("Carrier and BattleShip Sunk");
         }
         if(carrier && battleShip && oneMid && twoMid){
             MAX_SHIP = 2;
-            System.out.println("Carrier and BattleShip and Midsized Ships Sunk");
         }
         if(smallShip && !twoMid && carrier && battleShip){
             MAX_SHIP = 3;
         }
     }
 
+    /**
+     * Uses the root to find the next shot to take, and determines if the a ship has been destroyed
+     * @return next shot
+     */
     private int find() {
         //if last shot is miss, and next shot is not in AL, then shipSunk
         ArrayList<Integer> adj = getAdjacents(root);
@@ -148,13 +151,9 @@ public class ProbabilityDensity implements OpponentStrategy {
                 lastShot = next;
                 return lastShot;
             }
-            System.out.println("In find, nothing in Adjacents");
-
 
 
         }else { //Last Shot Missed
-            System.out.println("Next Shot: " + nextShot);
-
             for (Integer linedUp : adj) {
                 if (nextShot != 0) {
                     if (adj.contains(nextShot)) {
@@ -164,59 +163,47 @@ public class ProbabilityDensity implements OpponentStrategy {
                     }
                 }
                 else {
-                        System.out.println("Ship hits = " + SHIPHITS);
                         if (SHIPHITS == 3 && !oneMid) {
-                            System.out.println("One Mid Sunk");
                             oneMid = true;
                             shipSunk();
                             return survey();
                         }
                         if (SHIPHITS == 3 && oneMid) {
-                            System.out.println("Two Mids Sunk");
                             twoMid = true;
                             shipSunk();
                             return survey();
                         }
                         if (SHIPHITS == 4) {
-                            System.out.println("BattleShip Sunk");
                             battleShip = true;
                             shipSunk();
                             return survey();
                         }
                         if (SHIPHITS == 2){
-                            System.out.println("Small ship sunk");
                             smallShip = true;
                             shipSunk();
                             return survey();
                         }
-                        System.out.println("BUG~?");
                         lastShot = linedUp;
                         return lastShot; //or return survey!
                     }
                 }
 
-                System.out.println("BUG??");
-            System.out.println("Ship hits = " + SHIPHITS);
             if (SHIPHITS == 3 && !oneMid) {
-                System.out.println("One Mid Sunk");
                 oneMid = true;
                 shipSunk();
                 return survey();
             }
             if (SHIPHITS == 3 && oneMid) {
-                System.out.println("Two Mids Sunk");
                 twoMid = true;
                 shipSunk();
                 return survey();
             }
             if (SHIPHITS == 4) {
-                System.out.println("BattleShip Sunk");
                 battleShip = true;
                 shipSunk();
                 return survey();
             }
             if (SHIPHITS == 2){
-                System.out.println("Small ship sunk");
                 smallShip = true;
                 shipSunk();
                 return survey();
@@ -227,19 +214,18 @@ public class ProbabilityDensity implements OpponentStrategy {
                 }
             }
 
-        //shipsunk()
         return survey();
     }
 
 
 
     /**
-     * Go into the array and select a random remaining 4
+     * Go into the array and select a remaining tile based on probability of tile
      * @return next number to hit
      */
     private int survey(){
         System.out.println("Surveying");
-        ArrayList<Integer> largestest = new ArrayList<>();
+        ArrayList<Integer> mostHitSquares = new ArrayList<>();
 
         for(int i = 0; i < tileProbabilities.length; i++ ){
             tileProbabilities[i] = tiles[i];
@@ -249,32 +235,34 @@ public class ProbabilityDensity implements OpponentStrategy {
                 tileProbabilities[i] = 0;
             }
         }
-    //Probability Function Goes Here
-    //1st check how many times a ship can go on each squa
+
         boolean done = false;
         findDensities();
         //find largest number in tileProbabilities
         int largest = 0;
         for(int n = 0; n < tileProbabilities.length; n ++){
-            //System.out.println(n + " hit count = " + tileProbabilities[n]);
             if(tileProbabilities[n] > tileProbabilities[largest]){
                 largest = n;
             }
         }
         for(int j = 0; j < tileProbabilities.length; j ++){
             if(tileProbabilities[j] == tileProbabilities[largest]){
-                largestest.add(j);
+                mostHitSquares.add(j);
             }
         }
         Random rand = new Random();
-        int fireShot = rand.nextInt(largestest.size());
+        int fireShot = rand.nextInt(mostHitSquares.size());
 
         //first randomly select a number from the arraylist
         //then use that
-        lastShot = largestest.get(fireShot);
+        lastShot = mostHitSquares.get(fireShot);
         return lastShot;
     }
 
+    /**
+     * function to check how many times a ship can fit onto one spot, depending on the remaining ships
+     * updates tile probabilities everytime a ship can fit on a square
+     */
     private void findDensities() {
         int UP = -10;
         int DOWN = 10;
@@ -343,12 +331,11 @@ public class ProbabilityDensity implements OpponentStrategy {
         }
     }
 
-
-
-
-
+    /**
+     *  Finds the next shot to take if anchor is set, and next the ship path determined
+     * @return the next shot to take
+     */
     private int hunt(){
-        System.out.println("Hunting");
         ArrayList<Integer> adjAL;
         boolean done = false;
         int i = 0;
@@ -385,7 +372,6 @@ public class ProbabilityDensity implements OpponentStrategy {
                     return lastShot;
                 }
             } else {
-                System.out.println("In Right");
                 right = false;
                 adjAL = getAdjacents(lastShot);
                 if (!adjAL.contains(lastShot + 1)) {
@@ -396,21 +382,20 @@ public class ProbabilityDensity implements OpponentStrategy {
                 }
             }
         }
-        System.out.println("if you're seeing this things went awry");
-        return root = -1;
+        return find();
     }
 
+    /**
+     *  This determines which shots in the surrounding area are free and returns a list of the free shots
+     * @param centerTile - the tile, usually the last shot, around which we want to survey
+     * @return ArrayList of adjacent tiles
+     */
     private ArrayList<Integer> getAdjacents(int centerTile) {
         ArrayList<Integer> adjacents = new ArrayList<Integer>();
         int UP = centerTile - 10;
         int DOWN = centerTile + 10;
         int RIGHT = centerTile + 1;
         int LEFT = centerTile - 1;
-
-//        System.out.println("UP = " + UP);
-//        System.out.println("RIGHT " + RIGHT);
-//        System.out.println("LEFT = " + LEFT);
-//        System.out.println("DOWN = " + DOWN);
 
 
         if (UP >= 0 && tiles[UP] == EMPTY) {
@@ -428,16 +413,16 @@ public class ProbabilityDensity implements OpponentStrategy {
         if (LEFT >= 0 && (LEFT / 10 == centerTile / 10) && tiles[LEFT] == EMPTY) {
             adjacents.add(LEFT);
         }
-        System.out.println("Adjacents = " + adjacents);
-        //@TODO Not sure where to put this but if not adjacents, root should be = -1
         if (adjacents.size() == 0){
             root = -1;
         }
         return adjacents;
     }
 
+    /**
+     * updates the tiles to fit the board using the last shot and if it was true
+     */
     private void updateTiles(){
-        System.out.printf("Last Shot = %d \n", lastShot);
         if (lastShot == -1){
             lastShot = -1;
         } else {
@@ -449,6 +434,9 @@ public class ProbabilityDensity implements OpponentStrategy {
         }
     }
 
+    /**
+     * if a ship is sunk, reset root, shiphits, and set hits to hits sunk
+     */
     private void shipSunk(){
         System.out.println("Ship Sunk");
         shipStatus();
@@ -461,6 +449,9 @@ public class ProbabilityDensity implements OpponentStrategy {
         }
     }
 
+    /**
+     * prints out ship status if a ship is hit
+     */
     private void shipStatus(){
         System.out.println("Ships Sunk:");
         if(carrier){
@@ -480,29 +471,6 @@ public class ProbabilityDensity implements OpponentStrategy {
         }
 
     }
-
-    public static void main(String[] args){
-        ProbabilityDensity play = new ProbabilityDensity();
-//        int hit1 = play.chooseBlock(false);
-//        System.out.println(hit1);
-//        int hit2 = play.chooseBlock(false); //HITS
-//        System.out.println(hit2);
-//        int hit3 = play.chooseBlock(true); //miss, tries UP
-//        System.out.println(hit3);
-//        int hit4 = play.chooseBlock(true); //miss, tries LEFT
-//        System.out.println(hit4);
-//        int hit5 = play.chooseBlock(true); //Hits, should try RIGHT
-//        System.out.println(hit5);
-//        int hit6 = play.chooseBlock(false);
-//        System.out.println(hit6);
-//        int hit7 = play.chooseBlock(false);
-//        System.out.println(hit7);
-
-
-
-    }
-
-
 }
 
 
