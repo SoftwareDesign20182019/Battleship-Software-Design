@@ -36,6 +36,7 @@ import javafx.stage.StageStyle;
 
 public class BoardGUI extends Application {
 	private MainMenuGUI mainMenu;
+	private InGameMenuGUI inGameMenu;
 	private GameLoop gameLoop;
 
 	private static final int sceneWidth = 800;
@@ -85,6 +86,7 @@ public class BoardGUI extends Application {
 
 	@Override
 	public void start(Stage stage) {
+		inGameMenu = new InGameMenuGUI(mainMenu, stage);
 		initResources();
 		setupUI(stage);
 	}
@@ -263,63 +265,7 @@ public class BoardGUI extends Application {
 				}
 
 				if(keyEvent.getCode() == KeyCode.ESCAPE) {
-					VBox ingameVBox = new VBox();
-					ingameVBox.setSpacing(5);
-					ingameVBox.setAlignment(Pos.CENTER);
-					Stage inGameMenuStage = new Stage();
-					inGameMenuStage.initStyle(StageStyle.UNDECORATED);
-					Scene inGameScene = new Scene(ingameVBox, 200, 200);
-					inGameMenuStage.setScene(inGameScene);
-					Button saveGameButton = new Button("Save Game");
-					saveGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-						@Override
-						public void handle(MouseEvent e) {
-
-						}
-					});
-					Button loadGameButton = new Button("Load Game");
-					loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-						@Override
-						public void handle(MouseEvent e) {
-
-						}
-					});
-					Button settingsButton = new Button("Settings");
-					settingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-						@Override
-						public void handle(MouseEvent e) {
-
-						}
-					});
-					Button helpButton = new Button("Help");
-					helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-						@Override
-						public void handle(MouseEvent e) {
-
-						}
-					});
-					Button exitButton = new Button("Exit Game");
-					exitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-						@Override
-						public void handle(MouseEvent e) {
-							try {
-								mainMenu.start(stage);
-							} catch (Exception e1) {
-								e1.printStackTrace();
-							}
-						}
-					});
-					Label closeWindowLabel = new Label("Press ESC to Return to Game");
-					ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
-					inGameMenuStage.show();
-					inGameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-						@Override
-						public void handle(KeyEvent keyEvent) {
-							if(keyEvent.getCode() == KeyCode.ESCAPE) {
-								inGameMenuStage.hide();
-							}
-						}
-					});
+					inGameMenu.start(new Stage());
 				}
 			}
 		});
