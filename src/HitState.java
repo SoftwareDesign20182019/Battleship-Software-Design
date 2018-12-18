@@ -1,12 +1,9 @@
-
-
 /**
- * Hit-Shot TileState
+ * TileState initiated when an occupied tile is shot
  * @author owenmiller
  *
  */
 public class HitState implements TileState {
-	
 	
 	public TileState shootTile() {
 		
@@ -37,5 +34,4 @@ public class HitState implements TileState {
 		boardGUI.setGridElement(boardName, tileNumber, this.getState());
 		
 	}
-
 }

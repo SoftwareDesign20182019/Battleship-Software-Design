@@ -1,5 +1,3 @@
-
-
 /**
  * Gameboard object, contains two PlayerBoard objects and operates on them
  * using methods fireShot(int playerNumber, int tileNumber);
@@ -48,9 +46,10 @@ public class Gameboard {
 	/**
 	 * Deploy a ship on PlayerBoard(based on player number) using the ship's start
 	 * tile and end tile.
-	 * @param playerNumber	which player is deploying
-	 * @param shipStartTileNum	tile at the tip of the ship
-	 * @param shipEndTileNum	tile at the end of the ship
+	 * @param	player				PlayerType of player deploying
+	 * @param	shipStartTileNum	tile at the tip of the ship
+	 * @param	shipEndTileNum		tile at the end of the ship
+	 * @param	ship				Ship occupying Tiles
 	 * @return	true if deploy is valid.
 	 */
 	public boolean deploy(PlayerType player, int shipStartTileNum,
@@ -67,6 +66,4 @@ public class Gameboard {
 		
 		return deployValid;
 	}
-	
-	
 }

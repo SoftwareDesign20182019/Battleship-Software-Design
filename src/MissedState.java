@@ -1,12 +1,9 @@
-
-
 /**
- * Missed-Shot TileState
+ * TileState initiated when an empty tile is shot
  * @author owenmiller
  *
  */
 public class MissedState implements TileState {
-	
 	
 	public TileState shootTile() {
 		
@@ -35,5 +32,4 @@ public class MissedState implements TileState {
 	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
 		boardGUI.setGridElement(boardName, tileNumber, this.getState());
 	}
-	
 }

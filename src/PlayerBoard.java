@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * Player board containing an ArrayList of tiles(100) and methods to 
+ * Player board containing an ArrayList of Tiles(100) and methods to 
  * shootTile(int tileNumber); addShip(int shipStartTileNum, int shipEndTileNum);
  * 
  * @author owenmiller
@@ -43,7 +43,7 @@ public class PlayerBoard {
 	/**
 	 * Gets specified tile from tileList and uses shootThisTile() method to
 	 * change its state.
-	 * @param tileNumber	tile to shoot
+	 * @param	tileNumber	tile to shoot
 	 * @return	true if tile's new state is HitState()
 	 */
 	public boolean shootTile(Player player, int tileNumber) {
@@ -60,7 +60,7 @@ public class PlayerBoard {
 	
 	/**
 	 * Helper method for shootTile(), sets all tiles associated with destroyed ship to destroyed
-	 * @param tile
+	 * @param tile	first Tile to be report that its ship was destroyed
 	 */
 	private void destroyShip(Tile tile) {
 		int shipStartTileNum = tile.getShipStart();
@@ -106,8 +106,9 @@ public class PlayerBoard {
 	/**
 	 * Add a ship using the tile numbers corresponding to the start and
 	 * end of the ship.
-	 * @param shipStartTileNum	tile at the start of ship
-	 * @param shipEndTileNum	tile at the end of ship
+	 * @param 	shipStartTileNum	tile at the start of ship
+	 * @param 	shipEndTileNum		tile at the end of ship
+	 * @param	ship				Ship occupying tiles
 	 * @return	true if valid location for ship (none of the tiles 
 	 * 			occupied return null).
 	 */
@@ -143,8 +144,9 @@ public class PlayerBoard {
 	
 	/**
 	 * Helper method for addShip, add ships based on orientation
-	 * @param shipStartTileNum
-	 * @param shipEndTileNum
+	 * @param 	shipStartTileNum	tile at the start of ship
+	 * @param 	shipEndTileNum		tile at the end of ship
+	 * @param	ship				Ship occupying tiles
 	 * @return	true if deploy is valid
 	 */
 	private boolean addShipVerticalNegative(int shipStartTileNum, int shipEndTileNum, Ship ship) {
@@ -161,8 +163,9 @@ public class PlayerBoard {
 	
 	/**
 	 * Helper method for addShip, add ships based on orientation
-	 * @param shipStartTileNum
-	 * @param shipEndTileNum
+	 * @param 	shipStartTileNum	tile at the start of ship
+	 * @param 	shipEndTileNum		tile at the end of ship
+	 * @param	ship				Ship occupying tiles
 	 * @return	true if deploy is valid
 	 */
 	private boolean addShipVerticalPositive(int shipStartTileNum, int shipEndTileNum, Ship ship) {
@@ -180,8 +183,9 @@ public class PlayerBoard {
 	
 	/**
 	 * Helper method for addShip, add ships based on orientation
-	 * @param shipStartTileNum
-	 * @param shipEndTileNum
+	 * @param 	shipStartTileNum	tile at the start of ship
+	 * @param 	shipEndTileNum		tile at the end of ship
+	 * @param	ship				Ship occupying tiles
 	 * @return	true if deploy is valid
 	 */
 	private boolean addShipHorizontalNegative(int shipStartTileNum, int shipEndTileNum, Ship ship) {
