@@ -271,10 +271,44 @@ public class BoardGUI extends Application {
 					Scene inGameScene = new Scene(ingameVBox, 200, 200);
 					inGameMenuStage.setScene(inGameScene);
 					Button saveGameButton = new Button("Save Game");
+					saveGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+
+						}
+					});
 					Button loadGameButton = new Button("Load Game");
+					loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+
+						}
+					});
 					Button settingsButton = new Button("Settings");
+					settingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+
+						}
+					});
 					Button helpButton = new Button("Help");
+					helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+
+						}
+					});
 					Button exitButton = new Button("Exit Game");
+					exitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+						@Override
+						public void handle(MouseEvent e) {
+							try {
+								mainMenu.start(stage);
+							} catch (Exception e1) {
+								e1.printStackTrace();
+							}
+						}
+					});
 					Label closeWindowLabel = new Label("Press ESC to Return to Game");
 					ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
 					inGameMenuStage.show();
