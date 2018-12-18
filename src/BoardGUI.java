@@ -275,7 +275,7 @@ public class BoardGUI extends Application {
 					Button settingsButton = new Button("Settings");
 					Button helpButton = new Button("Help");
 					Button exitButton = new Button("Exit Game");
-					Label closeWindowLabel = new Label("Close Window to Resume Game");
+					Label closeWindowLabel = new Label("Press ESC to Return to Game");
 					ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
 					inGameMenuStage.show();
 					inGameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
