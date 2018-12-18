@@ -1,7 +1,5 @@
-
-
 /**
- * Occupied TileState
+ * TileState initiated when an empty Tile is occupied by a Ship
  * @author owenmiller
  *
  */
@@ -35,5 +33,4 @@ public class OccupiedState implements TileState {
 			boardGUI.setGridElement(boardName, tileNumber, this.getState());
 		}
 	}
-	
 }

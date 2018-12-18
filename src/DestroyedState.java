@@ -1,5 +1,5 @@
 /**
- * Destroyed TileState
+ * TileState initiated when the Ship occupying a Tile is destroyed
  * @author owenmiller
  *
  */
@@ -32,5 +32,4 @@ public class DestroyedState implements TileState {
 	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
 		boardGUI.setGridElement(boardName, tileNumber, this.getState());
 	}
-
 }

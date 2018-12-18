@@ -1,8 +1,7 @@
-
-
 /**
- * Tile class contains tile's current state and tile number. Contains methods
- * to shootThisTile(), occupyThisTile(), and clearThisTile().
+ * Tile class contains tile's current state and tile number, as well as the ship occupying
+ * the Tile, if applicable. Contains methods to shootThisTile(), occupyThisTile(), 
+ * and clearThisTile()
  * @author owenmiller
  *
  */
@@ -51,23 +50,10 @@ public class Tile {
 		}
 	}
 
-	/**
-	 * Returns true if tile is a hit.
-	 */
-	public boolean isHit() {
-		if(this.toString().equals("Hit")) {
-			ship.hitRecived();
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
-
 
 	/**
-	 * Change current state according to shootTile() method interaction
-	 * with current state.
+	 * Change currentState according to shootTile() method interaction with currentState. If
+	 * Tile is occupied, adds a shot to occupying Ship and, if Ship is destroyed, calls shipDestroyed()
 	 * @return	true if new state is HitState(), false otherwise.
 	 */
 	public boolean shootThisTile() {
@@ -90,8 +76,8 @@ public class Tile {
 	}
 	
 	/**
-	 * 
-	 * @return	true if ship is destroyed
+	 * Applies destroyShip() TileState method to currentMethod, which always results in the 
+	 * DestroyedState 
 	 */
 	public void shipDestroyed() {
 		currentState = currentState.destroyShip();
@@ -100,8 +86,8 @@ public class Tile {
 
 
 	/**
-	 * Change current state according to occupyTile() method interaction with
-	 * current state.
+	 * Change currentState according to occupyTile() method interaction with
+	 * currentState.
 	 * @return	true if occupy if valid.
 	 */
 	public boolean occupyThisTile(Ship ship) {
@@ -119,7 +105,7 @@ public class Tile {
 	}
 
 	/**
-	 * Set tile to empty
+	 * Applies clearTile() TileState method to currentState, which always results in the EmptyState
 	 */
 	public void clearThisTile() {
 
@@ -127,9 +113,10 @@ public class Tile {
 		currentState.setTileGUI(boardName, tileNumber, boardGUI);
 	}
 
+	/**
+	 * Returns String version of currentState
+	 */
 	public String toString() {
 		return currentState.getState();
 	}
-
-
 }

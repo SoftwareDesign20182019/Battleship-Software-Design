@@ -1,15 +1,13 @@
-
 /**
- * Empty TileState
+ * TileState initiated when a Tile is unoccupied and has not been shot, or when a Tile has been 
+ * occupied but is on the "opponent" PlayerBoard
  * @author owenmiller
  *
  */
 public class EmptyState implements TileState {
 	
-	
 	public TileState shootTile() {
 		
-		//Set GUI ??
 		return new MissedState();
 	}
 	
@@ -36,5 +34,4 @@ public class EmptyState implements TileState {
 	public void setTileGUI(String boardName, int tileNumber, BoardGUI boardGUI) {
 		boardGUI.setGridElement(boardName, tileNumber, this.getState());
 	}
-
 }

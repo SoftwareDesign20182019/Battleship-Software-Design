@@ -1,5 +1,5 @@
 /**
- * State changing methods for TileState
+ * State changing methods for TileState, and method to set the Tile's GUI in real-time
  * @author owenmiller
  *
  */
