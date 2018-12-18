@@ -9,10 +9,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -30,6 +27,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * BoardGUI handles all of the board graphics!
@@ -265,8 +263,29 @@ public class BoardGUI extends Application {
 				}
 
 				if(keyEvent.getCode() == KeyCode.ESCAPE) {
-					//LOAD ESCAPE MENU
-					System.out.println("Escape");
+					VBox ingameVBox = new VBox();
+					ingameVBox.setSpacing(5);
+					ingameVBox.setAlignment(Pos.CENTER);
+					Stage inGameMenuStage = new Stage();
+					inGameMenuStage.initStyle(StageStyle.UNDECORATED);
+					Scene inGameScene = new Scene(ingameVBox, 200, 200);
+					inGameMenuStage.setScene(inGameScene);
+					Button saveGameButton = new Button("Save Game");
+					Button loadGameButton = new Button("Load Game");
+					Button settingsButton = new Button("Settings");
+					Button helpButton = new Button("Help");
+					Button exitButton = new Button("Exit Game");
+					Label closeWindowLabel = new Label("Close Window to Resume Game");
+					ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
+					inGameMenuStage.show();
+					inGameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+						@Override
+						public void handle(KeyEvent keyEvent) {
+							if(keyEvent.getCode() == KeyCode.ESCAPE) {
+								inGameMenuStage.hide();
+							}
+						}
+					});
 				}
 			}
 		});
