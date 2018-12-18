@@ -26,7 +26,9 @@ public class MainMenuGUI extends Application {
 	private LoadGUI loadGame;
 	private RankingsGUI rankings;
 	private SettingsGUI settings;
-	private SQLAccount account; 
+	private SQLAccount account;
+
+	private BackgroundImage backgroundimage;
 
 	public MainMenuGUI(LoginGUI loginGUI) {
 		this.loginGUI = loginGUI;
@@ -34,6 +36,11 @@ public class MainMenuGUI extends Application {
 		rankings = new RankingsGUI(this);
     	settings = new SettingsGUI(this);
     	mainMenu = this;
+		backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
+				BackgroundRepeat.NO_REPEAT,
+				BackgroundRepeat.NO_REPEAT,
+				BackgroundPosition.DEFAULT,
+				BackgroundSize.DEFAULT);
 	}
 	
 	public void setSQLAccount(SQLAccount account_) {
@@ -49,12 +56,6 @@ public class MainMenuGUI extends Application {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);
-
-        BackgroundImage backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
 
         Background background = new Background(backgroundimage);
 
