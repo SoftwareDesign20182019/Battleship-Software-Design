@@ -7,23 +7,32 @@ import javafx.stage.Stage;
 public class GameLoop {
 	private BoardGUI boardGUI;
 	private MainMenuGUI mainMenu;
-	private Gameboard gameBoard;
 	private Stage guiStage;
 
-	private Player opponentPlayer;
+	private Gameboard gameBoard;
 	private Player humanPlayer;
-
+	private ArrayList<Ship> humanFleet;
+	private Player opponentPlayer;
 	private ArrayList<Ship> opponentShips;
+
+	private boolean playerTurn;
 	private boolean wasHit;
+
+	private boolean playerDeploy;
+	private int currentShip;
+
+	private int humanShots;
+	private int humanHits;
+	private double humanHitPercentage;
+	private int humanShipsLeft;
+
+	private int opponentShots;
+	private int opponentHits;
+	private double opponentHitPercentage;
+	private int opponentShipsLeft;
 
 	private boolean humanWins;
 	private boolean opponentWins;
-	private boolean playerTurn;
-
-	private ArrayList<Ship> humanFleet;
-	private boolean playerDeploy;
-	private int currentShip;
-	private double humanShots;
 	private double scoreMultiplier;
 	private double humanScore;
 
@@ -32,7 +41,12 @@ public class GameLoop {
 		this.mainMenu = mainMenu;
 		playerTurn = true;
 		playerDeploy = true;
-		humanScore = 0;
+		humanShots = 0;
+		humanHits = 0;
+		opponentShots = 0;
+		opponentHits = 0;
+		humanShipsLeft = humanPlayer.getShipsLeft();
+		opponentShipsLeft = opponentPlayer.getShipsLeft();
 	}
 
 	/**
@@ -74,6 +88,7 @@ public class GameLoop {
 		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		humanFleet = humanPlayer.getFleet();
 		currentShip = 0;
+
 	}
 
 	private void updateGameStatus() {
@@ -90,6 +105,13 @@ public class GameLoop {
 			boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore);
 
 		}
+		humanShipsLeft = humanPlayer.getShipsLeft();
+		opponentShipsLeft = opponentPlayer.getShipsLeft();
+		humanHitPercentage = (humanHits / humanShots);
+		opponentHitPercentage = (opponentHits / opponentShots);
+		//Change to include: humanShipsLeft, opponentShipsLeft, humanShots, opponentShots, humanHits,
+		//opponentHits, humanHitPercentage, opponentHitPercentage, getScore()[?]
+		boardGUI.setInfoPanelElements(humanWins, opponentWins, getScore());
 	}
 
 	/**
@@ -98,6 +120,10 @@ public class GameLoop {
 	public void computerTurn() {
 		if(!humanWins && !opponentWins) {
 			wasHit = gameBoard.fireShot(opponentPlayer, opponentPlayer.chooseTile(wasHit));
+			if(wasHit) {
+				opponentHits++;
+			}
+			opponentShots++;
 			updateGameStatus();
 		}
 	}
@@ -109,7 +135,10 @@ public class GameLoop {
 	 */
 	public void clickResponseOpponentBoard(int index) {
 		if(!playerDeploy && !humanWins && !opponentWins) {
-			gameBoard.fireShot(humanPlayer, index);
+			boolean humanShotHit = gameBoard.fireShot(humanPlayer, index);
+			if(humanShotHit) {
+				humanHits++;
+			}
 			humanShots++;
 			updateGameStatus();
 			computerTurn();
@@ -124,7 +153,7 @@ public class GameLoop {
 		}
 		return playerDeploy;
 	}
-	
+
 	public void getScore() {
 		double score = (17/humanShots)*1000*scoreMultiplier;
 		if(opponentPlayer.destroyedFleet()) {

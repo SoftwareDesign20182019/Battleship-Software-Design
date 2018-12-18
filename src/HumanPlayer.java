@@ -29,5 +29,11 @@ public class HumanPlayer implements Player {
 	public void setDifficulty(OpponentStrategy strategy) {
 		// TODO Auto-generated method stub
 	}
+	
+	public int getShipsLeft() {
+		return myFleet.getAliveShips();
+	}
+	
+	
 
 }

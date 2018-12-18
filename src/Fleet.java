@@ -21,6 +21,16 @@ public class Fleet {
 		return myFleet;
 	}
 	
+	public int getAliveShips() {
+		int shipsLeft = 0;
+		for(int shipIndex = 0; shipIndex < myFleet.size(); shipIndex++) {
+			if(!myFleet.get(shipIndex).isDestroyed()) {
+				shipsLeft++;
+			}
+		}
+		return shipsLeft;
+	}
+	
 	/**
 	 * Checks to see if all ships in fleet are destroyed
 	 * @return	true if all ships destroyed
