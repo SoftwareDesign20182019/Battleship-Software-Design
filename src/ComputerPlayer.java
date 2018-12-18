@@ -21,6 +21,10 @@ public class ComputerPlayer implements Player {
 		this.shipLocations = deployShips();	
 	}
 	
+	public int getShipsLeft() {
+		return computerFleet.getAliveShips();
+	}
+	
 	
 	public int chooseTile(boolean wasHit){
 		return strategy.chooseBlock(wasHit);

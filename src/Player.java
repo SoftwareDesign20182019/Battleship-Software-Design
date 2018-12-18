@@ -24,4 +24,6 @@ public interface Player {
 	
 	public void setDifficulty(OpponentStrategy strategy);
 	
+	public int getShipsLeft();
+	
 }
