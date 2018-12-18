@@ -45,8 +45,8 @@ public class GameLoop {
 		humanHits = 0;
 		opponentShots = 0;
 		opponentHits = 0;
-		humanShipsLeft = humanPlayer.getShipsLeft();
-		opponentShipsLeft = opponentPlayer.getShipsLeft();
+		humanShipsLeft = 5;
+		opponentShipsLeft = 5;
 	}
 
 	/**
@@ -96,22 +96,25 @@ public class GameLoop {
 		if(humanPlayer.destroyedFleet()){
 			getScore();
 			opponentWins = true;
-			boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore);
+            boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore, humanShipsLeft, opponentShipsLeft, humanShots,
+                    opponentShots, humanHits, opponentHits, humanHitPercentage, opponentHitPercentage);
+
 		} else if( opponentPlayer.destroyedFleet()) {
 			getScore();
 			humanWins = true;
-			boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore);
-		} else {
-			boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore);
+            boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore, humanShipsLeft, opponentShipsLeft, humanShots,
+                    opponentShots, humanHits, opponentHits, humanHitPercentage, opponentHitPercentage);
 
+		} else {
+            humanShipsLeft = humanPlayer.getShipsLeft();
+            opponentShipsLeft = opponentPlayer.getShipsLeft();
+            if(humanShots != 0 && opponentShots != 0) {
+                humanHitPercentage = (humanHits / humanShots);
+                opponentHitPercentage = (opponentHits / opponentShots);
+            }
+            boardGUI.setInfoPanelElements(humanWins, opponentWins, humanScore, humanShipsLeft, opponentShipsLeft, humanShots,
+                    opponentShots, humanHits, opponentHits, humanHitPercentage, opponentHitPercentage);
 		}
-		humanShipsLeft = humanPlayer.getShipsLeft();
-		opponentShipsLeft = opponentPlayer.getShipsLeft();
-		humanHitPercentage = (humanHits / humanShots);
-		opponentHitPercentage = (opponentHits / opponentShots);
-		//Change to include: humanShipsLeft, opponentShipsLeft, humanShots, opponentShots, humanHits,
-		//opponentHits, humanHitPercentage, opponentHitPercentage, getScore()[?]
-		boardGUI.setInfoPanelElements(humanWins, opponentWins, getScore());
 	}
 
 	/**

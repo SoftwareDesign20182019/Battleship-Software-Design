@@ -271,7 +271,7 @@ public class BoardGUI extends Application {
 		});
 		//info panel will replace the deployment selection once all ships are selected
 		infoPanel = new HBox();
-		infoPanel.setPadding(new Insets(10));
+		infoPanel.setSpacing(100);
 		infoPanel.setAlignment(Pos.CENTER);
 
 		//create the gridpanes that will contain all of the ship images
@@ -435,7 +435,8 @@ public class BoardGUI extends Application {
 		return true;
 	}
 
-	public void setInfoPanelElements(boolean humanWins, boolean opponentWins, double score) {
+	public void setInfoPanelElements(boolean humanWins, boolean opponentWins, double score, int humanShipsLeft, int opponentShipsLeft, int humanShots,
+									 int opponentShots, int humanHits, int opponentHits, double humanHitPercentage, double opponentHitPercentage) {
 		if(humanWins) {
 			infoPanel.getChildren().clear();
 			Label humanWinsLabel = new Label("You destroyed the opponents fleet! Your score: " + (int)score);
@@ -447,18 +448,27 @@ public class BoardGUI extends Application {
 		} else {
 			infoPanel.getChildren().clear();
 
-			HBox playerHBox = new HBox();
-			playerHBox.setPadding(new Insets(10));
-			playerHBox.setAlignment(Pos.CENTER);
+			VBox playerVBox = new VBox();
+			playerVBox.setSpacing(3);
+			playerVBox.setAlignment(Pos.CENTER);
 
-			HBox opponentHBox = new HBox();
-			opponentHBox.setPadding(new Insets(10));
-			opponentHBox.setAlignment(Pos.CENTER);
+			VBox opponentVBox = new VBox();
+			opponentVBox.setSpacing(3);
+			opponentVBox.setAlignment(Pos.CENTER);
 
-			Label playerScore = new Label("Current Score: " + (int)score);
+			Label hShipLeft = new Label("Human Ships Left: " + humanShipsLeft);
+			Label hShots = new Label("Human Shots: " + humanShots);
+			Label hHits = new Label("Human Hits: " + humanHits);
+			Label hHitPercentage = new Label("Human Hit Percentage: " + humanHitPercentage);
 
-			playerHBox.getChildren().add(playerScore);
-			infoPanel.getChildren().addAll(opponentHBox, playerHBox);
+			Label oShipLeft = new Label("Opponent Ships Left: " + opponentShipsLeft);
+			Label oShots = new Label("Opponent Shots: " + opponentShots);
+			Label oHits = new Label("Opponent Hits: " + opponentHits);
+			Label oHitPercentage = new Label("Opponent Hit Percentage: " + opponentHitPercentage);
+
+			playerVBox.getChildren().addAll(hShipLeft, hShots, hHits, hHitPercentage);
+			opponentVBox.getChildren().addAll(oShipLeft, oShots, oHits, oHitPercentage);
+			infoPanel.getChildren().addAll(opponentVBox, playerVBox);
 		}
 	}
 
