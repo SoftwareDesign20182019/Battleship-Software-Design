@@ -17,10 +17,9 @@ public class SQLAccount {
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
 		public String accountName;
+		//private static final String HOST ="samdoggett.com";
 		//private static final String USER_NAME = "softwarebuds";
 		//private static final String PASSWORD = "battleship";
-		//private static final String HOST ="samdoggett.com";
-		//
 		private static final String HOST ="localhost";
 		private static final String USER_NAME = "root";
 		private static final String PASSWORD = "root";
