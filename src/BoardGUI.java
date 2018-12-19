@@ -1,7 +1,12 @@
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,6 +21,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -40,6 +47,14 @@ public class BoardGUI extends Application {
 	private GridPane opponentGrid;
 
 	private HBox infoPanel;
+
+	private MediaPlayer mediaPlayer;
+	private Media HesAPirateAudio;
+	private Media BlackPearlAudio;
+	private Media JackSparrowAudio;
+
+	private boolean musicState;
+	private boolean soundFXState;
 
 	//Images we will use in our Grids
 	private Image emptyImage;
@@ -121,6 +136,55 @@ public class BoardGUI extends Application {
 		shipImage = new Image("File:ship.png", true);
 		deployImage = new Image("File:deploy.png", true);
 		destroyedImage = new Image("File:destroyed.png", true);
+
+		musicState = true;
+		soundFXState = true;
+
+		HesAPirateAudio = new Media(Paths.get("HesAPirate.mp3").toUri().toString());
+		BlackPearlAudio = new Media(Paths.get("BlackPearl.mp3").toUri().toString());
+		JackSparrowAudio = new Media(Paths.get("JackSparrow.mp3").toUri().toString());
+		playAudioLoop(HesAPirateAudio);
+	}
+
+	/**
+	 * Plays audio in a Loop
+	 * @param audio audio file
+	 */
+	private void playAudioLoop(Media audio) {
+		mediaPlayer = new MediaPlayer(audio);
+		Runnable onEnd = new Runnable() {
+			@Override
+			public void run() {
+				mediaPlayer.dispose();
+				mediaPlayer = new MediaPlayer(audio);
+				mediaPlayer.play();
+				mediaPlayer.setOnEndOfMedia(this);
+			}
+		};
+		mediaPlayer.setOnEndOfMedia(onEnd);
+		mediaPlayer.play();
+	}
+
+	/**
+	 * Sets the check box selection
+	 * @param m setter
+	 * @param sFX setter
+	 */
+	public void setAudioState(boolean m, boolean sFX) {
+		musicState = m;
+		soundFXState = sFX;
+	}
+
+	/**
+	 * Sets audio on or off
+	 * @param bool state
+	 */
+	public void playMusic(boolean bool){
+		if(bool) {
+			mediaPlayer.play();
+		} else {
+			mediaPlayer.pause();
+		}
 	}
 
 	/**
@@ -289,6 +353,7 @@ public class BoardGUI extends Application {
 				}
 
 				if(keyEvent.getCode() == KeyCode.ESCAPE) {
+					inGameMenu.setAudioState(musicState, soundFXState);
 					inGameMenuEnabled = true;
 					inGameMenu.setBoardStage(stage);
 					inGameMenu.start(new Stage());
@@ -355,7 +420,7 @@ public class BoardGUI extends Application {
 						int row = playerGrid.getRowIndex(sourceImageView);
 						int startIndex = convertCordToIndex(col, row);
 						if(!checkOverlap(startIndex)) {
-                            int[] indexes = tempShipIndexes(startIndex);
+							int[] indexes = tempShipIndexes(startIndex);
                             int endIndex = indexes[indexes.length - 1];
                             //this will add a X to the deployment selection and call the deploy in the game loop
                             switch (shipType) {

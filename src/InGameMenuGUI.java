@@ -1,12 +1,16 @@
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,20 +27,29 @@ public class InGameMenuGUI extends Application implements GUI_Interface{
     private MainMenuGUI mainMenu;
     private LoadGUI loadGame;
     private HelpGUI help;
+    private GameLoop gameLoop;
     private InGameMenuGUI inGameMenu;
     private BoardGUI boardGUI;
     private Stage boardStage;
+
+    private CheckBox music;
+    private CheckBox soundFX;
 
     /**
      * Constructor
      * @param mainMenu setter
      * @param help setter
      */
-    public InGameMenuGUI(MainMenuGUI mainMenu, HelpGUI help) {
+    public InGameMenuGUI(MainMenuGUI mainMenu, HelpGUI help, GameLoop gameLoop) {
         this.mainMenu = mainMenu;
         this.loadGame = loadGame;
+        this.gameLoop = gameLoop;
         this.help = help;
         inGameMenu = this;
+        music = new CheckBox("Music");
+        soundFX = new CheckBox("SoundFX");
+        music.setSelected(true);
+        soundFX.setSelected(true);
     }
 
     /**
@@ -53,6 +66,16 @@ public class InGameMenuGUI extends Application implements GUI_Interface{
      */
     public void setBoardStage (Stage previousStage) {
         this.boardStage = previousStage;
+    }
+
+    /**
+     * Sets the check box selection
+     * @param m setter
+     * @param sFX setter
+     */
+    public void setAudioState(boolean m, boolean sFX) {
+        music.setSelected(m);
+        soundFX.setSelected(sFX);
     }
 
     /**
@@ -75,6 +98,24 @@ public class InGameMenuGUI extends Application implements GUI_Interface{
 
         Scene inGameScene = new Scene(outlineStackPane, 200, 200);
         inGameMenuStage.setScene(inGameScene);
+
+        HBox audioHBox = new HBox();
+        audioHBox.setAlignment(Pos.CENTER);
+        audioHBox.setSpacing(5);
+
+        music.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> ov,
+                                Boolean old_val, Boolean new_val) {
+                boardGUI.playMusic(music.isSelected());
+            }
+        });
+
+        soundFX.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            public void changed(ObservableValue<? extends Boolean> ov,
+                                Boolean old_val, Boolean new_val) {
+                gameLoop.audioState(soundFX.isSelected());
+            }
+        });
 
         Button helpButton = new Button("Help");
         helpButton.setFont(new Font("Arial", 18));
@@ -112,11 +153,13 @@ public class InGameMenuGUI extends Application implements GUI_Interface{
                 if(keyEvent.getCode() == KeyCode.ESCAPE) {
                     inGameMenuStage.hide();
                     boardGUI.setInGameMenuDisabled();
+                    boardGUI.setAudioState(music.isSelected(), soundFX.isSelected());
                 }
             }
         });
 
-        ingameVBox.getChildren().addAll(helpButton, exitButton, closeWindowLabel);
+        audioHBox.getChildren().addAll(music, soundFX);
+        ingameVBox.getChildren().addAll(audioHBox, helpButton, exitButton, closeWindowLabel);
         outlineStackPane.getChildren().addAll(outlineRect, ingameVBox);
 
         inGameMenuStage.setAlwaysOnTop(true);

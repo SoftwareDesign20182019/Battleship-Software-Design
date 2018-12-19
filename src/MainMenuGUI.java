@@ -44,7 +44,6 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 		rankings = new RankingsGUI(this);
     	help = new HelpGUI();
 		mainMenu = this;
-		inGameMenu = new InGameMenuGUI(this, help);
 		backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
 				BackgroundRepeat.NO_REPEAT,
 				BackgroundRepeat.NO_REPEAT,
@@ -123,24 +122,23 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 
 				Optional<String> result = dialog.showAndWait();
 				result.ifPresent(difficulty -> {
+					gameLoop = new GameLoop(stage, mainMenu);
+					inGameMenu = new InGameMenuGUI(mainMenu, help, gameLoop);
+
 					switch(difficulty) {
 						case "Seaman":
-							gameLoop = new GameLoop(stage, mainMenu);
 							gameLoop.setOpponentDifficulty(new EasyStrategy(), 0.25);
 							gameLoop.newGame(inGameMenu);
 							break;
 						case "Lieutenant":
-							gameLoop = new GameLoop(stage, mainMenu);
 							gameLoop.setOpponentDifficulty(new MediumStrategy(), 0.5);
 							gameLoop.newGame(inGameMenu);
 							break;
 						case "Captain":
-							gameLoop = new GameLoop(stage, mainMenu);
 							gameLoop.setOpponentDifficulty(new HardStrategy(), 0.75);
 							gameLoop.newGame(inGameMenu);
 							break;
 						case "Admiral":
-							gameLoop = new GameLoop(stage, mainMenu);
 							gameLoop.setOpponentDifficulty(new AIStrategy(), 1.0);
 							gameLoop.newGame(inGameMenu);
 							break;

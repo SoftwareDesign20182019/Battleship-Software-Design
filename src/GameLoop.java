@@ -1,7 +1,11 @@
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 /**
@@ -23,6 +27,9 @@ public class GameLoop {
 	private ArrayList<Ship> opponentShips;
 
 	private boolean wasHit;
+
+	private MediaPlayer mediaPlayer;
+	private boolean audioEnabled;
 
 	private boolean playerDeploy;
 	private int currentShip;
@@ -57,7 +64,8 @@ public class GameLoop {
 		opponentHits = 0;
 		humanShipsLeft = 5;
 		opponentShipsLeft = 5;
-
+		audioEnabled = true;
+		mediaPlayer = new MediaPlayer(new Media(Paths.get("hitAudio.mp3").toUri().toString()));
 		//Deploy Computer
 		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
 		//Deploy Human
@@ -152,13 +160,52 @@ public class GameLoop {
 	public void clickResponseOpponentBoard(int index) {
 		if(!playerDeploy && !humanWins && !opponentWins) {
 			boolean humanShotHit = gameBoard.fireShot(humanPlayer, index);
+
 			if(humanShotHit) {
+				if(audioEnabled) {
+					Media hit = new Media(Paths.get("hitAudio.mp3").toUri().toString());
+					mediaPlayer = new MediaPlayer(hit);
+					mediaPlayer.play();
+				}
 				humanHits++;
+			} else if(audioEnabled){
+				Media miss = new Media(Paths.get("missAudio.mp3").toUri().toString());
+				Media splash = new Media(Paths.get("splashAudio.mp3").toUri().toString());
+
+				mediaPlayer = new MediaPlayer(miss);
+				mediaPlayer.play();
+				Runnable onEnd = new Runnable() {
+					@Override
+					public void run() {
+						mediaPlayer.dispose();
+						mediaPlayer = new MediaPlayer(splash);
+						mediaPlayer.play();
+					}
+				};
+				mediaPlayer.setOnEndOfMedia(onEnd);
 			}
 			humanShots++;
 			updateGameStatus();
 			computerTurn();
 		}
+	}
+
+	/**
+	 * Sets audio on or off
+	 * @param bool state
+	 */
+	public void audioState(boolean bool){
+		if(bool) {
+			audioEnabled = true;
+		} else {
+			audioEnabled = false;
+			//mediaPlayer.pause();
+			//mediaPlayer.dispose();
+		}
+	}
+
+	public boolean getAudioState(){
+		return audioEnabled;
 	}
 
 	/**
