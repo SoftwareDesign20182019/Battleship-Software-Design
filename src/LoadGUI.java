@@ -16,6 +16,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.ArrayList;
+
 public class LoadGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	
@@ -28,17 +30,29 @@ public class LoadGUI extends Application implements GUI_Interface {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);
+
+		ArrayList<String> getGames = new ArrayList<String>();
+		getGames.add("Test1");
+		getGames.add("Test2");
     	
     	Label loadGameLabel = new Label("Load Game");
-    	Button testSaveButton1 = new Button("Load Game 123");
-    	Button testSaveButton2 = new Button("Load Game 321");
-    	Button testSaveButton3 = new Button("Load Game 42");
+    	root.getChildren().add(loadGameLabel);
+
+    	for(String name : getGames) {
+			Button gameButton = new Button(name);
+			gameButton.setFont(new Font("Arial", 20));
+			gameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+				@Override
+				public void handle(MouseEvent e) {
+					//Handle loading game here
+				}
+			});
+			root.getChildren().add(gameButton);
+		}
+
     	Button goBackButton = new Button("Go Back");
     	
     	loadGameLabel.setFont(new Font("Arial", 60));
-    	testSaveButton1.setFont(new Font("Arial", 20));
-    	testSaveButton2.setFont(new Font("Arial", 20));
-    	testSaveButton3.setFont(new Font("Arial", 20));
     	goBackButton.setFont(new Font("Arial", 20));
     	
     	goBackButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -52,7 +66,7 @@ public class LoadGUI extends Application implements GUI_Interface {
             }
         	});
     	
-    	root.getChildren().addAll(loadGameLabel, testSaveButton1, testSaveButton2, testSaveButton3, goBackButton);
+    	root.getChildren().add(goBackButton);
     	
     	Scene scene = new Scene(root, 800, 500);
         stage.setTitle("Load Game - Battleship");

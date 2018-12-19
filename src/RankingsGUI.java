@@ -51,13 +51,15 @@ public class RankingsGUI extends Application {
     	scoreVBox.setAlignment(Pos.CENTER);
        	
     	Label titleLabel = new Label("Battleship Rankings");
+    	Label loadingErrorLabel = new Label("");
     	Label rankLabel = new Label("Rank");
     	Label usernameLabel = new Label("Username");
     	Label scoreLabel = new Label("Score");
     	
     	Button goBackButton = new Button("Go Back");
 
-    	titleLabel.setFont(new Font("Arial", 60));
+		titleLabel.setFont(new Font("Arial", 60));
+		loadingErrorLabel.setFont(new Font("Arial", 20));
     	rankLabel.setFont(new Font("Arial", 20));
     	usernameLabel.setFont(new Font("Arial", 20));
     	scoreLabel.setFont(new Font("Arial", 20));
@@ -99,6 +101,8 @@ public class RankingsGUI extends Application {
 
 			usernameList.setItems(usernames);
 			scoreList.setItems(scores);
+		} else {
+			loadingErrorLabel.setText("Server Connection Error");
 		}
     	
     	rankList.setPrefWidth(5);
@@ -111,7 +115,7 @@ public class RankingsGUI extends Application {
     	
     	listHBox.getChildren().addAll(rankVBox, usernameVBox, scoreVBox);
     	
-    	root.getChildren().addAll(titleLabel, listHBox, goBackButton);
+    	root.getChildren().addAll(titleLabel, loadingErrorLabel, listHBox, goBackButton);
     	
     	Scene scene = new Scene(root, 800, 500);
 		stage.setTitle("Rankings - Battleship");

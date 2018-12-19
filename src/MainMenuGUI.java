@@ -158,7 +158,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 			}
 		});
 
-    	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, helpButton, signOutButton);
+    	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, helpButton, signOutButton, exitButton);
     	
     	Scene scene = new Scene(root, 800, 500);
 		stage.setTitle("Main Menu - Battleship");
