@@ -1,6 +1,8 @@
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class FleetTest {
 	
 	private Fleet fleet;
@@ -8,18 +10,13 @@ public class FleetTest {
 	@Test
 	public void destroyFleetTest() {
 		fleet = new Fleet();
-		int fleetSize = fleet.getFleet().size();
+		ArrayList<Ship> fleetList = fleet.getFleet();
+		int fleetSize = fleetList.size();
 		for(int fleetIndex = 0; fleetIndex < fleetSize; fleetIndex++) {
-			for(int numberShots = 0; numberShots < fleet.getShip(fleetIndex).getLength(); numberShots++) {
-				fleet.getShip(fleetIndex).hitRecived();
+			for(int numberShots = 0; numberShots < fleetList.get(fleetIndex).getLength(); numberShots++) {
+				fleetList.get(fleetIndex).hitRecived();
 			}
 		}
 		assertTrue(fleet.isFleetDestroyed());
-	}
-	
-	@Test
-	public void setFleetSizeInConstructorTest() {
-		fleet = new Fleet(10);
-		assertTrue(fleet.getFleet().size() == 10);
 	}
 }
