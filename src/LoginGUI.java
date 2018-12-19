@@ -16,6 +16,7 @@ public class LoginGUI extends Application {
 	private MainMenuGUI mainMenu;
 	private SQLAccount account;
 	private BackgroundImage backgroundimage;
+	private boolean initLoad;
 
 	/**
 	 * Constructor
@@ -29,6 +30,8 @@ public class LoginGUI extends Application {
 				BackgroundRepeat.NO_REPEAT,
 				BackgroundPosition.DEFAULT,
 				BackgroundSize.DEFAULT);
+
+		initLoad = true;
 	}
 
 	/**
@@ -128,7 +131,11 @@ public class LoginGUI extends Application {
     	root.getChildren().addAll(loginLabel, usernameHBox, passwordHBox, loginButton, signUpButton, guestButton);
     	
     	Scene scene = new Scene(root, 800, 500);
-		stage.initStyle(StageStyle.UNDECORATED);
+		if(initLoad) {
+			stage.initStyle(StageStyle.UNDECORATED);
+			initLoad = false;
+		}
+
 		stage.setTitle("Login - Battleship");
         stage.setScene(scene);
         stage.show();
