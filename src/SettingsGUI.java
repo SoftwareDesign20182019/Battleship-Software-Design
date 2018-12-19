@@ -24,11 +24,19 @@ import javafx.stage.Stage;
 
 public class SettingsGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
-	
+	private GUI_Interface previousGUI;
+	private Stage previousStage;
+
+
 	public SettingsGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
 	}
-	
+
+	public void setPreviousGUI(GUI_Interface previousGUI, Stage previousStage) {
+		this.previousGUI = previousGUI;
+		this.previousStage = previousStage;
+	}
+
 	@Override
 	public void start(Stage stage) {
 		VBox root = new VBox();
@@ -73,7 +81,10 @@ public class SettingsGUI extends Application implements GUI_Interface {
             @Override
             public void handle(MouseEvent e) {
             	try {
-					mainMenu.start(stage);
+					if(previousGUI.getClass().equals(InGameMenuGUI.class)) {
+						stage.hide();
+					}
+					previousGUI.start(previousStage);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
