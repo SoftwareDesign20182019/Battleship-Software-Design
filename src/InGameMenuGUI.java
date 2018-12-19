@@ -70,9 +70,9 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
                     loadGame.setPreviousGUI(inGameMenu, stage);
                     loadGame.start(stage);
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    e1.printStackTrace(); 
                 }
-            }
+            } 
         });
         Button helpButton = new Button("Help");
         helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {

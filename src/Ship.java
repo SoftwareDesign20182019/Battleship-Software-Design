@@ -1,28 +1,46 @@
-
+/**
+ * A Class to make ships
+ * @author Drew
+ *
+ */
 public class Ship {
 	private int length, numberOfHitsTaken, startTile, endTile;
 	private int[] positions;
 	private String name;
 	
+	/**
+	 * Constructor for the ship class,
+	 * @param length_ - how many tiles a ship takes up
+	 */
 	public Ship(int length_) {
 		this.length = length_;
 		this.numberOfHitsTaken = 0;
 		setName();
 	}
 	
+	/**
+	 * Returns if the ship is destroyed, if the number of hits is equal to its length
+	 * @return true if the ship is destroyed
+	 */
 	public boolean isDestroyed() {
 		
-		return numberOfHitsTaken == length;
+		return numberOfHitsTaken == length; 
 	}
 	
 	public int getLength() {
 		return length;
 	}
 	
+	/**
+	 * Adds a unit of damage to the ship when called
+	 */
 	public void hitRecived() {
 		numberOfHitsTaken ++;
 	}
 	
+	/**
+	 * Uses the length of a ship to give the ship its name
+	 */
 	public void setName() {
 		switch(length){
 			case 1:
@@ -49,23 +67,28 @@ public class Ship {
 				name += "AircraftCarrier";
 		}
 	}
-	
-	public void printStatus() {
-		System.out.println(name  + "  " + numberOfHitsTaken +"/"+ length);
-	}
-	
+		
 	public String toString() {
 		return name;
 	}
 	
+	/**
+	 * Sets the first tile of the Ship
+	 * @param start where the ship starts
+	 */
 	public void setStartIndex(int start) {
 		this.startTile = start;
 	}
 	
+	/**
+	 * Sets the endpoint of the ship
+	 * @param end - endpoint of the ship
+	 */
 	public void setEndIndex(int end) {
 		this.endTile = end;
 		
 	}
+	
 	
 	public int getStartTile() {
 		return startTile;
@@ -75,6 +98,9 @@ public class Ship {
 		return endTile;
 	}
 	
+	/**
+	 * Takes the start and end tile and fills in the space in between
+	 */
 	public void setPositions() {
 		int counter = startTile;
 		int increment;
@@ -95,6 +121,10 @@ public class Ship {
 		
 	}
 	
+	/**
+	 * Return the tile indexes that the ship takes up;
+	 * @return - list of indexes
+	 */
 	public int[] getPositions() {
 		try { 
 			setPositions();
