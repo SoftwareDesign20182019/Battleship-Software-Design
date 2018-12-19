@@ -66,7 +66,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	
     	Label battleshipTitle = new Label("BATTLESHIP");
     	Button newGameButton = new Button("New Game");
-    	Button loadGameButton = new Button("Load Game");
+//    	Button loadGameButton = new Button("Load Game");
     	Button rankingsButton = new Button("Rankings");
 		Button helpButton = new Button("Help");
 		Button signOutButton = new Button("Sign Out");
@@ -74,14 +74,14 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 
     	battleshipTitle.setFont(new Font("Arial", 60));
     	newGameButton.setFont(new Font("Arial", 20));
-    	loadGameButton.setFont(new Font("Arial", 20));
+//    	loadGameButton.setFont(new Font("Arial", 20));
     	rankingsButton.setFont(new Font("Arial", 20));
 		helpButton.setFont(new Font("Arial", 20));
 		signOutButton.setFont(new Font("Arial", 20));
 		exitButton.setFont(new Font("Arial", 20));
 
 		newGameButton.setPrefWidth(150);
-		loadGameButton.setPrefWidth(150);
+//		loadGameButton.setPrefWidth(150);
 		rankingsButton.setPrefWidth(150);
 		helpButton.setPrefWidth(150);
 		signOutButton.setPrefWidth(150);
@@ -132,17 +132,17 @@ public class MainMenuGUI extends Application implements GUI_Interface {
             }
         	});
     	
-    	loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-				try {
-					loadGame.setPreviousGUI(mainMenu, stage);
-					loadGame.start(stage);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-            }
-        	});
+//    	loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent e) {
+//				try {
+//					loadGame.setPreviousGUI(mainMenu, stage);
+//					loadGame.start(stage);
+//				} catch (Exception e1) {
+//					e1.printStackTrace();
+//				}
+//            }
+//        	});
     	
     	rankingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
@@ -185,7 +185,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 			}
 		});
 
-    	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, helpButton, signOutButton, exitButton);
+    	root.getChildren().addAll(battleshipTitle, newGameButton, rankingsButton, helpButton, signOutButton, exitButton);
     	
     	Scene scene = new Scene(root, 800, 500);
 		stage.setTitle("Main Menu - Battleship");
