@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class LoginGUI extends Application {	
+public class LoginGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	private SQLAccount account;
 	
@@ -30,7 +30,7 @@ public class LoginGUI extends Application {
 	}
 	
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);

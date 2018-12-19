@@ -22,7 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class SettingsGUI extends Application {
+public class SettingsGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	
 	public SettingsGUI(MainMenuGUI mainMenu) {
@@ -30,7 +30,7 @@ public class SettingsGUI extends Application {
 	}
 	
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);

@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class LoadGUI extends Application {
+public class LoadGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	
 	public LoadGUI(MainMenuGUI mainMenu) {
@@ -23,7 +23,7 @@ public class LoadGUI extends Application {
 	}
 	
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);

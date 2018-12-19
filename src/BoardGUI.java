@@ -27,7 +27,7 @@ import javafx.stage.Stage;
  * @author SamDoggett
  */
 
-public class BoardGUI extends Application {
+public class BoardGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	private InGameMenuGUI inGameMenu;
 	private GameLoop gameLoop;

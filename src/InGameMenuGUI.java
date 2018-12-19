@@ -14,7 +14,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class InGameMenuGUI extends Application {
+public class InGameMenuGUI extends Application implements GUI_Interface {
     private MainMenuGUI mainMenu;
     private Stage currBoardStage;
 

@@ -19,13 +19,14 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class MainMenuGUI extends Application {
+public class MainMenuGUI extends Application implements GUI_Interface {
 	private LoginGUI loginGUI;
 	private GameLoop gameLoop;
 	private MainMenuGUI mainMenu;
 	private LoadGUI loadGame;
 	private RankingsGUI rankings;
 	private SettingsGUI settings;
+	private HelpGUI help;
 	private SQLAccount account;
 
 	private BackgroundImage backgroundimage;
@@ -35,6 +36,7 @@ public class MainMenuGUI extends Application {
 		loadGame = new LoadGUI(this);
 		rankings = new RankingsGUI(this);
     	settings = new SettingsGUI(this);
+    	help = new HelpGUI();
     	mainMenu = this;
 		backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
 				BackgroundRepeat.NO_REPEAT,
@@ -52,7 +54,7 @@ public class MainMenuGUI extends Application {
 	}
 	
 	@Override
-	public void start(Stage stage) throws Exception {
+	public void start(Stage stage) {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);
@@ -65,22 +67,17 @@ public class MainMenuGUI extends Application {
     	Button newGameButton = new Button("New Game");
     	Button loadGameButton = new Button("Load Game");
     	Button rankingsButton = new Button("Rankings");
-    	Button settingsButton = new Button("Settings");
+		Button settingsButton = new Button("Settings");
+		Button helpButton = new Button("Help");
     	Button signOutButton = new Button("Sign Out");
     	
     	battleshipTitle.setFont(new Font("Arial", 60));
     	newGameButton.setFont(new Font("Arial", 20));
     	loadGameButton.setFont(new Font("Arial", 20));
     	rankingsButton.setFont(new Font("Arial", 20));
-    	settingsButton.setFont(new Font("Arial", 20));
+		settingsButton.setFont(new Font("Arial", 20));
+		helpButton.setFont(new Font("Arial", 20));
     	signOutButton.setFont(new Font("Arial", 20));
-
-    	battleshipTitle.setPadding(new Insets(20));
-    	newGameButton.setPadding(new Insets(20));
-    	loadGameButton.setPadding(new Insets(20));
-    	rankingsButton.setPadding(new Insets(20));
-    	settingsButton.setPadding(new Insets(20));
-    	signOutButton.setPadding(new Insets(20));
     	
     	newGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
@@ -124,6 +121,17 @@ public class MainMenuGUI extends Application {
 				}
             }
         	});
+
+		helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				try {
+					help.start(stage);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
     	
     	signOutButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
