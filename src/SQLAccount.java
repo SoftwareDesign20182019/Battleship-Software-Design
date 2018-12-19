@@ -8,15 +8,12 @@ import java.io.FileOutputStream;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * This Class is used to access the database
+ * @author Drew
+ *
+ */
 public class SQLAccount {
-
-	/**
-	 * This is a basic data base writer. 
-	 * Change students Grades by changing Student Grades
-	 * 
-	 * 
-	 */
-	
 		private static final String PORT_NUMBER = "3306";
 		private static final String DATABASENAME = "BattleShipAccounts";
 		public String accountName;
@@ -32,6 +29,10 @@ public class SQLAccount {
 		private Connection conn; // MySQL
 		private Statement stmt;
 
+		/**
+		 * Constructor for SQLAccount 
+		 * @param accountName_ -the primary key for Accounts and the foreign key for highscores and games
+		 */
 		public SQLAccount(String accountName_) {
 			this.accountName = accountName_; 
 			try {
@@ -44,11 +45,8 @@ public class SQLAccount {
 			} catch(SQLException ex) {
 				ex.printStackTrace();
 			}
-			/**
-			 * fix me daddy
-			 */
+			
 			try {
-				// Step 3 - create our new table
 				String sql = "create table if not exists Accounts("+
 					"AccountName varchar(30),"+
 					"Password varchar(30) not NULL,"+
@@ -84,31 +82,11 @@ public class SQLAccount {
 				this.accountName = name_;
 		}
 		
-		public boolean checkIfNameExists(String nameCheck) {
-			ResultSet rs;
-			Statement st;
-			String passwordCompare;
-			try {
-				String query = "SELECT password FROM Accounts where AccountName = '"+ accountName +"'";
-				st = conn.createStatement();//fix me 
-			
-			
-				rs = st.executeQuery(query);
-				if(!rs.isBeforeFirst()) {
-					System.err.println("Name already exists");
-					return true;
-				}
-				else {
-					return false;
-				}
-			}catch(Exception e) {
-				e.printStackTrace();
-				return false;
-			}
-		
-		}
-		
-		
+		/**
+		 * Adds an account to the account table
+		 * @param password - added to the account if account creation is successful
+		 * @return true if account was created, false if account already exists
+		 */
 		public boolean addAccount(String password) {
 			if(accountName == null) {
 				return true;
@@ -130,6 +108,11 @@ public class SQLAccount {
 			
 		}
 	
+		/**
+		 * Attempts to log the user in and compares the password given and the password on file
+		 * @param password
+		 * @return true if login was successful, false if something went wrong
+		 */
 		public boolean logIn(String password) {
 			if(accountName == null) {
 				return true;
@@ -175,6 +158,11 @@ public class SQLAccount {
 			
 		}
 		
+		/**
+		 * takes a bin file and uploads it to Games
+		 * @param toBeUploaded
+		 * @return true if upload was successful, false if something went wrong
+		 */
 		public boolean uploadGame(File toBeUploaded) {
 			if(accountName.equals("Guest")) {
 				return true;
@@ -210,6 +198,11 @@ public class SQLAccount {
 		}
 		}
 
+		/**
+		 * Only called if a user attempts to save a game and the game name already exists 
+		 * @param game
+		 * @return true if successful, false if something went wrong
+		 */
 		public boolean updateGame(File game) {
 			if(accountName.equals("Guest")) {
 				return true;
@@ -237,6 +230,10 @@ public class SQLAccount {
 			}catch(Exception e) {return false;}
 		}
 		
+		/**
+		 * Returns an arraylist of all the games a user has saved
+		 * @return- the arraylist of all the games a user has saved 
+		 */
 		public ArrayList<String> getUserGames(){
 			ArrayList<String> games = new ArrayList<String>();
 			
@@ -261,6 +258,11 @@ public class SQLAccount {
 			}
 			
 		
+		/**
+		 * Returns a Game gameName
+		 * @param gameName - name of the game
+		 * @return true if successful, false if something went wrong
+		 */
 		public File getGame(String gameName) {
 			if(accountName.equals("Guest")) {
 				return null;
@@ -270,7 +272,7 @@ public class SQLAccount {
 			
 			
 			
-				ResultSet rs;
+				ResultSet rs;  
 				String query = "SELECT game,name FROM Games where GameAccount = '"+ accountName +"'";
 				
 				
@@ -307,6 +309,11 @@ public class SQLAccount {
 			
 			
 		}
+		
+		/**
+		 * Gets the top 10 highscores
+		 * @return the list of those highscores 
+		 */
 		public ArrayList<ArrayList> getHighScores(){
 			ArrayList<Integer> scores = new ArrayList<Integer>();
 			ArrayList<String> names = new ArrayList<String>();
@@ -341,6 +348,11 @@ public class SQLAccount {
 			
 		}
 		
+		/**
+		 * adds a highscore to the highscores database, will add to the user if it is a personal highscore
+		 * @param highscore
+		 * @return true if successful, false if something went wrong
+		 */
 		public boolean addHighScore(double highscore) {
 			if(accountName.equals("Guest")) {
 				return true;
@@ -376,15 +388,6 @@ public class SQLAccount {
 			}
 			return true;
 		}
-		public static void main(String[] args ) {
-			System.out.println("starting program");
 
-			File f = new File("AI23.bin");
-			SQLAccount test = new SQLAccount("Sam");
-			//SQLAccount test2 = new SQLAccount("Drew");
-			
-			test.logIn("Big secret");
-			
-			}
 }
 
