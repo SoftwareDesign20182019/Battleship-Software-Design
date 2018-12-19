@@ -86,7 +86,6 @@ public class MediumStrategy implements OpponentStrategy {
                 checkSunk();
                 return hunt();
             } else { //root is -1;
-                System.out.println("Commence Find");
                 return find();
             }
         } else {
