@@ -47,14 +47,19 @@ public class GameLoop {
 		opponentHits = 0;
 		humanShipsLeft = 5;
 		opponentShipsLeft = 5;
+
+		//Deploy Computer
+		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
+		//Deploy Human
+		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 	}
 
 	/**
 	 * Helper method for newGame, sets opponent's difficulty
-	 * @param opponent	player whose difficulty (strategy) user will set
+	 * @param strategy which strategy we want to use
 	 */
-	public void setOpponentDifficulty(Player opponent) {
-		opponentPlayer.setDifficulty(new AIStrategy());
+	public void setOpponentDifficulty(OpponentStrategy strategy) {
+		opponentPlayer.setDifficulty(strategy);
 		scoreMultiplier = 1;
 	}
 
@@ -80,15 +85,9 @@ public class GameLoop {
 		boardGUI = new BoardGUI(this, mainMenu, inGameMenu);
 		gameBoard = new Gameboard(boardGUI);
 		boardGUI.start(guiStage);
-		//Deploy Computer
-		opponentPlayer = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);
-		setOpponentDifficulty(opponentPlayer);
 		deployOpponentShips(opponentPlayer);
-		//Deploy Human
-		humanPlayer = new HumanPlayer(Gameboard.PlayerType.HUMAN);
 		humanFleet = humanPlayer.getFleet();
 		currentShip = 0;
-
 	}
 
 	private void updateGameStatus() {

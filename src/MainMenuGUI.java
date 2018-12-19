@@ -1,6 +1,8 @@
 
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -9,10 +11,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -27,7 +26,6 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	private LoadGUI loadGame;
 	private RankingsGUI rankings;
-	private SettingsGUI settings;
 	private InGameMenuGUI inGameMenu;
 	private HelpGUI help;
 	private SQLAccount account;
@@ -38,10 +36,9 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 		this.loginGUI = loginGUI;
 		loadGame = new LoadGUI(this);
 		rankings = new RankingsGUI(this);
-    	settings = new SettingsGUI(this);
     	help = new HelpGUI();
 		mainMenu = this;
-		inGameMenu = new InGameMenuGUI(this, loadGame, settings, help);
+		inGameMenu = new InGameMenuGUI(this, loadGame, help);
 		backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
 				BackgroundRepeat.NO_REPEAT,
 				BackgroundRepeat.NO_REPEAT,
@@ -71,7 +68,6 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	Button newGameButton = new Button("New Game");
     	Button loadGameButton = new Button("Load Game");
     	Button rankingsButton = new Button("Rankings");
-		Button settingsButton = new Button("Settings");
 		Button helpButton = new Button("Help");
 		Button signOutButton = new Button("Sign Out");
 		Button exitButton = new Button("Quit");
@@ -80,16 +76,58 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	newGameButton.setFont(new Font("Arial", 20));
     	loadGameButton.setFont(new Font("Arial", 20));
     	rankingsButton.setFont(new Font("Arial", 20));
-		settingsButton.setFont(new Font("Arial", 20));
 		helpButton.setFont(new Font("Arial", 20));
 		signOutButton.setFont(new Font("Arial", 20));
 		exitButton.setFont(new Font("Arial", 20));
 
-    	newGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+		newGameButton.setPrefWidth(150);
+		loadGameButton.setPrefWidth(150);
+		rankingsButton.setPrefWidth(150);
+		helpButton.setPrefWidth(150);
+		signOutButton.setPrefWidth(150);
+		exitButton.setPrefWidth(150);
+
+		newGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-            	gameLoop = new GameLoop(stage, mainMenu);
-            	gameLoop.newGame(inGameMenu);
+				List<String> difficulties = new ArrayList<>();
+				difficulties.add("Seaman");
+				difficulties.add("Lieutenant");
+				difficulties.add("Captain");
+				difficulties.add("Admiral");
+
+				ChoiceDialog<String> dialog = new ChoiceDialog<>("Lieutenant", difficulties);
+				dialog.setTitle("Difficulty");
+				dialog.setHeaderText(null);
+				dialog.setContentText("Select a Difficulty: ");
+
+				String choice;
+
+				Optional<String> result = dialog.showAndWait();
+				result.ifPresent(difficulty -> {
+					switch(difficulty) {
+						case "Seaman":
+							gameLoop = new GameLoop(stage, mainMenu);
+							gameLoop.setOpponentDifficulty(new EasyStrategy());
+							gameLoop.newGame(inGameMenu);
+							break;
+						case "Lieutenant":
+							gameLoop = new GameLoop(stage, mainMenu);
+							gameLoop.setOpponentDifficulty(new MediumStrategy());
+							gameLoop.newGame(inGameMenu);
+							break;
+						case "Captain":
+							gameLoop = new GameLoop(stage, mainMenu);
+							gameLoop.setOpponentDifficulty(new HardStrategy());
+							gameLoop.newGame(inGameMenu);
+							break;
+						case "Admiral":
+							gameLoop = new GameLoop(stage, mainMenu);
+							gameLoop.setOpponentDifficulty(new AIStrategy());
+							gameLoop.newGame(inGameMenu);
+							break;
+					}
+				});
             }
         	});
     	
@@ -110,18 +148,6 @@ public class MainMenuGUI extends Application implements GUI_Interface {
             public void handle(MouseEvent e) {
             	try {
 					rankings.start(stage);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-            }
-        	});
-    	
-    	settingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-				try {
-					settings.setPreviousGUI(mainMenu, stage);
-					settings.start(stage);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -158,7 +184,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 			}
 		});
 
-    	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, helpButton, signOutButton, exitButton);
+    	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, helpButton, signOutButton, exitButton);
     	
     	Scene scene = new Scene(root, 800, 500);
 		stage.setTitle("Main Menu - Battleship");

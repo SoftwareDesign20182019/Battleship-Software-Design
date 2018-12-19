@@ -17,16 +17,14 @@ import javafx.stage.StageStyle;
 public class InGameMenuGUI extends Application implements GUI_Interface {
     private MainMenuGUI mainMenu;
     private LoadGUI loadGame;
-    private SettingsGUI settings;
     private HelpGUI help;
     private InGameMenuGUI inGameMenu;
     private BoardGUI boardGUI;
     private Stage boardStage;
 
-    public InGameMenuGUI(MainMenuGUI mainMenu, LoadGUI loadGame, SettingsGUI settings, HelpGUI help) {
+    public InGameMenuGUI(MainMenuGUI mainMenu, LoadGUI loadGame, HelpGUI help) {
         this.mainMenu = mainMenu;
         this.loadGame = loadGame;
-        this.settings = settings;
         this.help = help;
         inGameMenu = this;
     }
@@ -76,19 +74,6 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
                 }
             }
         });
-        Button settingsButton = new Button("Settings");
-        settingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                inGameMenuStage.hide();
-                try {
-                    settings.setPreviousGUI(inGameMenu, stage);
-                    settings.start(stage);
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
         Button helpButton = new Button("Help");
         helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
@@ -127,7 +112,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
             }
         });
 
-        ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
+        ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, helpButton, exitButton, closeWindowLabel);
         outlineStackPane.getChildren().addAll(outlineRect, ingameVBox);
 
         inGameMenuStage.setAlwaysOnTop(true);
