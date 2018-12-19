@@ -21,6 +21,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * BoardGUI handles all of the board graphics!
@@ -63,6 +64,8 @@ public class BoardGUI extends Application implements GUI_Interface {
 	//Used to make sure the user does not deployImage on previous deployment overlap
 	private ArrayList<Integer> playerShipIndexes;
 
+	private boolean inGameMenuEnabled;
+
 	private enum Rotation {
 		NORTH, EAST, SOUTH, WEST;
 	}
@@ -87,7 +90,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 	@Override
 	public void start(Stage stage) {
 		initResources();
-		setupUI(stage);
+        setupUI(stage);
 	}
 
 	private void initResources() {
@@ -265,6 +268,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 				}
 
 				if(keyEvent.getCode() == KeyCode.ESCAPE) {
+					inGameMenuEnabled = true;
 					inGameMenu.setBoardStage(stage);
 					inGameMenu.start(new Stage());
 				}
@@ -325,7 +329,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 				Object source = e.getTarget();
 				if (source instanceof ImageView) {
 					ImageView sourceImageView = (ImageView)source;
-					if(deployPhase) {
+					if(deployPhase && !inGameMenuEnabled) {
 						int col = playerGrid.getColumnIndex((ImageView) source);
 						int row = playerGrid.getRowIndex((ImageView) source);
 						int startIndex = convertCordToIndex(col, row);
@@ -373,11 +377,13 @@ public class BoardGUI extends Application implements GUI_Interface {
                             tempDisplayShip.clear();
                             deploySize = 0;
                         }
-					}
-					if (!deployPhase) {
-						bottomStackPane.getChildren().remove(stackVBox);
-						bottomStackPane.getChildren().add(infoPanel);
-						infoPanel.getChildren().add(new Label("Click on Opponent's Board to Fire the First Shot!"));
+						if (!deployPhase) {
+							bottomStackPane.getChildren().remove(stackVBox);
+							bottomStackPane.getChildren().add(infoPanel);
+							Label firstShotLabel = new Label("Click on Opponent's Board to Fire the First Shot!");
+							firstShotLabel.setFont(new Font("Arial", 24));
+							infoPanel.getChildren().add(firstShotLabel);
+						}
 					}
 				}
 			}
@@ -389,7 +395,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 
 			@Override
 			public void handle(MouseEvent e) {
-				if (deployPhase) {
+				if (deployPhase  && !inGameMenuEnabled) {
 					Object source = e.getTarget();
 					if (source instanceof ImageView) {
 						int col = opponentGrid.getColumnIndex((ImageView) source);
@@ -411,7 +417,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 			@Override
 			public void handle(MouseEvent e) {
 				Object source = e.getTarget();
-				if (!deployPhase && source instanceof ImageView && ((ImageView) source).getImage() == emptyImage) {
+				if (!deployPhase  && !inGameMenuEnabled && source instanceof ImageView && ((ImageView) source).getImage() == emptyImage) {
 					int col = opponentGrid.getColumnIndex((ImageView) source);
 					int row = opponentGrid.getRowIndex((ImageView) source);
 					gameLoop.clickResponseOpponentBoard(convertCordToIndex(col, row));
@@ -676,6 +682,10 @@ public class BoardGUI extends Application implements GUI_Interface {
 		cord[0] = col;
 		cord[1] = row;
 		return cord;
+	}
+
+	public void setInGameMenuDisabled() {
+		inGameMenuEnabled = false;
 	}
 
 	/**

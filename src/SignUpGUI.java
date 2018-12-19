@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class SignUpGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
@@ -102,8 +103,7 @@ public class SignUpGUI extends Application implements GUI_Interface {
     	root.getChildren().addAll(signUpLabel, signUpHBox, signUpButton);
     	
     	Scene scene = new Scene(root, 800, 500);
-
-        stage.setTitle("SignUp - Battleship");
+    	stage.setTitle("SignUp - Battleship");
         stage.setScene(scene);
         stage.show();
 	}

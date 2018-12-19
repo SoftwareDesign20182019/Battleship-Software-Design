@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class RankingsGUI extends Application {
 	private MainMenuGUI mainMenu;
@@ -81,22 +82,24 @@ public class RankingsGUI extends Application {
     	ListView<Integer> scoreList = new ListView<Integer>();
     	
     	ObservableList<Integer> ranks = FXCollections.observableArrayList (
-    			1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 42);
+    			1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
     	rankList.setItems(ranks);
     	SQLAccount highscoreGetter = mainMenu.getSQLAccount();
     	initialList = highscoreGetter.getHighScores();
     	ObservableList<String> usernames = FXCollections.observableArrayList ();
     	ObservableList<Integer> scores = FXCollections.observableArrayList ();
-    	
-    	for(int i = 0; i< initialList.get(0).size(); i++) {
-    		
-    		scores.add((Integer) initialList.get(0).get(i));
-    		usernames.add((String) initialList.get(1).get(i));
-    		
-    	}
-    	
-    	usernameList.setItems(usernames);
-    	scoreList.setItems(scores);
+
+    	if(initialList.size() > 0) {
+			for(int i = 0; i< initialList.get(0).size(); i++) {
+
+				scores.add((Integer) initialList.get(0).get(i));
+				usernames.add((String) initialList.get(1).get(i));
+
+			}
+
+			usernameList.setItems(usernames);
+			scoreList.setItems(scores);
+		}
     	
     	rankList.setPrefWidth(5);
     	usernameList.setPrefWidth(75);
@@ -111,8 +114,7 @@ public class RankingsGUI extends Application {
     	root.getChildren().addAll(titleLabel, listHBox, goBackButton);
     	
     	Scene scene = new Scene(root, 800, 500);
-
-        stage.setTitle("Rankings - Battleship");
+		stage.setTitle("Rankings - Battleship");
         stage.setScene(scene);
         stage.show();
 	}

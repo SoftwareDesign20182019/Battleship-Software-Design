@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class HelpGUI extends Application {
    private GUI_Interface previousGUI;
@@ -28,27 +29,30 @@ public class HelpGUI extends Application {
     public void start(Stage stage) {
         VBox root = new VBox();
         root.setAlignment(Pos.CENTER);
-        root.setSpacing(5);
+        root.setSpacing(15);
 
-        Label titleLabel = new Label("Battleship Rankings");
+        Label helpLabel = new Label("Help");
+        Label instructionsLabel = new Label("instructions.....");
 
         Button goBackButton = new Button("Go Back");
 
-        titleLabel.setFont(new Font("Arial", 60));
+        helpLabel.setFont(new Font("Arial", 60));
+        instructionsLabel.setFont(new Font("Arial", 20));
         goBackButton.setFont(new Font("Arial", 20));
 
         goBackButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                stage.hide();
+                if(previousGUI.getClass().equals(InGameMenuGUI.class)) {
+                    stage.hide();
+                }
                 previousGUI.start(previousStage);
             }
         });
 
-        root.getChildren().addAll(titleLabel, goBackButton);
+        root.getChildren().addAll(helpLabel, instructionsLabel, goBackButton);
 
         Scene scene = new Scene(root, 800, 500);
-
         stage.setTitle("Help - Battleship");
         stage.setScene(scene);
         stage.show();

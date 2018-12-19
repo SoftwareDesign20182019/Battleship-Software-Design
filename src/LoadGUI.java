@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class LoadGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
@@ -54,7 +55,6 @@ public class LoadGUI extends Application implements GUI_Interface {
     	root.getChildren().addAll(loadGameLabel, testSaveButton1, testSaveButton2, testSaveButton3, goBackButton);
     	
     	Scene scene = new Scene(root, 800, 500);
-
         stage.setTitle("Load Game - Battleship");
         stage.setScene(scene);
         stage.show();

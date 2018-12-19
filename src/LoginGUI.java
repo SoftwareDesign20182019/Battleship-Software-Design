@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class LoginGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
@@ -119,8 +120,8 @@ public class LoginGUI extends Application implements GUI_Interface {
     	root.getChildren().addAll(loginLabel, usernameHBox, passwordHBox, loginButton, signUpButton, guestButton);
     	
     	Scene scene = new Scene(root, 800, 500);
-
-        stage.setTitle("Login - Battleship");
+		stage.initStyle(StageStyle.UNDECORATED);
+		stage.setTitle("Login - Battleship");
         stage.setScene(scene);
         stage.show();
 	}

@@ -45,11 +45,14 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         outlineRect.setFill(Color.TRANSPARENT);
         outlineRect.setStroke(Color.RED);
         outlineRect.setStrokeWidth(4);
+
         VBox ingameVBox = new VBox();
         ingameVBox.setSpacing(5);
         ingameVBox.setAlignment(Pos.CENTER);
+
         Stage inGameMenuStage = new Stage();
         inGameMenuStage.initStyle(StageStyle.UNDECORATED);
+
         Scene inGameScene = new Scene(outlineStackPane, 200, 200);
         inGameMenuStage.setScene(inGameScene);
 
@@ -103,17 +106,20 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
 
         Label closeWindowLabel = new Label("Press ESC to Return to Game");
 
-        ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
-        outlineStackPane.getChildren().addAll(outlineRect, ingameVBox);
-        inGameMenuStage.show();
-
         inGameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if(keyEvent.getCode() == KeyCode.ESCAPE) {
                     inGameMenuStage.hide();
+                    boardGUI.setInGameMenuDisabled();
                 }
             }
         });
+
+        ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
+        outlineStackPane.getChildren().addAll(outlineRect, ingameVBox);
+
+        inGameMenuStage.setAlwaysOnTop(true);
+        inGameMenuStage.show();
     }
 }

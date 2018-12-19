@@ -18,6 +18,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MainMenuGUI extends Application implements GUI_Interface {
 	private LoginGUI loginGUI;
@@ -150,8 +151,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, helpButton, signOutButton);
     	
     	Scene scene = new Scene(root, 800, 500);
-
-        stage.setTitle("Main Menu - Battleship");
+		stage.setTitle("Main Menu - Battleship");
         stage.setScene(scene);
         stage.show();
 	}
