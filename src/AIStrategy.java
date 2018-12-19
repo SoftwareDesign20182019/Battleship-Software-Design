@@ -224,7 +224,6 @@ public class AIStrategy implements OpponentStrategy {
      * @return next number to hit
      */
     private int survey(){
-        System.out.println("Surveying");
         ArrayList<Integer> mostHitSquares = new ArrayList<>();
 
         for(int i = 0; i < tileProbabilities.length; i++ ){
@@ -467,7 +466,7 @@ public class AIStrategy implements OpponentStrategy {
             System.out.println("Mid Sized Ships");
         }
         if(smallShip){
-            System.out.println("Small ship sunk");
+            System.out.println("Small ship");
         }
 
     }
