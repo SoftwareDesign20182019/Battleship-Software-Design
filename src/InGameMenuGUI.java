@@ -94,10 +94,9 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         exitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                boardStage.hide();
                 inGameMenuStage.hide();
                 try {
-                    mainMenu.start(stage);
+                    mainMenu.start(boardStage);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

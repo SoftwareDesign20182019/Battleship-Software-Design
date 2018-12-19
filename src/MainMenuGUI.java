@@ -3,6 +3,7 @@
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -72,16 +73,18 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	Button rankingsButton = new Button("Rankings");
 		Button settingsButton = new Button("Settings");
 		Button helpButton = new Button("Help");
-    	Button signOutButton = new Button("Sign Out");
-    	
+		Button signOutButton = new Button("Sign Out");
+		Button exitButton = new Button("Quit");
+
     	battleshipTitle.setFont(new Font("Arial", 60));
     	newGameButton.setFont(new Font("Arial", 20));
     	loadGameButton.setFont(new Font("Arial", 20));
     	rankingsButton.setFont(new Font("Arial", 20));
 		settingsButton.setFont(new Font("Arial", 20));
 		helpButton.setFont(new Font("Arial", 20));
-    	signOutButton.setFont(new Font("Arial", 20));
-    	
+		signOutButton.setFont(new Font("Arial", 20));
+		exitButton.setFont(new Font("Arial", 20));
+
     	newGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -147,6 +150,13 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 				}
             }
         	});
+
+		exitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				Platform.exit();
+			}
+		});
 
     	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, helpButton, signOutButton);
     	
