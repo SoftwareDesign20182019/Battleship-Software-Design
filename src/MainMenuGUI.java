@@ -99,9 +99,10 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 				ChoiceDialog<String> dialog = new ChoiceDialog<>("Lieutenant", difficulties);
 				dialog.setTitle("Difficulty");
 				dialog.setHeaderText(null);
-				dialog.setContentText("Select a Difficulty: ");
-
-				String choice;
+				dialog.setContentText("Select a Difficulty");
+				dialog.setGraphic(new ImageView(new Image("File:us_navy.png", true)));
+				dialog.getDialogPane().setPrefSize(300, 125);
+				dialog.initStyle(StageStyle.UTILITY);
 
 				Optional<String> result = dialog.showAndWait();
 				result.ifPresent(difficulty -> {
