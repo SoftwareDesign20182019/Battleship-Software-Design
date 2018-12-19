@@ -3,13 +3,10 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -19,11 +16,12 @@ import javafx.stage.StageStyle;
 public class SignUpGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	private SQLAccount account;
+	private Background background;
 	
-	public SignUpGUI(MainMenuGUI mainMenu) {
+	public SignUpGUI(MainMenuGUI mainMenu, Background background) {
 		this.mainMenu = mainMenu;
 		this.account = mainMenu.getSQLAccount();
-
+		this.background = background;
 	}
 	
 	
@@ -32,8 +30,10 @@ public class SignUpGUI extends Application implements GUI_Interface {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(30);
-    	
-    	HBox signUpHBox = new HBox();
+
+		root.setBackground(background);
+
+		HBox signUpHBox = new HBox();
     	signUpHBox.setSpacing(20);
     	signUpHBox.setAlignment(Pos.CENTER);
     	
@@ -49,8 +49,8 @@ public class SignUpGUI extends Application implements GUI_Interface {
     	Label rePasswordLabel = new Label("Re-enter Password: ");
     	
     	TextField usernameField = new TextField();
-    	TextField passwordField = new TextField();
-    	TextField rePasswordField = new TextField();
+		PasswordField  passwordField = new PasswordField();
+		PasswordField rePasswordField = new PasswordField();
 
     	Button signUpButton = new Button("Sign Up");
     	

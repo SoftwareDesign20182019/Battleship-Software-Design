@@ -3,15 +3,11 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -19,11 +15,17 @@ import javafx.stage.StageStyle;
 public class LoginGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	private SQLAccount account;
-	
+	private BackgroundImage backgroundimage;
+
 	public LoginGUI() {
 		account = new SQLAccount(null);
 		mainMenu = new MainMenuGUI(this);
 		mainMenu.setSQLAccount(account);
+		backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
+				BackgroundRepeat.NO_REPEAT,
+				BackgroundRepeat.NO_REPEAT,
+				BackgroundPosition.DEFAULT,
+				BackgroundSize.DEFAULT);
 	}
 
 	public LoginGUI(MainMenuGUI mainMenu) {
@@ -35,8 +37,11 @@ public class LoginGUI extends Application implements GUI_Interface {
 		VBox root = new VBox();
     	root.setAlignment(Pos.CENTER);
     	root.setSpacing(10);
-    	
-    	HBox usernameHBox = new HBox();
+
+		Background background = new Background(backgroundimage);
+		root.setBackground(background);
+
+		HBox usernameHBox = new HBox();
     	HBox passwordHBox = new HBox();
     	
     	usernameHBox.setPadding(new Insets(10));
@@ -49,7 +54,7 @@ public class LoginGUI extends Application implements GUI_Interface {
     	Label usernameLabel = new Label("Username: ");
     	TextField usernameField = new TextField();
     	Label passwordLabel = new Label("Password: ");
-    	TextField passwordField = new TextField();
+		PasswordField passwordField = new PasswordField();
     	Button loginButton = new Button("Login");
     	Button signUpButton = new Button("Sign Up");
     	Button guestButton = new Button("Login as Guest");
@@ -68,7 +73,7 @@ public class LoginGUI extends Application implements GUI_Interface {
             @Override
             public void handle(MouseEvent e) {
             	try {
-            		SignUpGUI signUp = new SignUpGUI(mainMenu);
+            		SignUpGUI signUp = new SignUpGUI(mainMenu, background);
             		signUp.start(stage);
             	} catch (Exception e1) {
 					e1.printStackTrace();
