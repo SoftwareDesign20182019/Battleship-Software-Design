@@ -16,11 +16,27 @@ import javafx.stage.StageStyle;
 
 public class InGameMenuGUI extends Application implements GUI_Interface {
     private MainMenuGUI mainMenu;
-    private Stage currBoardStage;
+    private LoadGUI loadGame;
+    private SettingsGUI settings;
+    private HelpGUI help;
+    private InGameMenuGUI inGameMenu;
+    private BoardGUI boardGUI;
+    private Stage boardStage;
 
-    public InGameMenuGUI(MainMenuGUI mainMenu, Stage currBoardStage) {
+    public InGameMenuGUI(MainMenuGUI mainMenu, LoadGUI loadGame, SettingsGUI settings, HelpGUI help) {
         this.mainMenu = mainMenu;
-        this.currBoardStage = currBoardStage;
+        this.loadGame = loadGame;
+        this.settings = settings;
+        this.help = help;
+        inGameMenu = this;
+    }
+
+    public void setBoardGUI(BoardGUI boardGUI) {
+        this.boardGUI = boardGUI;
+    }
+
+    public void setBoardStage (Stage previousStage) {
+        this.boardStage = previousStage;
     }
 
     public void start(Stage stage) {
@@ -36,6 +52,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         inGameMenuStage.initStyle(StageStyle.UNDECORATED);
         Scene inGameScene = new Scene(outlineStackPane, 200, 200);
         inGameMenuStage.setScene(inGameScene);
+
         Button saveGameButton = new Button("Save Game");
         saveGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
@@ -61,14 +78,20 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-
+                inGameMenuStage.hide();
+                try {
+                    help.setPreviousGUI(inGameMenu, stage);
+                    help.start(stage);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         Button exitButton = new Button("Exit Game");
         exitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                currBoardStage.hide();
+                boardStage.hide();
                 inGameMenuStage.hide();
                 try {
                     mainMenu.start(stage);
@@ -77,10 +100,13 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
                 }
             }
         });
+
         Label closeWindowLabel = new Label("Press ESC to Return to Game");
+
         ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, settingsButton, helpButton, exitButton, closeWindowLabel);
         outlineStackPane.getChildren().addAll(outlineRect, ingameVBox);
         inGameMenuStage.show();
+
         inGameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {

@@ -76,8 +76,8 @@ public class GameLoop {
 	/**
 	 * Contains game loop
 	 */
-	public void newGame() {
-		boardGUI = new BoardGUI(this, mainMenu);
+	public void newGame(InGameMenuGUI inGameMenu) {
+		boardGUI = new BoardGUI(this, mainMenu, inGameMenu);
 		gameBoard = new Gameboard(boardGUI);
 		boardGUI.start(guiStage);
 		//Deploy Computer

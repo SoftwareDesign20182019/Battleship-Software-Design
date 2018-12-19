@@ -71,9 +71,11 @@ public class BoardGUI extends Application implements GUI_Interface {
 		PATROL, SUB, DESTROYER, BATTLESHIP, AIRCRAFTCARRIER;
 	}
 
-	public BoardGUI(GameLoop gameLoop, MainMenuGUI mainMenu) {
+	public BoardGUI(GameLoop gameLoop, MainMenuGUI mainMenu, InGameMenuGUI inGameMenu) {
 		this.mainMenu = mainMenu;
 		this.gameLoop = gameLoop;
+		this.inGameMenu = inGameMenu;
+		inGameMenu.setBoardGUI(this);
 		deployPhase = true;
 		deploySize = 0;
 		deployIndex = -1;
@@ -84,7 +86,6 @@ public class BoardGUI extends Application implements GUI_Interface {
 
 	@Override
 	public void start(Stage stage) {
-		inGameMenu = new InGameMenuGUI(mainMenu, stage);
 		initResources();
 		setupUI(stage);
 	}
@@ -264,6 +265,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 				}
 
 				if(keyEvent.getCode() == KeyCode.ESCAPE) {
+					inGameMenu.setBoardStage(stage);
 					inGameMenu.start(new Stage());
 				}
 			}

@@ -26,6 +26,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 	private LoadGUI loadGame;
 	private RankingsGUI rankings;
 	private SettingsGUI settings;
+	private InGameMenuGUI inGameMenu;
 	private HelpGUI help;
 	private SQLAccount account;
 
@@ -37,7 +38,8 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 		rankings = new RankingsGUI(this);
     	settings = new SettingsGUI(this);
     	help = new HelpGUI();
-    	mainMenu = this;
+		mainMenu = this;
+		inGameMenu = new InGameMenuGUI(this, loadGame, settings, help);
 		backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
 				BackgroundRepeat.NO_REPEAT,
 				BackgroundRepeat.NO_REPEAT,
@@ -83,7 +85,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
             @Override
             public void handle(MouseEvent e) {
             	gameLoop = new GameLoop(stage, mainMenu);
-            	gameLoop.newGame();
+            	gameLoop.newGame(inGameMenu);
             }
         	});
     	
@@ -126,6 +128,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 			@Override
 			public void handle(MouseEvent e) {
 				try {
+					help.setPreviousGUI(mainMenu, stage);
 					help.start(stage);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -144,7 +147,7 @@ public class MainMenuGUI extends Application implements GUI_Interface {
             }
         	});
 
-    	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, signOutButton);
+    	root.getChildren().addAll(battleshipTitle, newGameButton, loadGameButton, rankingsButton, settingsButton, helpButton, signOutButton);
     	
     	Scene scene = new Scene(root, 800, 500);
 
