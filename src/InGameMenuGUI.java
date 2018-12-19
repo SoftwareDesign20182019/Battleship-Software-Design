@@ -60,21 +60,33 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         saveGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-
+                //ADD SAVE GAME FUNCTIONALITY HERE
             }
         });
         Button loadGameButton = new Button("Load Game");
         loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-
+                inGameMenuStage.hide();
+                try {
+                    loadGame.setPreviousGUI(inGameMenu, stage);
+                    loadGame.start(stage);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         Button settingsButton = new Button("Settings");
         settingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-
+                inGameMenuStage.hide();
+                try {
+                    settings.setPreviousGUI(inGameMenu, stage);
+                    settings.start(stage);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
             }
         });
         Button helpButton = new Button("Help");

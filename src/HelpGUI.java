@@ -16,8 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class HelpGUI extends Application {
-   private GUI_Interface previousGUI;
-
+    private GUI_Interface previousGUI;
     private Stage previousStage;
 
     public void setPreviousGUI(GUI_Interface previousGUI, Stage previousStage) {

@@ -96,10 +96,10 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-            	try {
+				try {
+					loadGame.setPreviousGUI(mainMenu, stage);
 					loadGame.start(stage);
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
             }
@@ -111,7 +111,6 @@ public class MainMenuGUI extends Application implements GUI_Interface {
             	try {
 					rankings.start(stage);
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
             }
@@ -120,7 +119,8 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	settingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-            	try {
+				try {
+					settings.setPreviousGUI(mainMenu, stage);
 					settings.start(stage);
 				} catch (Exception e1) {
 					e1.printStackTrace();
