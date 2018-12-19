@@ -18,18 +18,16 @@ import javafx.stage.StageStyle;
 
 import java.util.ArrayList;
 
-public class LoadGUI extends Application implements GUI_Interface {
+/**
+ * LoadGUI has been Ice Boxed and will not be in our final iteration.
+ * Keeping the code in case we want to come back to this in the future.
+ */
+public class LoadGUI {
+	/**
 	private MainMenuGUI mainMenu;
-	private GUI_Interface previousGUI;
-	private Stage previousStage;
 
 	public LoadGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
-	}
-
-	public void setPreviousGUI(GUI_Interface previousGUI, Stage previousStage) {
-		this.previousGUI = previousGUI;
-		this.previousStage = previousStage;
 	}
 
 	@Override
@@ -83,4 +81,5 @@ public class LoadGUI extends Application implements GUI_Interface {
         stage.setScene(scene);
         stage.show();
 	}
+	*/
 }

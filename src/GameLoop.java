@@ -4,6 +4,13 @@ import java.util.Scanner;
 
 import javafx.stage.Stage;
 
+/**
+ * GameLoop handles all of the games main methods! These methods interact with the appropriate data and view classes.
+ * @author WyattNewhall
+ * @author OwenMiller
+ * @author DrewShipey
+ * @author SamDoggett
+ */
 public class GameLoop {
 	private BoardGUI boardGUI;
 	private MainMenuGUI mainMenu;
@@ -15,7 +22,6 @@ public class GameLoop {
 	private Player opponentPlayer;
 	private ArrayList<Ship> opponentShips;
 
-	private boolean playerTurn;
 	private boolean wasHit;
 
 	private boolean playerDeploy;
@@ -36,10 +42,14 @@ public class GameLoop {
 	private double scoreMultiplier;
 	private double humanScore;
 
+	/**
+	 * Constructor
+	 * @param stage setter
+	 * @param mainMenu setter
+	 */
 	public GameLoop(Stage stage, MainMenuGUI mainMenu) {
 		this.guiStage = stage;
 		this.mainMenu = mainMenu;
-		playerTurn = true;
 		playerDeploy = true;
 		humanShots = 0;
 		humanHits = 0;
@@ -58,9 +68,9 @@ public class GameLoop {
 	 * Helper method for newGame, sets opponent's difficulty
 	 * @param strategy which strategy we want to use
 	 */
-	public void setOpponentDifficulty(OpponentStrategy strategy) {
+	public void setOpponentDifficulty(OpponentStrategy strategy, double scoreMultiplier) {
 		opponentPlayer.setDifficulty(strategy);
-		scoreMultiplier = 1;
+		this.scoreMultiplier = scoreMultiplier;
 	}
 
 	/**
@@ -79,7 +89,8 @@ public class GameLoop {
 
 
 	/**
-	 * Contains game loop
+	 * Sets up the newGame
+	 * @param inGameMenu passed to boardGUI
 	 */
 	public void newGame(InGameMenuGUI inGameMenu) {
 		boardGUI = new BoardGUI(this, mainMenu, inGameMenu);
@@ -90,6 +101,9 @@ public class GameLoop {
 		currentShip = 0;
 	}
 
+	/**
+	 * Checks for a winner, and updates boardGUI information panel
+	 */
 	private void updateGameStatus() {
 		//Check for destroyed fleets, end game
 		if(humanPlayer.destroyedFleet()){
@@ -117,7 +131,7 @@ public class GameLoop {
 	}
 
 	/**
-	 * Fire computer player shot
+	 * Fires a computer player shot
 	 */
 	public void computerTurn() {
 		if(!humanWins && !opponentWins) {
@@ -147,6 +161,13 @@ public class GameLoop {
 		}
 	}
 
+	/**
+	 * Response to player deployment, deploys ship on gameboard and checks if all ships have been deployed.
+	 * @param shipStartIndex ship start index for deployment
+	 * @param shipEndIndex ship end index for deployment
+	 * @param shipType what type of ship is being deployed
+	 * @return returns if deployment is over
+	 */
 	public boolean clickResponsePlayerBoard(int shipStartIndex, int shipEndIndex, int shipType) {
 		if(playerDeploy) {
 			gameBoard.deploy(humanPlayer.getType(), shipStartIndex, shipEndIndex, humanFleet.get(shipType));
@@ -156,6 +177,9 @@ public class GameLoop {
 		return playerDeploy;
 	}
 
+	/**
+	 * Our scoring algorithim! If you get a perfect game on the hardest difficulty you should have 1000 points
+	 */
 	public void getScore() {
 		double score = (17/humanShots)*1000*scoreMultiplier;
 		if(opponentPlayer.destroyedFleet()) {

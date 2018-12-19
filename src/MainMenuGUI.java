@@ -20,11 +20,14 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * The MainMenuGUI class creates the main menu stage.
+ * @author samdoggett
+ */
 public class MainMenuGUI extends Application implements GUI_Interface {
 	private LoginGUI loginGUI;
 	private GameLoop gameLoop;
 	private MainMenuGUI mainMenu;
-	private LoadGUI loadGame;
 	private RankingsGUI rankings;
 	private InGameMenuGUI inGameMenu;
 	private HelpGUI help;
@@ -32,28 +35,43 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 
 	private BackgroundImage backgroundimage;
 
+	/**
+	 * Constructor
+	 * @param loginGUI the LoginGUI incase we want to sign out
+	 */
 	public MainMenuGUI(LoginGUI loginGUI) {
 		this.loginGUI = loginGUI;
-		loadGame = new LoadGUI(this);
 		rankings = new RankingsGUI(this);
     	help = new HelpGUI();
 		mainMenu = this;
-		inGameMenu = new InGameMenuGUI(this, loadGame, help);
+		inGameMenu = new InGameMenuGUI(this, help);
 		backgroundimage = new BackgroundImage(new Image("File:battleship-background.jpg", true),
 				BackgroundRepeat.NO_REPEAT,
 				BackgroundRepeat.NO_REPEAT,
 				BackgroundPosition.DEFAULT,
 				BackgroundSize.DEFAULT);
 	}
-	
+
+	/**
+	 * Setter
+	 * @param account_ account
+	 */
 	public void setSQLAccount(SQLAccount account_) {
 		this.account = account_;
 	}
-	
+
+	/**
+	 * Getter
+	 * @return account
+	 */
 	public SQLAccount getSQLAccount() {
 		return account;
 	}
-	
+
+	/**
+	 * Start method sets up stage and shows it
+	 * @param stage stage we are working on
+	 */
 	@Override
 	public void start(Stage stage) {
 		VBox root = new VBox();
@@ -66,7 +84,6 @@ public class MainMenuGUI extends Application implements GUI_Interface {
     	
     	Label battleshipTitle = new Label("BATTLESHIP");
     	Button newGameButton = new Button("New Game");
-//    	Button loadGameButton = new Button("Load Game");
     	Button rankingsButton = new Button("Rankings");
 		Button helpButton = new Button("Help");
 		Button signOutButton = new Button("Sign Out");
@@ -74,14 +91,12 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 
     	battleshipTitle.setFont(new Font("Arial", 60));
     	newGameButton.setFont(new Font("Arial", 20));
-//    	loadGameButton.setFont(new Font("Arial", 20));
     	rankingsButton.setFont(new Font("Arial", 20));
 		helpButton.setFont(new Font("Arial", 20));
 		signOutButton.setFont(new Font("Arial", 20));
 		exitButton.setFont(new Font("Arial", 20));
 
 		newGameButton.setPrefWidth(150);
-//		loadGameButton.setPrefWidth(150);
 		rankingsButton.setPrefWidth(150);
 		helpButton.setPrefWidth(150);
 		signOutButton.setPrefWidth(150);
@@ -90,6 +105,8 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 		newGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
+            	//This will create a dialog (alert) window that will ask the user what difficulty they want to use
+				//And will start a new game in game loop
 				List<String> difficulties = new ArrayList<>();
 				difficulties.add("Seaman");
 				difficulties.add("Lieutenant");
@@ -109,40 +126,28 @@ public class MainMenuGUI extends Application implements GUI_Interface {
 					switch(difficulty) {
 						case "Seaman":
 							gameLoop = new GameLoop(stage, mainMenu);
-							gameLoop.setOpponentDifficulty(new EasyStrategy());
+							gameLoop.setOpponentDifficulty(new EasyStrategy(), 0.25);
 							gameLoop.newGame(inGameMenu);
 							break;
 						case "Lieutenant":
 							gameLoop = new GameLoop(stage, mainMenu);
-							gameLoop.setOpponentDifficulty(new MediumStrategy());
+							gameLoop.setOpponentDifficulty(new MediumStrategy(), 0.5);
 							gameLoop.newGame(inGameMenu);
 							break;
 						case "Captain":
 							gameLoop = new GameLoop(stage, mainMenu);
-							gameLoop.setOpponentDifficulty(new HardStrategy());
+							gameLoop.setOpponentDifficulty(new HardStrategy(), 0.75);
 							gameLoop.newGame(inGameMenu);
 							break;
 						case "Admiral":
 							gameLoop = new GameLoop(stage, mainMenu);
-							gameLoop.setOpponentDifficulty(new AIStrategy());
+							gameLoop.setOpponentDifficulty(new AIStrategy(), 1.0);
 							gameLoop.newGame(inGameMenu);
 							break;
 					}
 				});
             }
         	});
-    	
-//    	loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent e) {
-//				try {
-//					loadGame.setPreviousGUI(mainMenu, stage);
-//					loadGame.start(stage);
-//				} catch (Exception e1) {
-//					e1.printStackTrace();
-//				}
-//            }
-//        	});
     	
     	rankingsButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override

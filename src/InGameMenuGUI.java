@@ -15,7 +15,11 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class InGameMenuGUI extends Application implements GUI_Interface {
+/**
+ * InGameMenuGUI is a small pop up window that is diplayed in game to exit the game and to access the help page.
+ * @author samdoggett
+ */
+public class InGameMenuGUI extends Application implements GUI_Interface{
     private MainMenuGUI mainMenu;
     private LoadGUI loadGame;
     private HelpGUI help;
@@ -23,21 +27,38 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
     private BoardGUI boardGUI;
     private Stage boardStage;
 
-    public InGameMenuGUI(MainMenuGUI mainMenu, LoadGUI loadGame, HelpGUI help) {
+    /**
+     * Constructor
+     * @param mainMenu setter
+     * @param help setter
+     */
+    public InGameMenuGUI(MainMenuGUI mainMenu, HelpGUI help) {
         this.mainMenu = mainMenu;
         this.loadGame = loadGame;
         this.help = help;
         inGameMenu = this;
     }
 
+    /**
+     * Setter
+     * @param boardGUI setter
+     */
     public void setBoardGUI(BoardGUI boardGUI) {
         this.boardGUI = boardGUI;
     }
 
+    /**
+     * Setter
+     * @param previousStage setter
+     */
     public void setBoardStage (Stage previousStage) {
         this.boardStage = previousStage;
     }
 
+    /**
+     * Start sets up the stage and displays it.
+     * @param stage stage we are working on
+     */
     public void start(Stage stage) {
         StackPane outlineStackPane = new StackPane();
         Rectangle outlineRect = new Rectangle(200, 200);
@@ -55,26 +76,6 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         Scene inGameScene = new Scene(outlineStackPane, 200, 200);
         inGameMenuStage.setScene(inGameScene);
 
-//        Button saveGameButton = new Button("Save Game");
-//        saveGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent e) {
-//                //ADD SAVE GAME FUNCTIONALITY HERE
-//            }
-//        });
-//        Button loadGameButton = new Button("Load Game");
-//        loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent e) {
-//                inGameMenuStage.hide();
-//                try {
-//                    loadGame.setPreviousGUI(inGameMenu, stage);
-//                    loadGame.start(stage);
-//                } catch (Exception e1) {
-//                    e1.printStackTrace();
-//                }
-//            }
-//        });
         Button helpButton = new Button("Help");
         helpButton.setFont(new Font("Arial", 18));
         helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {

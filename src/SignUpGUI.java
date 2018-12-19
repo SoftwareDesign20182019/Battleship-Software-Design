@@ -13,18 +13,30 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class SignUpGUI extends Application implements GUI_Interface {
+/**
+ * SignUpGUI displays sign up information
+ * @author samdoggett
+ */
+public class SignUpGUI extends Application {
 	private MainMenuGUI mainMenu;
 	private SQLAccount account;
 	private Background background;
-	
+
+	/**
+	 * Constructor
+	 * @param mainMenu next stage...
+	 * @param background background image so we dont need to rebuffer
+	 */
 	public SignUpGUI(MainMenuGUI mainMenu, Background background) {
 		this.mainMenu = mainMenu;
 		this.account = mainMenu.getSQLAccount();
 		this.background = background;
 	}
-	
-	
+
+	/**
+	 * Start sets up the stage and displays it.
+	 * @param stage stage we are working on
+	 */
 	@Override
 	public void start(Stage stage) {
 		VBox root = new VBox();
@@ -78,7 +90,6 @@ public class SignUpGUI extends Application implements GUI_Interface {
             	//if none of the fields are blank
             	if(!usernameFieldString.equals("") && !passwordFieldString.equals("") && !rePasswordFieldString.equals("") && passwordFieldString.equals(rePasswordFieldString)) {
             		//ALL SIGN UP SQL STUFF HERE
-            		
             		if(!account.addAccount(passwordFieldString)) {
             			Alert accountNameExists = new Alert(AlertType.CONFIRMATION, "Account Username Already Exists", ButtonType.YES);
             			accountNameExists.showAndWait();

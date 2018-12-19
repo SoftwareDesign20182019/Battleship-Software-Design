@@ -12,11 +12,14 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class LoginGUI extends Application implements GUI_Interface {
+public class LoginGUI extends Application {
 	private MainMenuGUI mainMenu;
 	private SQLAccount account;
 	private BackgroundImage backgroundimage;
 
+	/**
+	 * Constructor
+	 */
 	public LoginGUI() {
 		account = new SQLAccount(null);
 		mainMenu = new MainMenuGUI(this);
@@ -28,10 +31,10 @@ public class LoginGUI extends Application implements GUI_Interface {
 				BackgroundSize.DEFAULT);
 	}
 
-	public LoginGUI(MainMenuGUI mainMenu) {
-		this.mainMenu = mainMenu;
-	}
-	
+	/**
+	 * Start sets up the stage and displays it.
+	 * @param stage stage we are working on
+	 */
 	@Override
 	public void start(Stage stage) {
 		VBox root = new VBox();

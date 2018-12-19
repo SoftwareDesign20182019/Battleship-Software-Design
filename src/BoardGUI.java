@@ -21,13 +21,12 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 /**
  * BoardGUI handles all of the board graphics!
  * @author SamDoggett
  */
-public class BoardGUI extends Application implements GUI_Interface {
+public class BoardGUI extends Application {
 	private MainMenuGUI mainMenu;
 	private InGameMenuGUI inGameMenu;
 	private GameLoop gameLoop;
@@ -42,6 +41,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 
 	private HBox infoPanel;
 
+	//Images we will use in our Grids
 	private Image emptyImage;
 	private Image hitImage;
 	private Image missImage;
@@ -56,8 +56,11 @@ public class BoardGUI extends Application implements GUI_Interface {
 	private int deploySize;
 	private int deployIndex;
 
+	//keeps track of the current placement rotation
 	private BoardGUI.Rotation currentRotation;
+	//keeps track of deploy shiptype
 	private BoardGUI.ShipType shipType;
+	//temp images that will make up the deployment hover display
 	private ArrayList<ImageView> tempDisplayShip;
 
 	//Used to make sure the user does not deployImage on previous deployment overlap
@@ -65,14 +68,26 @@ public class BoardGUI extends Application implements GUI_Interface {
 
 	private boolean inGameMenuEnabled;
 
+	/**
+	 * Ships rotation based on piviot point (mouse pos)
+	 */
 	private enum Rotation {
 		NORTH, EAST, SOUTH, WEST;
 	}
 
+	/**
+	 * What ShipType is selected
+	 */
 	private enum ShipType {
 		PATROL, SUB, DESTROYER, BATTLESHIP, AIRCRAFTCARRIER;
 	}
 
+	/**
+	 * Constructor
+	 * @param gameLoop setter
+	 * @param mainMenu setter
+	 * @param inGameMenu setter
+	 */
 	public BoardGUI(GameLoop gameLoop, MainMenuGUI mainMenu, InGameMenuGUI inGameMenu) {
 		this.mainMenu = mainMenu;
 		this.gameLoop = gameLoop;
@@ -84,14 +99,21 @@ public class BoardGUI extends Application implements GUI_Interface {
 		tempDisplayShip = new ArrayList<ImageView>();
 		playerShipIndexes = new ArrayList<Integer>();
 		currentRotation = Rotation.EAST;
+		initResources();
 	}
 
+	/**
+	 * Start calls the setupUI method
+	 * @param stage pass the stage along
+	 */
 	@Override
 	public void start(Stage stage) {
-		initResources();
         setupUI(stage);
 	}
 
+	/**
+	 * Initialize these resources upon constructor
+	 */
 	private void initResources() {
 		emptyImage = new Image("File:empty.png", true);
 		hitImage = new Image("File:hit.png", true);
@@ -103,8 +125,8 @@ public class BoardGUI extends Application implements GUI_Interface {
 
 	/**
 	 * Sets a grid element to the specified INDEX
-	 *
 	 * @param gridName the grid we would like to change
+	 * @param index is the index of the selected location
 	 * @param newImage the new image we wish to set
 	 */
 	public ImageView setGridElement(String gridName, int index, String newImage) {
@@ -329,8 +351,8 @@ public class BoardGUI extends Application implements GUI_Interface {
 				if (source instanceof ImageView) {
 					ImageView sourceImageView = (ImageView)source;
 					if(deployPhase && !inGameMenuEnabled) {
-						int col = playerGrid.getColumnIndex((ImageView) source);
-						int row = playerGrid.getRowIndex((ImageView) source);
+						int col = playerGrid.getColumnIndex(sourceImageView);
+						int row = playerGrid.getRowIndex(sourceImageView);
 						int startIndex = convertCordToIndex(col, row);
 						if(!checkOverlap(startIndex)) {
                             int[] indexes = tempShipIndexes(startIndex);
@@ -442,15 +464,29 @@ public class BoardGUI extends Application implements GUI_Interface {
 		return true;
 	}
 
+	/**
+	 * This method will take information from the game loop (caller) and display it in the information panel.
+	 * @param humanWins did the human win?
+	 * @param opponentWins did the opponent win?
+	 * @param score score if human wins
+	 * @param humanShipsLeft setter
+	 * @param opponentShipsLeft setter
+	 * @param humanShots setter
+	 * @param opponentShots setter
+	 * @param humanHits setter
+	 * @param opponentHits setter
+	 * @param humanHitPercentage setter
+	 * @param opponentHitPercentage setter
+	 */
 	public void setInfoPanelElements(boolean humanWins, boolean opponentWins, double score, int humanShipsLeft, int opponentShipsLeft, int humanShots,
 									 int opponentShots, int humanHits, int opponentHits, double humanHitPercentage, double opponentHitPercentage) {
 		if(humanWins) {
 			infoPanel.getChildren().clear();
-			Label humanWinsLabel = new Label("You destroyedImage the opponents fleet! Your score: " + (int)score);
+			Label humanWinsLabel = new Label("You destroyed the opponents fleet! Your score: " + (int)score);
 			infoPanel.getChildren().add(humanWinsLabel);
 		} else if(opponentWins) {
 			infoPanel.getChildren().clear();
-			Label opponentWinsLabel = new Label("The opponent destroyedImage your fleet! Your score: " + (int)score);
+			Label opponentWinsLabel = new Label("The opponent destroyed your fleet! Your score: " + (int)score);
 			infoPanel.getChildren().add(opponentWinsLabel);
 		} else {
 			infoPanel.getChildren().clear();
@@ -490,6 +526,10 @@ public class BoardGUI extends Application implements GUI_Interface {
 		}
 	}
 
+	/**
+	 * This updates the temp display of a ship during deployment
+	 * @param index location
+	 */
 	private void displayTempShip(int index) {
 		for (ImageView image : tempDisplayShip) {
 			playerGrid.getChildren().remove(image);
@@ -683,6 +723,9 @@ public class BoardGUI extends Application implements GUI_Interface {
 		return cord;
 	}
 
+	/**
+	 * setInGameMenu as disabled
+	 */
 	public void setInGameMenuDisabled() {
 		inGameMenuEnabled = false;
 	}

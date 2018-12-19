@@ -19,15 +19,28 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * RankingsGUI displays the top ten highscores.
+ * @author samdoggett
+ */
 public class RankingsGUI extends Application {
 	private MainMenuGUI mainMenu;
 	private ArrayList<ArrayList> initialList;
-	private static final int NUMBER_OF_HIGHSCORES= 10;
-	
+	private static final int NUMBER_OF_HIGHSCORES = 10;
+
+	/**
+	 * Constructor
+	 * @param mainMenu if we want to return to main menu
+	 */
 	public RankingsGUI(MainMenuGUI mainMenu) {
 		this.mainMenu = mainMenu;
 	}
-	
+
+	/**
+	 * Start sets up the stage and displays it.
+	 * @param stage stage we are working on
+	 * @throws Exception
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
 		VBox root = new VBox();
@@ -91,6 +104,7 @@ public class RankingsGUI extends Application {
     	ObservableList<String> usernames = FXCollections.observableArrayList ();
     	ObservableList<Integer> scores = FXCollections.observableArrayList ();
 
+    	//if the highscore getter successfully pulled
     	if(initialList.size() > 0) {
 			for(int i = 0; i< initialList.get(0).size(); i++) {
 
@@ -103,6 +117,7 @@ public class RankingsGUI extends Application {
 			scoreList.setItems(scores);
 		} else {
 			loadingErrorLabel.setText("Server Connection Error");
+			loadingErrorLabel.setFont(new Font("Arial", 20));
 		}
     	
     	rankList.setPrefWidth(5);
