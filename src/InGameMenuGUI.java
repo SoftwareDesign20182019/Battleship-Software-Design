@@ -100,10 +100,6 @@ public class InGameMenuGUI extends Application implements GUI_Interface{
         Scene inGameScene = new Scene(outlineStackPane, 200, 200);
         inGameMenuStage.setScene(inGameScene);
 
-        HBox audioHBox = new HBox();
-        audioHBox.setAlignment(Pos.CENTER);
-        audioHBox.setSpacing(5);
-
         music.selectedProperty().addListener(new ChangeListener<Boolean>() {
             public void changed(ObservableValue<? extends Boolean> ov,
                                 Boolean old_val, Boolean new_val) {
@@ -159,8 +155,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface{
             }
         });
 
-        audioHBox.getChildren().addAll(music, soundFX);
-        ingameVBox.getChildren().addAll(audioHBox, helpButton, exitButton, closeWindowLabel);
+        ingameVBox.getChildren().addAll(music, soundFX, helpButton, exitButton, closeWindowLabel);
         outlineStackPane.getChildren().addAll(outlineRect, ingameVBox);
 
         inGameMenuStage.setAlwaysOnTop(true);
