@@ -40,6 +40,7 @@ public class Tile {
 
 	/**
 	 * Returns true if tile is empty.
+	 * @return bool if empty
 	 */
 	public boolean isFree() {
 		if(this.toString().equals("Empty")) {
@@ -88,6 +89,7 @@ public class Tile {
 	/**
 	 * Change currentState according to occupyTile() method interaction with
 	 * currentState.
+	 * @param ship ship that is occupying this tile
 	 * @return	true if occupy if valid.
 	 */
 	public boolean occupyThisTile(Ship ship) {

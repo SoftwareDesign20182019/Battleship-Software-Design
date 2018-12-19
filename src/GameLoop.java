@@ -75,6 +75,7 @@ public class GameLoop {
 	/**
 	 * Helper method for newGame, sets opponent's difficulty
 	 * @param strategy which strategy we want to use
+	 * @param scoreMultiplier score multiplier
 	 */
 	public void setOpponentDifficulty(OpponentStrategy strategy, double scoreMultiplier) {
 		opponentPlayer.setDifficulty(strategy);

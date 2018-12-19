@@ -24,8 +24,8 @@ public class Gameboard {
 	/**
 	 * Fire a shot at a specified tile on Player Board (based on player number 
 	 * [1 or 2])
-	 * @param playerNumber	which player is firing the shot
-	 * @param tileNumber	which tile is being shot
+	 * @param player which player is firing the shot
+	 * @param tileNumber which tile is being shot
 	 * @return	true if shot was a success
 	 */
 	public boolean fireShot(Player player, int tileNumber) {

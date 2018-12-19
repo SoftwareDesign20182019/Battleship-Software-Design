@@ -110,7 +110,7 @@ public class SQLAccount {
 	
 		/**
 		 * Attempts to log the user in and compares the password given and the password on file
-		 * @param password
+		 * @param password string of password
 		 * @return true if login was successful, false if something went wrong
 		 */
 		public boolean logIn(String password) {
@@ -160,7 +160,7 @@ public class SQLAccount {
 		
 		/**
 		 * takes a bin file and uploads it to Games
-		 * @param toBeUploaded
+		 * @param toBeUploaded file to be uploaded
 		 * @return true if upload was successful, false if something went wrong
 		 */
 		public boolean uploadGame(File toBeUploaded) {
@@ -199,8 +199,8 @@ public class SQLAccount {
 		}
 
 		/**
-		 * Only called if a user attempts to save a game and the game name already exists 
-		 * @param game
+		 * Only called if a user attempts to save a game and the game name already exists
+		 * @param game file of game
 		 * @return true if successful, false if something went wrong
 		 */
 		public boolean updateGame(File game) {
@@ -232,7 +232,7 @@ public class SQLAccount {
 		
 		/**
 		 * Returns an arraylist of all the games a user has saved
-		 * @return- the arraylist of all the games a user has saved 
+		 * @return the arraylist of all the games a user has saved
 		 */
 		public ArrayList<String> getUserGames(){
 			ArrayList<String> games = new ArrayList<String>();
@@ -350,7 +350,7 @@ public class SQLAccount {
 		
 		/**
 		 * adds a highscore to the highscores database, will add to the user if it is a personal highscore
-		 * @param highscore
+		 * @param highscore double of what highscore
 		 * @return true if successful, false if something went wrong
 		 */
 		public boolean addHighScore(double highscore) {

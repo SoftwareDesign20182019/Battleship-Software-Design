@@ -184,7 +184,7 @@ public class ComputerPlayer implements Player {
 	
 	/**
 	 * For testing.
-	 * @param args
+	 * @param args null
 	 */
 	public static void main(String[] args) {
 		ComputerPlayer test = new ComputerPlayer(Gameboard.PlayerType.OPPONENT);

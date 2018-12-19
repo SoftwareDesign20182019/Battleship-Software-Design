@@ -39,6 +39,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface{
      * Constructor
      * @param mainMenu setter
      * @param help setter
+     * @param gameLoop setter
      */
     public InGameMenuGUI(MainMenuGUI mainMenu, HelpGUI help, GameLoop gameLoop) {
         this.mainMenu = mainMenu;

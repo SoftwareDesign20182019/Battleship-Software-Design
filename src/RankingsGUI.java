@@ -39,7 +39,7 @@ public class RankingsGUI extends Application {
 	/**
 	 * Start sets up the stage and displays it.
 	 * @param stage stage we are working on
-	 * @throws Exception
+	 * @throws Exception excpetion thrower
 	 */
 	@Override
 	public void start(Stage stage) throws Exception {

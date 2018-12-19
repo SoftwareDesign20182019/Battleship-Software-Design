@@ -43,7 +43,8 @@ public class PlayerBoard {
 	/**
 	 * Gets specified tile from tileList and uses shootThisTile() method to
 	 * change its state.
-	 * @param	tileNumber	tile to shoot
+	 * @param tileNumber	tile to shoot
+	 * @param player player who is shooting
 	 * @return	true if tile's new state is HitState()
 	 */
 	public boolean shootTile(Player player, int tileNumber) {

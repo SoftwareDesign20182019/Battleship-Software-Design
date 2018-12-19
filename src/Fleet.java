@@ -26,7 +26,7 @@ public class Fleet {
 	
 	/**
 	 * Returns the number of ships that have not been destroyed s
-	 * @return
+	 * @return the remaining ships
 	 */
 	public int getAliveShips() {
 		int shipsLeft = 0;

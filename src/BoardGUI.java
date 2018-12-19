@@ -192,6 +192,7 @@ public class BoardGUI extends Application {
 	 * @param gridName the grid we would like to change
 	 * @param index is the index of the selected location
 	 * @param newImage the new image we wish to set
+	 * @return Set Image
 	 */
 	public ImageView setGridElement(String gridName, int index, String newImage) {
 		if(index >= 0 && index <= 99) {
