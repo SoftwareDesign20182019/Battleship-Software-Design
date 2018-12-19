@@ -27,7 +27,6 @@ import javafx.stage.StageStyle;
  * BoardGUI handles all of the board graphics!
  * @author SamDoggett
  */
-
 public class BoardGUI extends Application implements GUI_Interface {
 	private MainMenuGUI mainMenu;
 	private InGameMenuGUI inGameMenu;
@@ -336,7 +335,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 						if(!checkOverlap(startIndex)) {
                             int[] indexes = tempShipIndexes(startIndex);
                             int endIndex = indexes[indexes.length - 1];
-                            //this will add a X to the deployment selection
+                            //this will add a X to the deployment selection and call the deploy in the game loop
                             switch (shipType) {
                                 case PATROL:
                                     activeDeployShips[0] = false;
@@ -617,7 +616,7 @@ public class BoardGUI extends Application implements GUI_Interface {
 	}
 
 	/**
-	 * Creates a stack that contains a deployImage shipImage model
+	 * Creates a stack that contains a deployImage shipImage model (visual)
 	 * @param shipLength length of the deployImage shipImage model
 	 * @return Stack pane of model with outline
 	 */

@@ -11,6 +11,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -45,7 +46,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         outlineRect.setStrokeWidth(4);
 
         VBox ingameVBox = new VBox();
-        ingameVBox.setSpacing(5);
+        ingameVBox.setSpacing(10);
         ingameVBox.setAlignment(Pos.CENTER);
 
         Stage inGameMenuStage = new Stage();
@@ -54,6 +55,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
         Scene inGameScene = new Scene(outlineStackPane, 200, 200);
         inGameMenuStage.setScene(inGameScene);
 
+<<<<<<< HEAD
         Button saveGameButton = new Button("Save Game");
         saveGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
@@ -74,7 +76,30 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
                 }
             } 
         });
+=======
+//        Button saveGameButton = new Button("Save Game");
+//        saveGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent e) {
+//                //ADD SAVE GAME FUNCTIONALITY HERE
+//            }
+//        });
+//        Button loadGameButton = new Button("Load Game");
+//        loadGameButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent e) {
+//                inGameMenuStage.hide();
+//                try {
+//                    loadGame.setPreviousGUI(inGameMenu, stage);
+//                    loadGame.start(stage);
+//                } catch (Exception e1) {
+//                    e1.printStackTrace();
+//                }
+//            }
+//        });
+>>>>>>> 6a5cccc54f7fadbbe3ba261bd97072c55bd79ba2
         Button helpButton = new Button("Help");
+        helpButton.setFont(new Font("Arial", 18));
         helpButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -88,6 +113,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
             }
         });
         Button exitButton = new Button("Exit Game");
+        exitButton.setFont(new Font("Arial", 18));
         exitButton.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
@@ -112,7 +138,7 @@ public class InGameMenuGUI extends Application implements GUI_Interface {
             }
         });
 
-        ingameVBox.getChildren().addAll(saveGameButton, loadGameButton, helpButton, exitButton, closeWindowLabel);
+        ingameVBox.getChildren().addAll(helpButton, exitButton, closeWindowLabel);
         outlineStackPane.getChildren().addAll(outlineRect, ingameVBox);
 
         inGameMenuStage.setAlwaysOnTop(true);
