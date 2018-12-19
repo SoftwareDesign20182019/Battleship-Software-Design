@@ -90,7 +90,6 @@ public class HardStrategy implements OpponentStrategy {
                 checkSunk();
                 return hunt();
             } else { //last shot hit, but direction has not been established.
-                System.out.println("Commence Find");
                 return find();
             }
         } else {
@@ -132,15 +131,12 @@ public class HardStrategy implements OpponentStrategy {
         updateShips();
         if(carrier && !battleShip){
             MAX_SHIP = 4;
-            System.out.println("Carrier Sunk");
         }
         if(carrier && battleShip){
             MAX_SHIP = 3;
-            System.out.println("Carrier and BattleShip Sunk");
         }
         if(carrier && battleShip && oneMid && twoMid){
             MAX_SHIP = 2;
-            System.out.println("Carrier and BattleShip and Midsized Ships Sunk");
         }
         if(smallShip && !twoMid && carrier && battleShip){
             MAX_SHIP = 3;
@@ -155,7 +151,6 @@ public class HardStrategy implements OpponentStrategy {
     private int find() {
         //if last shot is miss, and next shot is not in AL, then shipSunk
         ArrayList<Integer> adj = getAdjacents(root);
-        System.out.println("Weird, next Shot is " + nextShot);
         if(lastShotHit) {
             for (Integer next : adj) {
                 lastShot = next;
@@ -173,25 +168,21 @@ public class HardStrategy implements OpponentStrategy {
                 }
                 else {
                     if (SHIPHITS == 3 && !oneMid) {
-                        System.out.println("One Mid Sunk");
                         oneMid = true;
                         shipSunk();
                         return survey();
                     }
                     if (SHIPHITS == 3 && oneMid) {
-                        System.out.println("Two Mids Sunk");
                         twoMid = true;
                         shipSunk();
                         return survey();
                     }
                     if (SHIPHITS == 4) {
-                        System.out.println("BattleShip Sunk");
                         battleShip = true;
                         shipSunk();
                         return survey();
                     }
                     if (SHIPHITS == 2){
-                        System.out.println("Small ship sunk");
                         smallShip = true;
                         shipSunk();
                         return survey();
@@ -202,25 +193,21 @@ public class HardStrategy implements OpponentStrategy {
             }
 
             if (SHIPHITS == 3 && !oneMid) {
-                System.out.println("One Mid Sunk");
                 oneMid = true;
                 shipSunk();
                 return survey();
             }
             if (SHIPHITS == 3 && oneMid) {
-                System.out.println("Two Mids Sunk");
                 twoMid = true;
                 shipSunk();
                 return survey();
             }
             if (SHIPHITS == 4) {
-                System.out.println("BattleShip Sunk");
                 battleShip = true;
                 shipSunk();
                 return survey();
             }
             if (SHIPHITS == 2){
-                System.out.println("Small ship sunk");
                 smallShip = true;
                 shipSunk();
                 return survey();
@@ -241,7 +228,6 @@ public class HardStrategy implements OpponentStrategy {
      * @return next number to hit
      */
     private int survey(){
-        System.out.println("Surveying");
         ArrayList<Integer> remainingGrid = new ArrayList<>();
         for(int i = 0; i < gridTiles.length; i++ ){
             if(gridTiles[i] == EMPTY){
@@ -255,7 +241,6 @@ public class HardStrategy implements OpponentStrategy {
         //randomly select a number from the arraylist
         lastShot = remainingGrid.get(firedTile);
         gridTiles[lastShot] = MARK;
-        System.out.println("Should return: " + lastShot);
         return lastShot;
     }
 
@@ -280,7 +265,6 @@ public class HardStrategy implements OpponentStrategy {
      * @return the next shot to take
      */
     private int hunt(){
-        System.out.println("Hunting");
         ArrayList<Integer> adjAL;
         boolean done = false;
         int i = 0;
@@ -327,7 +311,6 @@ public class HardStrategy implements OpponentStrategy {
                 }
             }
         }
-        System.out.println("if you're seeing this things went awry");
         return root = -1;
     }
 
@@ -368,7 +351,6 @@ public class HardStrategy implements OpponentStrategy {
      * updates tiles based on the last shot taken to fill EMPTY
      */
     private void updateTiles(){
-        System.out.printf("Last Shot = %d \n", lastShot);
         if (lastShot == -1){
             lastShot = -1;
         } else {
